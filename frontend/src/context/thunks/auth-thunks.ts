@@ -50,12 +50,11 @@ export const logoutUser = createAsyncThunk<string>(
   }
 );
 
-export const refreshTokenUser = createAsyncThunk<string>(
+export const refreshTokenUser = createAsyncThunk<LoginResponse>(
   "auth/refreshToken",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await apiCall<LoginResponse>("post", "/auth/refresh-token");
-      return res.message;
+      return await apiCall<LoginResponse>("post", "/auth/refresh-token");
     } catch (err) {
       return rejectWithValue((err as Error).message);
     }

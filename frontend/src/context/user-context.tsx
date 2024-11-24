@@ -1,31 +1,32 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useAppSelector } from "@/hooks/use-redux";
-import { type User, type UserContextType } from "@/types";
-import { getUserProfile } from "@/services/user-service";
+import { createContext, useContext, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
+import { type UserContextType } from "@/types";
+import { refreshTokenUser } from "@/context/thunks/auth-thunks";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  const refreshUser = async () => {
+    try {
+      await dispatch(refreshTokenUser()).unwrap();
+    } catch (err) {
+      console.error("Failed to refresh user:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (isAuthenticated) {
-        const userProfile = await getUserProfile();
-        setUser(userProfile);
-      } else {
-        setUser(null);
-      }
-    };
-
-    fetchUser();
+    if (!isAuthenticated) {
+      refreshUser();
+    }
   }, [isAuthenticated]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, isAuthenticated, refreshUser }}>
       {children}
     </UserContext.Provider>
   );

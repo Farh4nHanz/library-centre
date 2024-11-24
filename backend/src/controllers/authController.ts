@@ -136,7 +136,12 @@ class AuthController {
 
       res.status(200).json({
         message: "Login success.",
-        user: user,
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          photoURL: user.photoURL,
+        },
       }); // send response
     } catch (err: unknown) {
       logger.error(err); // logging error
@@ -187,8 +192,9 @@ class AuthController {
    *
    * @param req
    * @param res
+   * @param next
    *
-   * @returns {void}
+   * @returns {Promise<void>}
    * - Response with status code 200 and message.
    * - Delete the access token from cookie.
    *
@@ -197,15 +203,31 @@ class AuthController {
    * @example
    * router.post("/refresh-token", authController.refreshToken);
    */
-  refreshToken = (req: RequestWithCookies, res: Response): void => {
-    const { refreshToken } = req.cookies; // grab the refresh token from cookie
-    if (!refreshToken) throw new CustomError("Refresh token not found!", 401); // check if there's a refresh token, if not, throw an error
-
+  refreshToken = async (
+    req: RequestWithCookies,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const decoded = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET!
-      ) as DecodedToken; // verify the refresh token
+      const { refreshToken } = req.cookies; // grab the refresh token from cookie
+      if (!refreshToken) throw new CustomError("Refresh token not found!", 401); // check if there's a refresh token, if not, throw an error
+
+      let decoded: DecodedToken;
+      try {
+        decoded = jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET!
+        ) as DecodedToken; // verify the refresh token
+      } catch (decodedErr: unknown) {
+        res.clearCookie("refreshToken", { httpOnly: true }); // clear the refresh token from cookie
+        throw new CustomError("Invalid refresh token!", 401); // throw invalid refresh token error
+      }
+
+      const user = await UserModel.findById(decoded.userId).select("-password"); // find user by id
+      if (!user) {
+        res.clearCookie("refreshToken", { httpOnly: true }); // clear the refresh token from cookie
+        throw new CustomError("User not found!", 404); // check if the user exists
+      }
 
       const accessToken = generateAccessToken(decoded.userId); // generate access token
 
@@ -216,10 +238,18 @@ class AuthController {
         maxAge: 1 * 60 * 1000, // 1 min
       }); // set access token cookie
 
-      res.status(200).json({ message: "Access token refreshed." }); // send response
+      res.status(200).json({
+        message: "Access token refreshed.",
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          photoURL: user.photoURL,
+        },
+      }); // send response
     } catch (err: unknown) {
       logger.error(err); // logging error
-      throw new CustomError("Invalid refresh token!", 401); // throw invalid refresh token error
+      next(err); // pass error to error middleware
     }
   };
 }

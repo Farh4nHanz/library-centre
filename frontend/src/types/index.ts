@@ -32,6 +32,7 @@ export type User = {
   id: string;
   username: string;
   role: "user" | "admin";
+  photoURL: string | null;
 };
 
 export type UserPayload = {
@@ -43,7 +44,8 @@ export type UserPayload = {
 
 export type UserContextType = {
   user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  isAuthenticated: boolean;
+  refreshUser: () => Promise<void>;
 };
 
 export type AuthResponse = {
@@ -67,6 +69,7 @@ export type UserURL = "/users/profile";
 export type URL = AuthURL | UserURL;
 
 export type AuthState = {
+  user: User | null;
   isAuthenticated: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   successMsg: string | null;
