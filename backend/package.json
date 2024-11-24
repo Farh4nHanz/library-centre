@@ -1,0 +1,42 @@
+{
+  "name": "library-centre",
+  "version": "1.0.0",
+  "main": "backend/server.js",
+  "scripts": {
+    "build": "tsc --build",
+    "start": "node dist/server.js",
+    "dev": "nodemon"
+  },
+  "keywords": [],
+  "author": "Hanz",
+  "license": "ISC",
+  "description": "Library Centre",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.8.1",
+    "pino": "^9.5.0",
+    "pino-http": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/lodash": "^4.17.13",
+    "@types/mongoose": "^5.11.96",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.9.0",
+    "nodemon": "^3.1.7",
+    "pino-pretty": "^13.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.6.3"
+  }
+}
