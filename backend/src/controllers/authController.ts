@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithCookies } from "@/interfaces";
+import { RequestWithCookies, User } from "@/interfaces";
 
 /** @types */
 import { DecodedToken } from "@/types";
@@ -184,6 +184,31 @@ class AuthController {
       res.clearCookie("accessToken", { httpOnly: true }); // clear the access token from cookie if the token is invalid
       res.clearCookie("refreshToken", { httpOnly: true }); // same thing for refresh token
       throw new CustomError("Invalid token!", 401); // throw invalid token error
+    }
+  };
+
+  checkAuth = async (
+    req: RequestWithCookies,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const user = req.user as User; // grab the user from request
+
+      const userExists = await UserModel.findById(user?.id).select("-password"); // find the user
+      if (!userExists) throw new CustomError("User not found!", 404); // check if the user exists
+
+      res.status(200).json({
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          photoURL: user.photoURL,
+        },
+      }); // send user data as response
+    } catch (err) {
+      logger.error(err); // logging error
+      next(err); // pass error to error middleware
     }
   };
 

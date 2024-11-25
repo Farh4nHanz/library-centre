@@ -43,9 +43,9 @@ export type UserPayload = {
 };
 
 export type UserContextType = {
-  user: User | null;
+  currentUser: User | null;
   isAuthenticated: boolean;
-  refreshUser: () => Promise<void>;
+  isLoading: boolean;
 };
 
 export type AuthResponse = {
@@ -62,6 +62,7 @@ export type AuthURL =
   | "/auth/register"
   | "/auth/login"
   | "/auth/logout"
+  | "/auth/me"
   | "/auth/refresh-token";
 
 export type UserURL = "/users/profile";
@@ -69,7 +70,6 @@ export type UserURL = "/users/profile";
 export type URL = AuthURL | UserURL;
 
 export type AuthState = {
-  user: User | null;
   isAuthenticated: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   successMsg: string | null;

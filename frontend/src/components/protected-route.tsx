@@ -1,10 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { useAppSelector } from "@/hooks/use-redux";
+import { useAuth } from "@/context/user-context";
+import { Loader } from "@/components/loader";
 
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isLoading, isAuthenticated } = useAuth();
+
+  if (isLoading) return <Loader variant="2" color="black" size="xl" />;
 
   return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
 };

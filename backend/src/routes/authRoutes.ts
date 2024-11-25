@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authController } from "@/controllers/authController";
-import { stillAuth } from "@/middlewares/authMiddleware";
+import { isAuth, stillAuth } from "@/middlewares/authMiddleware";
 
 const router = Router();
 
@@ -41,6 +41,19 @@ router
    * It will delete the access token from the cookie.
    */
   .post("/logout", authController.logoutUser)
+
+  /**
+   * Route for checking user authentication.
+   *
+   * @private
+   * @access [user, admin]
+   * @method POST
+   * @route "/api/v1/auth/me"
+   *
+   * This endpoint is used to check the user authentication.
+   * It will send a user data.
+   */
+  .post("/me", isAuth, authController.checkAuth)
 
   /**
    * Route for logged out a user.

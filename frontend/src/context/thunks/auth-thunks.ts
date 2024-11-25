@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 /** @types */
 import {
+  type User,
   type AuthResponse,
   type LoginResponse,
   type UserPayload,
@@ -44,6 +45,17 @@ export const logoutUser = createAsyncThunk<string>(
     try {
       const res = await apiCall<AuthResponse>("post", "/auth/logout");
       return res.message;
+    } catch (err) {
+      return rejectWithValue((err as Error).message);
+    }
+  }
+);
+
+export const checkAuth = createAsyncThunk<User>(
+  "auth/checkAuth",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await apiCall<User>("post", "/auth/me");
     } catch (err) {
       return rejectWithValue((err as Error).message);
     }
