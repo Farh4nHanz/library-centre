@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema } from "@/schema/auth-schema";
 
 /** @types */
-import { type LoginFormSchema } from "@/types";
+import { type LoginFormSchema } from "@/types/schema-type";
 
 /** @components */
 import { Form } from "@/components/ui/form";

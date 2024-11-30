@@ -187,6 +187,21 @@ class AuthController {
     }
   };
 
+  /**
+   * This method is used to check the user authentication.
+   *
+   * @param req
+   * @param res
+   * @param next
+   *
+   * @returns {Promise<void>}
+   * - Response with status code 200 and user data.
+   *
+   * @throws {CustomError} An error with status code 404 and error message.
+   *
+   * @example
+   * router.get("/me", authController.checkAuth);
+   */
   checkAuth = async (
     req: RequestWithCookies,
     res: Response,
@@ -195,7 +210,7 @@ class AuthController {
     try {
       const user = req.user as User; // grab the user from request
 
-      const userExists = await UserModel.findById(user?.id).select("-password"); // find the user
+      const userExists = await UserModel.findById(user.id).select("-password"); // find the user
       if (!userExists) throw new CustomError("User not found!", 404); // check if the user exists
 
       res.status(200).json({

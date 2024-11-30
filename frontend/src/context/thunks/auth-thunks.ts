@@ -1,12 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 /** @types */
-import {
-  type User,
-  type AuthResponse,
-  type LoginResponse,
-  type UserPayload,
-} from "@/types";
+import { type User, type UserPayload } from "@/types/user-type";
+import { type AuthResponse } from "@/types/api-type";
 
 /** @libs */
 import { apiCall } from "@/lib/api-call";
@@ -29,11 +25,11 @@ export const registerUser = createAsyncThunk<string, UserPayload>(
 );
 
 export const loginUser = createAsyncThunk<
-  LoginResponse,
+  AuthResponse,
   Omit<UserPayload, "username">
 >("auth/loginUser", async (userData, { rejectWithValue }) => {
   try {
-    return await apiCall<LoginResponse>("post", "/auth/login", userData);
+    return await apiCall<AuthResponse>("post", "/auth/login", userData);
   } catch (err) {
     return rejectWithValue((err as Error).message);
   }
@@ -55,18 +51,19 @@ export const checkAuth = createAsyncThunk<User>(
   "auth/checkAuth",
   async (_, { rejectWithValue }) => {
     try {
-      return await apiCall<User>("post", "/auth/me");
+      const user = await apiCall<User>("get", "/auth/me");
+      return user;
     } catch (err) {
       return rejectWithValue((err as Error).message);
     }
   }
 );
 
-export const refreshTokenUser = createAsyncThunk<LoginResponse>(
+export const refreshTokenUser = createAsyncThunk<AuthResponse>(
   "auth/refreshToken",
   async (_, { rejectWithValue }) => {
     try {
-      return await apiCall<LoginResponse>("post", "/auth/refresh-token");
+      return await apiCall<AuthResponse>("post", "/auth/refresh-token");
     } catch (err) {
       return rejectWithValue((err as Error).message);
     }

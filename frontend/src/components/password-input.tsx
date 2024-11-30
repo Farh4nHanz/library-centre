@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useCapitalizeLetter } from "@/hooks/use-capitalize-letter";
 
 /** @types */
-import { type PasswordInputProps } from "@/types";
+import { type PasswordInputProps } from "@/types/props-type";
 
 /** @icons */
 import { Eye, EyeOff } from "lucide-react";

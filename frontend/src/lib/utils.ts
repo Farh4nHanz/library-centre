@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import _ from "lodash";
-import { LoaderProps } from "@/types";
+import { type LoaderProps } from "@/types/props-type";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));

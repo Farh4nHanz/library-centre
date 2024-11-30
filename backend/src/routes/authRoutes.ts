@@ -47,13 +47,13 @@ router
    *
    * @private
    * @access [user, admin]
-   * @method POST
+   * @method GET
    * @route "/api/v1/auth/me"
    *
    * This endpoint is used to check the user authentication.
    * It will send a user data.
    */
-  .post("/me", isAuth, authController.checkAuth)
+  .get("/me", isAuth, authController.checkAuth)
 
   /**
    * Route for logged out a user.

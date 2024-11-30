@@ -1,38 +1,48 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { type User, type UserContextType } from "@/types";
-import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
+import { type User, type UserContextType } from "@/types/user-type";
+import { useAppDispatch } from "@/hooks/use-redux";
 import { checkAuth } from "@/context/thunks/auth-thunks";
+import { resetUserState } from "@/context/reducers/auth-reducer";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const user: User = JSON.parse(localStorage.getItem("user") as string);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const isAuth = async () => {
-    try {
-      const user = await dispatch(checkAuth()).unwrap();
-      if (user) return setCurrentUser(user);
-    } catch {
-      setCurrentUser(null);
-      console.error("Error checking auth");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const validateUser = async () => {
+  //   const res = await dispatch(checkAuth());
+  //   if (checkAuth.rejected.match(res)) {
+  //     dispatch(resetUserState());
+  //     setIsLoading(false);
+  //   }
+
+  //   setIsLoading(false);
+  // };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      isAuth();
+    const validateUser = async () => {
+      try {
+        await dispatch(checkAuth());
+      } catch {
+        dispatch(resetUserState());
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (user) {
+      validateUser();
     }
-  }, [isAuthenticated]);
+  }, [user]);
+
+  console.log(isLoading);
 
   return (
-    <UserContext.Provider value={{ currentUser, isAuthenticated, isLoading }}>
+    <UserContext.Provider value={{ user, isLoading }}>
       {children}
     </UserContext.Provider>
   );

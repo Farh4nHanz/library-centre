@@ -5,9 +5,14 @@ import { Loader } from "@/components/loader";
 export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (isLoading) return <Loader variant="2" color="black" size="xl" />;
+  if (isLoading)
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <Loader variant="2" color="black" size="lg" />
+      </div>
+    );
 
-  return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
+  return user ? children : <Navigate to="/auth/login" replace />;
 };

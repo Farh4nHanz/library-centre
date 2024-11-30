@@ -1,6 +1,6 @@
 import { cn, getLoaderSize, getColorClass } from "@/lib/utils";
 import { Loader2, LucideLoader } from "lucide-react";
-import { type LoaderProps } from "@/types";
+import { type LoaderProps } from "@/types/props-type";
 
 export const Loader = ({
   className,

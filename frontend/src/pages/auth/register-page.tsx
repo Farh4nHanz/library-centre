@@ -10,18 +10,18 @@ import { PasswordInput } from "@/components/password-input";
 import { Loader } from "@/components/loader";
 import { CustomAlert as ErrorAlert } from "@/components/custom-alert";
 
+/** @types */
+import { type RegisterFormSchema } from "@/types/schema-type";
+
+/** @schema */
+import { registerFormSchema } from "@/schema/auth-schema";
+
 /** @context */
 import { registerUser } from "@/context/thunks/auth-thunks";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 import { useIsAuth } from "@/hooks/use-is-auth";
-
-/** @types */
-import { type RegisterFormSchema } from "@/types";
-
-/** @schema */
-import { registerFormSchema } from "@/schema/auth-schema";
 
 /** @icons */
 import { TriangleAlert } from "lucide-react";
@@ -99,7 +99,7 @@ const RegisterPage = () => {
             control={control}
             name="password"
             placeholder="********"
-            description="Password must contain one uppercase letter, one number and one special character."
+            description="Use 8 characters, include one capital letter, one number and one special character."
             errors={errors}
           />
 

@@ -1,6 +1,9 @@
 import { forwardRef } from "react";
 import { FieldValues } from "react-hook-form";
 
+/** @types */
+import { type FormInputProps } from "@/types/props-type";
+
 /** @hooks */
 import { useCapitalizeLetter } from "@/hooks/use-capitalize-letter";
 
@@ -14,9 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-/** @types */
-import { type FormInputProps } from "@/types";
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps<any>>(
   <T extends FieldValues>(
