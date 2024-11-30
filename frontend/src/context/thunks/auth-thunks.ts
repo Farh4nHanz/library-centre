@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 /** @types */
-import { type User, type UserPayload } from "@/types/user-type";
+import { type UserPayload } from "@/types/user-type";
 import { type AuthResponse } from "@/types/api-type";
 
 /** @libs */
@@ -47,12 +47,11 @@ export const logoutUser = createAsyncThunk<string>(
   }
 );
 
-export const checkAuth = createAsyncThunk<User>(
+export const checkAuth = createAsyncThunk<AuthResponse>(
   "auth/checkAuth",
   async (_, { rejectWithValue }) => {
     try {
-      const user = await apiCall<User>("get", "/auth/me");
-      return user;
+      return await apiCall<AuthResponse>("get", "/auth/me");
     } catch (err) {
       return rejectWithValue((err as Error).message);
     }

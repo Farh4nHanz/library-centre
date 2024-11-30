@@ -2,9 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/user-context";
 import { Loader } from "@/components/loader";
 
-export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useAuth();
 
   if (isLoading)

@@ -3,10 +3,7 @@ import mongoose from "mongoose";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithCookies } from "@/interfaces";
-
-/** @types */
-import { DecodedToken } from "@/types";
+import { RequestWithCookies, User } from "@/interfaces";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -64,14 +61,22 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const { userId } = req.user as DecodedToken; // destructure the id from request
-      logger.info("User info:", req.user);
+      const { id } = req.user as User; // destructure the user id from request
 
-      const user = await UserModel.findById(userId).select("-password"); // find the user
+      if (!mongoose.isValidObjectId(id))
+        throw new CustomError("Invalid user id!", 400); // check if the user id is valid
 
+      const user = await UserModel.findById(id).select("-password"); // find the user
       if (!user) throw new CustomError("User not found!", 404); // check if the user exists
 
-      res.status(200).json({ user: user }); // send the user data
+      res.status(200).json({
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          photoURL: user.photoURL,
+        },
+      }); // send the user data
     } catch (err: unknown) {
       logger.error(err); // logging error
       next(err); // passing error to error middleware

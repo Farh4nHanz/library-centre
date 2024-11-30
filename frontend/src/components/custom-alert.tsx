@@ -13,3 +13,5 @@ export const CustomAlert = React.memo(
     );
   }
 );
+
+CustomAlert.displayName = "CustomAlert";

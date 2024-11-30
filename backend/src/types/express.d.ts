@@ -6,6 +6,7 @@ declare module "express" {
       id?: string;
     };
     body: {
+      id?: string;
       username?: string;
       email?: string;
       password?: string;

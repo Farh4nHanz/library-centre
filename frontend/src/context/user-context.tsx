@@ -2,42 +2,42 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { type User, type UserContextType } from "@/types/user-type";
 import { useAppDispatch } from "@/hooks/use-redux";
 import { checkAuth } from "@/context/thunks/auth-thunks";
-import { resetUserState } from "@/context/reducers/auth-reducer";
+import {
+  removeUser,
+  setIsAuthenticated,
+} from "@/context/reducers/auth-reducer";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const user: User = JSON.parse(localStorage.getItem("user") as string);
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
-  // const validateUser = async () => {
-  //   const res = await dispatch(checkAuth());
-  //   if (checkAuth.rejected.match(res)) {
-  //     dispatch(resetUserState());
-  //     setIsLoading(false);
-  //   }
-
-  //   setIsLoading(false);
-  // };
-
   useEffect(() => {
-    const validateUser = async () => {
-      try {
-        await dispatch(checkAuth());
-      } catch {
-        dispatch(resetUserState());
-      } finally {
-        setIsLoading(false);
+    const initAuth = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        try {
+          const { user } = await dispatch(checkAuth()).unwrap();
+          if (user) {
+            dispatch(setIsAuthenticated(true));
+            setUser(user);
+          }
+        } catch (err) {
+          console.error("Error checking auth:", err);
+          dispatch(setIsAuthenticated(false));
+          dispatch(removeUser());
+          setUser(null);
+        }
+      } else {
+        dispatch(setIsAuthenticated(false));
       }
+      setIsLoading(false);
     };
 
-    if (user) {
-      validateUser();
-    }
-  }, [user]);
+    initAuth();
+  }, [dispatch]);
 
   console.log(isLoading);
 

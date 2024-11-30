@@ -15,6 +15,7 @@ import UserModel from "@/models/userModel";
 import CustomError from "@/lib/customError";
 import hashPassword from "@/lib/hashPassword";
 import { generateAccessToken, generateRefreshToken } from "@/lib/generateToken";
+import mongoose from "mongoose";
 
 /**
  * Class based controller for user authentication.
@@ -208,12 +209,16 @@ class AuthController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const user = req.user as User; // grab the user from request
+      const { id } = req.user as User; // destructure the user id from request
 
-      const userExists = await UserModel.findById(user.id).select("-password"); // find the user
-      if (!userExists) throw new CustomError("User not found!", 404); // check if the user exists
+      if (!mongoose.isValidObjectId(id))
+        throw new CustomError("Invalid user id!", 400); // check if the user id is valid
+
+      const user = await UserModel.findById(id).select("-password"); // find the user
+      if (!user) throw new CustomError("User not found!", 404); // check if the user exists
 
       res.status(200).json({
+        message: "User is authenticated.",
         user: {
           id: user.id,
           username: user.username,

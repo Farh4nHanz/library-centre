@@ -1,8 +1,7 @@
 import { store } from "@/context/store";
-import { User } from "@/types/user-type";
 
 export type AuthState = {
-  user: User | null;
+  isAuthenticated: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
   successMsg: string | null;
   errorMsg: string | null;

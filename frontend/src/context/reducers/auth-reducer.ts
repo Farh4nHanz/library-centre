@@ -12,7 +12,7 @@ import {
 } from "@/context/thunks/auth-thunks";
 
 const initialState: AuthState = {
-  user: JSON.parse(localStorage.getItem("user") as string) || null,
+  isAuthenticated: false,
   status: "idle",
   successMsg: null,
   errorMsg: null,
@@ -22,8 +22,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    resetUserState: (state) => {
-      state.user = null;
+    setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
+    removeUser: () => {
       localStorage.removeItem("user");
     },
     resetMessage: (state) => {
@@ -55,16 +57,16 @@ const authSlice = createSlice({
           state.status = "succeeded";
           state.successMsg = null;
           state.errorMsg = null;
+          state.isAuthenticated = true;
 
-          state.user = action.payload.user;
           localStorage.setItem("user", JSON.stringify(action.payload.user));
         }
       )
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
-        state.user = null;
         state.successMsg = null;
         state.errorMsg = action.payload as string;
+        state.isAuthenticated = false;
       })
       .addCase(logoutUser.pending, (state) => {
         state.status = "loading";
@@ -73,8 +75,8 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.errorMsg = null;
         state.successMsg = action.payload as string;
+        state.isAuthenticated = false;
 
-        state.user = null;
         localStorage.removeItem("user");
       })
       .addCase(logoutUser.rejected, (state, action) => {
@@ -87,23 +89,26 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.fulfilled, (state) => {
         state.status = "succeeded";
+        state.isAuthenticated = true;
       })
       .addCase(checkAuth.rejected, (state) => {
         state.status = "failed";
+        state.isAuthenticated = false;
       })
       .addCase(
         refreshTokenUser.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
-          state.user = action.payload.user;
+          state.isAuthenticated = true;
           localStorage.setItem("user", JSON.stringify(action.payload.user));
         }
       )
       .addCase(refreshTokenUser.rejected, (state) => {
-        state.user = null;
+        state.isAuthenticated = false;
         localStorage.removeItem("user");
       });
   },
 });
 
-export const { resetUserState, resetMessage } = authSlice.actions;
+export const { setIsAuthenticated, removeUser, resetMessage } =
+  authSlice.actions;
 export default authSlice.reducer;
