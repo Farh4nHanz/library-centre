@@ -1,4 +1,4 @@
-import { store } from "@/context/store";
+import { store } from "@/redux/store";
 
 export type AuthState = {
   isAuthenticated: boolean;

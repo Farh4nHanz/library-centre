@@ -17,7 +17,7 @@ import { type RegisterFormSchema } from "@/types/schema-type";
 import { registerFormSchema } from "@/schema/auth-schema";
 
 /** @context */
-import { registerUser } from "@/context/thunks/auth-thunks";
+import { registerUser } from "@/redux/thunks/auth-thunk";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";

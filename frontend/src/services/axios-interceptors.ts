@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
 import api from "@/api";
 import { type CustomAxiosRequestConfig } from "@/types/api-type";
-import { store } from "@/context/store";
-import { logoutUser, refreshTokenUser } from "@/context/thunks/auth-thunks";
+import { store } from "@/redux/store";
+import { logoutUser, refreshTokenUser } from "@/redux/thunks/auth-thunk";
 
 export const axiosInterceptors = () => {
   api.interceptors.response.use(

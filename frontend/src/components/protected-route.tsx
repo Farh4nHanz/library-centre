@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/user-context";
 import { Loader } from "@/components/loader";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
+import { setErrorMsg } from "@/redux/slices/auth-slice";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(setErrorMsg("Please login first!"));
+    }
+  }, [dispatch, isAuthenticated]);
 
   if (isLoading)
     return (
@@ -13,5 +23,5 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       </div>
     );
 
-  return user ? children : <Navigate to="/auth/login" replace />;
+  return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
 };

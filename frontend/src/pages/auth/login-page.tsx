@@ -21,7 +21,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 import { useIsAuth } from "@/hooks/use-is-auth";
 
 /** @context */
-import { loginUser } from "@/context/thunks/auth-thunks";
+import { loginUser } from "@/redux/thunks/auth-thunk";
 
 /** @icons */
 import { CheckCircle, TriangleAlert } from "lucide-react";
@@ -63,13 +63,13 @@ const LoginPage = () => {
         {/* form header */}
         <h1 className="text-xl font-bold text-start">Welcome Back!</h1>
 
-        {/* success message from register page */}
-        {status !== "idle" && status !== "loading" && (
+        {/* show alert for success or error message */}
+        {(errorMsg || successMsg) && (
           <Alert
-            variant={status === "failed" ? "destructive" : "success"}
-            Icon={status === "failed" ? TriangleAlert : CheckCircle}
-            title={status === "failed" ? "Error" : "Success"}
-            description={status === "failed" ? errorMsg : successMsg}
+            variant={errorMsg ? "destructive" : "success"}
+            Icon={errorMsg ? TriangleAlert : CheckCircle}
+            title={errorMsg ? "Error" : "Success"}
+            description={errorMsg || successMsg}
           />
         )}
 

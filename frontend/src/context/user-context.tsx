@@ -1,11 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { type User, type UserContextType } from "@/types/user-type";
 import { useAppDispatch } from "@/hooks/use-redux";
-import { checkAuth } from "@/context/thunks/auth-thunks";
-import {
-  removeUser,
-  setIsAuthenticated,
-} from "@/context/reducers/auth-reducer";
+import { checkAuth } from "@/redux/thunks/auth-thunk";
+import { removeUser, setIsAuthenticated } from "@/redux/slices/auth-slice";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -37,8 +34,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     initAuth();
   }, [dispatch]);
-
-  console.log(isLoading);
 
   return (
     <UserContext.Provider value={{ user, isLoading }}>
