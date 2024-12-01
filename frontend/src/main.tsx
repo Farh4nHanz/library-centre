@@ -13,7 +13,7 @@ import "./index.css";
 
 const client = new QueryClient();
 
-axiosInterceptors();
+// axiosInterceptors();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

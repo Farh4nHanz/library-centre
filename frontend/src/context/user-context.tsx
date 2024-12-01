@@ -24,8 +24,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             dispatch(setIsAuthenticated(true));
             setUser(user);
           }
-        } catch (err) {
-          console.error("Error checking auth:", err);
+        } catch {
           dispatch(setIsAuthenticated(false));
           dispatch(removeUser());
           setUser(null);

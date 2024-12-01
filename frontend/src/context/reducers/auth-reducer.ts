@@ -91,9 +91,10 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.isAuthenticated = true;
       })
-      .addCase(checkAuth.rejected, (state) => {
+      .addCase(checkAuth.rejected, (state, action) => {
         state.status = "failed";
         state.isAuthenticated = false;
+        state.errorMsg = action.payload as string;
       })
       .addCase(
         refreshTokenUser.fulfilled,
@@ -102,8 +103,9 @@ const authSlice = createSlice({
           localStorage.setItem("user", JSON.stringify(action.payload.user));
         }
       )
-      .addCase(refreshTokenUser.rejected, (state) => {
+      .addCase(refreshTokenUser.rejected, (state, action) => {
         state.isAuthenticated = false;
+        state.errorMsg = action.payload as string;
         localStorage.removeItem("user");
       });
   },
