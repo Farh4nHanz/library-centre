@@ -4,6 +4,12 @@ import bcrypt from "bcryptjs";
 
 import { User } from "@/interfaces";
 
+export enum UserRole {
+  admin = "admin",
+  user = "user",
+  bot = "bot",
+}
+
 const Schema = mongoose.Schema<User>;
 
 const userSchema = new Schema(
@@ -27,8 +33,8 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: Object.values(UserRole),
+      default: UserRole.user,
     },
   },
   { timestamps: true }

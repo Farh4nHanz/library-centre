@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithCookies } from "@/interfaces";
+import { RequestWithCookies, User } from "@/interfaces";
 
 /** @types */
 import { type DecodedToken } from "@/types";
 
 /** @models */
-import UserModel from "@/models/userModel";
+import UserModel, { UserRole } from "@/models/userModel";
 
 /** @libs */
 import CustomError from "@/lib/customError";
@@ -115,4 +115,27 @@ export const stillAuth = async (
     res.clearCookie("refreshToken", { httpOnly: true }); // clear the refresh token
     throw new CustomError("Invalid token!", 401); // if the token is invalid, throw an error
   }
+};
+
+/**
+ * Access control middleware.
+ * Checks if the user has the required role to access the route.
+ *
+ * @param {UserRole[]} roles - An array of allowed user roles.
+ *
+ * @returns {(req: RequestWithCookies, res: Response, next: NextFunction) => void} - The middleware function.
+ *
+ * @example
+ * router.get("/users", access([UserRole.admin]), userController.getAllUsers);
+ */
+export const access = (roles: UserRole[]) => {
+  return (req: RequestWithCookies, res: Response, next: NextFunction): void => {
+    const user = req.user as User;
+
+    if (!roles.includes(user?.role)) {
+      throw new CustomError("Access denied!", 403);
+    }
+
+    next();
+  };
 };

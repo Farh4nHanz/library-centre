@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userController } from "@/controllers/userController";
-import { isAuth } from "@/middlewares/authMiddleware";
+import { access, isAuth } from "@/middlewares/authMiddleware";
+import { UserRole } from "@/models/userModel";
 
 const router = Router();
 
@@ -13,7 +14,7 @@ router
    * @method GET
    * @route "/api/v1/users"
    */
-  .get("/", isAuth, userController.getAllUsers)
+  .get("/", isAuth, access([UserRole.admin]), userController.getAllUsers)
 
   /**
    * Route for request user profile.
@@ -23,7 +24,12 @@ router
    * @method GET
    * @route "/api/v1/users/profile"
    */
-  .get("/profile", isAuth, userController.getUserProfile)
+  .get(
+    "/profile",
+    isAuth,
+    access([UserRole.user, UserRole.admin]),
+    userController.getUserProfile
+  )
 
   /**
    * Route for deleting a user specified by id.
@@ -33,6 +39,11 @@ router
    * @method DELETE
    * @route "/api/v1/users"
    */
-  .delete("/:id", isAuth, userController.deleteUserById);
+  .delete(
+    "/:id",
+    isAuth,
+    access([UserRole.admin]),
+    userController.deleteUserById
+  );
 
 export default router;

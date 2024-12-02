@@ -1,4 +1,5 @@
 import { CookieOptions, NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
@@ -15,7 +16,6 @@ import UserModel from "@/models/userModel";
 import CustomError from "@/lib/customError";
 import hashPassword from "@/lib/hashPassword";
 import { generateAccessToken, generateRefreshToken } from "@/lib/generateToken";
-import mongoose from "mongoose";
 
 /**
  * Class based controller for user authentication.
@@ -127,7 +127,7 @@ class AuthController {
 
       res.cookie("accessToken", accessToken, {
         ...tokenOptions,
-        maxAge: 1 * 60 * 1000, // 1 min
+        maxAge: 1 * 60 * 60 * 1000, // 1 hour
       }); // set access token cookie
 
       res.cookie("refreshToken", refreshToken, {
@@ -171,9 +171,12 @@ class AuthController {
     if (!token) throw new CustomError("Unauthorized!", 401); // check if there's a token, if not, throw an error
 
     try {
-      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!); // verify the token
+      const decoded = jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET!
+      ) as DecodedToken; // verify the token
 
-      if (typeof decoded === "object" && "userId" in decoded) {
+      if (typeof decoded === "object" && decoded.userId) {
         res.clearCookie("accessToken", { httpOnly: true });
         res.clearCookie("refreshToken", { httpOnly: true });
         res.status(200).json({ message: "You're logged out." });
@@ -280,7 +283,7 @@ class AuthController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 1 * 60 * 1000, // 1 min
+        maxAge: 1 * 60 * 60 * 1000, // 1 hour
       }); // set access token cookie
 
       res.status(200).json({

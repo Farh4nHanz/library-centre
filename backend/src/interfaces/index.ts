@@ -1,6 +1,7 @@
 import { Request } from "express";
 import mongoose, { Document } from "mongoose";
 import { type DecodedToken } from "@/types";
+import { UserRole } from "@/models/userModel";
 
 export interface User extends Document {
   _id: mongoose.Types.ObjectId;
@@ -8,7 +9,7 @@ export interface User extends Document {
   email: string;
   password: string;
   photoURL: string;
-  role: string;
+  role: UserRole;
   comparePassword: (password: string) => Promise<boolean>;
 }
 
