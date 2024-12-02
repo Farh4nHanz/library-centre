@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useCallback, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
@@ -63,12 +63,30 @@ const Header = () => {
 };
 
 const Content = () => {
+  const { pathname } = useLocation();
+
   return (
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>Feature</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith("/")}>
+                <Link to="/">
+                  <Home />
+                  Home
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/">
+                  <Home />
+                  Home
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link to="/">
