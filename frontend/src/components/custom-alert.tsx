@@ -1,9 +1,9 @@
 import React from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { type AlertProps } from "@/types/props-type";
+import { type CustomAlertProps } from "@/types/props-type";
 
 export const CustomAlert = React.memo(
-  ({ variant = "default", Icon, title, description }: AlertProps) => {
+  ({ variant = "default", Icon, title, description }: CustomAlertProps) => {
     return (
       <Alert variant={variant}>
         <Icon className="size-4" />

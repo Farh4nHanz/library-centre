@@ -11,8 +11,8 @@ import { type LoginFormSchema } from "@/types/schema-type";
 /** @components */
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/form-input";
-import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/password-input";
+import { Button } from "@/components/ui/button";
 import { CustomAlert as Alert } from "@/components/custom-alert";
 import { Loader } from "@/components/loader";
 

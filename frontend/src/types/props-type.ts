@@ -23,9 +23,15 @@ export type LoaderProps = {
   color?: "black" | "white" | "blue" | "green" | "red" | "yellow";
 };
 
-export type AlertProps = {
+export type CustomAlertProps = {
   variant?: VariantProps<typeof Alert>["variant"];
   Icon: React.ComponentType<HTMLAttributes<Element>>;
   title: string;
   description: string | null;
+};
+
+export type CustomDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
 };

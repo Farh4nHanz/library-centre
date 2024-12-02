@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 /** @components */
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/form-input";
-import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/password-input";
+import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/loader";
 import { CustomAlert as ErrorAlert } from "@/components/custom-alert";
 
