@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
@@ -54,9 +54,9 @@ const Header = () => {
         <h2 className="text-lg font-bold group-data-[collapsible=icon]:hidden">
           Library Centre
         </h2>
-        <Link to="/" className="bg-zinc-300 rounded-sm p-1">
+        <NavLink to="/" className="bg-white shadow-md rounded-sm p-1">
           <BookOpen size={20} />
-        </Link>
+        </NavLink>
       </div>
     </SidebarHeader>
   );
@@ -73,26 +73,10 @@ const Content = () => {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname.startsWith("/")}>
-                <Link to="/">
+                <NavLink to="/">
                   <Home />
                   Home
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link to="/">
-                  <Home />
-                  Home
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link to="/">
-                  <Home />
-                  Home
-                </Link>
+                </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

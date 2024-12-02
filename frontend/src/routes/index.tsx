@@ -9,6 +9,7 @@ import AuthLayout from "@/layouts/auth-layout";
 import HomePage from "@/pages/home-page";
 import RegisterPage from "@/pages/auth/register-page";
 import LoginPage from "@/pages/auth/login-page";
+import ErrorPage from "@/pages/error-page";
 
 /** @components */
 import { ProtectedRoute } from "@/components/protected-route";
@@ -17,12 +18,13 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "",
         element: (
           // <ProtectedRoute>
-            <HomePage />
+          <HomePage />
           // </ProtectedRoute>
         ),
       },
@@ -31,6 +33,7 @@ export const router = createBrowserRouter([
   {
     path: "/auth",
     element: <AuthLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "register",

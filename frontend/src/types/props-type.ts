@@ -35,3 +35,8 @@ export type CustomDialogProps = {
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
 };
+
+export type RedirectButtonProps = {
+  url: string;
+  children: React.ReactNode;
+};
