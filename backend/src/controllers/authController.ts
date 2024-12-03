@@ -1,4 +1,5 @@
 import { CookieOptions, NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
@@ -16,6 +17,7 @@ import UserModel from "@/models/userModel";
 import CustomError from "@/lib/customError";
 import hashPassword from "@/lib/hashPassword";
 import { generateAccessToken, generateRefreshToken } from "@/lib/generateToken";
+import { loginSchema, registerSchema } from "@/lib/validator";
 
 /**
  * Class based controller for user authentication.
@@ -48,11 +50,7 @@ class AuthController {
     try {
       const { username, email, password } = req.body; // destructure the request body
 
-      if (!username || !email || !password)
-        throw new CustomError("Please fill all fields!", 400); // check if all fields are filled
-
-      const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if (!validEmail) throw new CustomError("Invalid email!", 400); // check if email is valid
+      registerSchema.parse({ username, email, password }); // validate the request body
 
       const userExist = await UserModel.findOne({ email });
       if (userExist) throw new CustomError("Email already exists.", 409); // check if email already exists
@@ -71,8 +69,16 @@ class AuthController {
         message: "Register success! You can now log in.",
       }); // send response
     } catch (err: unknown) {
-      logger.error(err); // logging error
-      next(err); // pass error to error middleware
+      // if the error is coming from validation, then execute the code inside if block
+      if (err instanceof ZodError) {
+        logger.error(err);
+        const errorMessages = err.errors.map((err) => err.message).join(", ");
+        next(new CustomError(errorMessages, 400));
+      } else {
+        // else return the error in this block
+        logger.error(err); // logging error
+        next(err); // pass error to error middleware
+      }
     }
   };
 
@@ -100,11 +106,7 @@ class AuthController {
     try {
       const { email, password } = req.body; // destructure the request body
 
-      if (!email || !password)
-        throw new CustomError("Please fill all fields!", 400); // check if all fields are filled
-
-      const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if (!validEmail) throw new CustomError("Invalid email!", 400); // check if email is valid
+      loginSchema.parse({ email, password }); // validate the request body
 
       const user = await UserModel.findOne({ email });
       if (!user)
@@ -145,8 +147,14 @@ class AuthController {
         },
       }); // send response
     } catch (err: unknown) {
-      logger.error(err); // logging error
-      next(err); // pass error to error middleware
+      if (err instanceof ZodError) {
+        logger.error(err);
+        const errorMessages = err.errors.map((err) => err.message).join(", ");
+        next(new CustomError(errorMessages, 400));
+      } else {
+        logger.error(err); // logging error
+        next(err); // pass error to error middleware
+      }
     }
   };
 
