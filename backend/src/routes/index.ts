@@ -1,6 +1,7 @@
 import e from "express";
 import authRoutes from "@/routes/authRoutes";
 import userRoutes from "@/routes/userRoutes";
+import bookRoutes from "@/routes/bookRoutes";
 
 /**
  * Configures and attaches all application routes to the provided Express app.
@@ -15,6 +16,7 @@ import userRoutes from "@/routes/userRoutes";
 const createRoutes = (app: e.Express): void => {
   app.use("/api/v1/auth", authRoutes); // auth routes
   app.use("/api/v1/users", userRoutes); // user routes
+  app.use("/api/v1/books", bookRoutes); // book routes
 };
 
 export default createRoutes;

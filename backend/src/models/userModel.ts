@@ -3,12 +3,7 @@ import _ from "lodash";
 import bcrypt from "bcryptjs";
 
 import { User } from "@/interfaces";
-
-export enum UserRole {
-  admin = "admin",
-  user = "user",
-  bot = "bot",
-}
+import { UserRole } from "@/constants";
 
 const Schema = mongoose.Schema<User>;
 
@@ -50,7 +45,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.pre("findOneAndUpdate", async function (next) {
-  const update = this.getUpdate() as UpdateQuery<any>;
+  const update = this.getUpdate() as UpdateQuery<User>;
 
   if (update?.$set?.username) {
     update.$set.username = _.startCase(update.$set.username);

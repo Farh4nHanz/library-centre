@@ -7,7 +7,7 @@ import logger from "@/config/logger";
 import { RequestWithCookies, User } from "@/interfaces";
 
 /** @types */
-import { DecodedToken } from "@/types";
+import { DecodedToken, UserRequestBody } from "@/types";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -41,7 +41,7 @@ class AuthController {
    * router.post("/register", authController.registerUser);
    */
   registerUser = async (
-    req: Request,
+    req: Request<{}, {}, UserRequestBody>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -93,7 +93,7 @@ class AuthController {
    * router.post("/login", authController.loginUser);
    */
   loginUser = async (
-    req: Request,
+    req: Request<{}, {}, UserRequestBody>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -158,7 +158,7 @@ class AuthController {
    *
    * @returns {void}
    * - Response with status code 200 and message.
-   * - Delete the access token from cookie.
+   * - Delete the access & refresh token from cookie.
    *
    * @throws {CustomError} An error with status code 401 and error message.
    *

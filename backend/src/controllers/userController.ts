@@ -10,6 +10,7 @@ import UserModel from "@/models/userModel";
 
 /** @libs */
 import CustomError from "@/lib/customError";
+import { RequestParams } from "@/types";
 
 class UserController {
   /**
@@ -98,7 +99,7 @@ class UserController {
    * router.delete("/:id", userController.deleteUserById);
    */
   deleteUserById = async (
-    req: Request,
+    req: Request<RequestParams>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {

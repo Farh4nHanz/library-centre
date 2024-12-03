@@ -9,7 +9,10 @@ import { RequestWithCookies, User } from "@/interfaces";
 import { type DecodedToken } from "@/types";
 
 /** @models */
-import UserModel, { UserRole } from "@/models/userModel";
+import UserModel from "@/models/userModel";
+
+/** @constants */
+import { UserRole } from "@/constants";
 
 /** @libs */
 import CustomError from "@/lib/customError";
