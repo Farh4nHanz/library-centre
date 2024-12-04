@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
+import mongoose from "mongoose";
 import logger from "@/config/logger";
 
 /** @types */
-import { BookRequestBody } from "@/types";
+import { BookRequestBody, RequestParams } from "@/types";
 
 /** @models */
 import BookModel from "@/models/bookModel";
@@ -52,6 +53,27 @@ class BookController {
         logger.error(err); // logging error
         next(err); // passing error to error middleware
       }
+    }
+  };
+
+  deleteBookById = async (
+    req: Request<RequestParams>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { id } = req.params; // destructure the book id from parameter
+
+      if (!mongoose.isValidObjectId(id))
+        throw new CustomError("Invalid book id!", 400); // if the id is not valid, throw an error
+
+      const deletedBook = await BookModel.findByIdAndDelete(id);
+      if (!deletedBook) throw new CustomError("Book not found!", 404); // if the book is not exist, throw an error
+
+      res.status(200).json({ message: "One book has been deleted!" }); // return a response message
+    } catch (err) {
+      logger.error(err); // logging the error
+      next(err); // passing the error to next middleware
     }
   };
 }

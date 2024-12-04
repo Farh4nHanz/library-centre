@@ -3,12 +3,12 @@ import CustomError from "@/lib/customError";
 
 /**
  * Middleware to handle errors occurring in the application.
- * 
+ *
  * @param err - The error object that was thrown.
  * @param req - The Express request object.
  * @param res - The Express response object.
  * @param next - The next middleware function in the stack.
- * 
+ *
  * This middleware function checks the type and properties of the error
  * and sends an appropriate HTTP response. If the error is a `CustomError`,
  * it sends the error's status code and message. If it is a MongoDB error
@@ -31,7 +31,7 @@ export const errorHandler: ErrorRequestHandler = (
   }
 
   if (err.name === "MongoServerError" && err.code === 11000) {
-    res.status(409).json({ message: "User already exists." });
+    res.status(409).json({ message: "Some value already exists in record." });
     return;
   }
 
@@ -43,11 +43,11 @@ export const errorHandler: ErrorRequestHandler = (
 
 /**
  * Middleware to handle requests to unknown endpoints.
- * 
+ *
  * @param req - The Express request object.
  * @param res - The Express response object.
  * @param next - The next middleware function in the stack.
- * 
+ *
  * This middleware function creates a `CustomError` with a 404 status code,
  * indicating that the requested resource was not found. The error message
  * includes the original request URL. It then passes this error to the next

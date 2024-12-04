@@ -56,8 +56,8 @@ export const bookSchema = z.object({
   isbn: z
     .number({ invalid_type_error: "ISBN must be a number!" })
     .positive("ISBN must be a valid number!")
-    .min(13, "ISBN must be 13 digits long!")
-    .max(13, "ISBN must be 13 digits long!")
+    .min(1000000000000, "ISBN must be 13 digits long!")
+    .max(9999999999999, "ISBN must be 13 digits long!")
     .optional(),
   pages: z
     .number({

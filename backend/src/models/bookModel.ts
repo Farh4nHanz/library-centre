@@ -66,10 +66,11 @@ bookSchema.pre("save", function (next) {
     this.title = capitalizeLetter(this.title);
     this.slug = slugify(this.title, { lower: true });
     this.author = capitalizeLetter(this.author);
-    this.publisher = capitalizeLetter(this.publisher);
-    this.genre = _.split(this.genre.toString(), ",").map((genre) =>
+    this.description = _.upperFirst(this.description);
+    this.genre = _.split(this.genre.toString().trim(), ", ").map((genre) =>
       capitalizeLetter(genre)
     );
+    this.publisher = capitalizeLetter(this.publisher);
     this.publicationDate = new Date(this.publicationDate);
 
     next();
@@ -94,14 +95,18 @@ bookSchema.pre("findOneAndUpdate", function (next) {
           update.$set.author = capitalizeLetter(update.$set.author);
           break;
 
-        case "publisher":
-          update.$set.publisher = capitalizeLetter(update.$set.publisher);
-          break;
-
         case "genre":
           update.$set.genre = _.split(update.$set.genre.toString(), ",").map(
             (genre) => capitalizeLetter(genre)
           );
+          break;
+
+        case "description":
+          update.$set.description = _.upperFirst(update.$set.description);
+          break;
+
+        case "publisher":
+          update.$set.publisher = capitalizeLetter(update.$set.publisher);
           break;
       }
     });
