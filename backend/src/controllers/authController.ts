@@ -5,10 +5,10 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithCookies, User } from "@/interfaces";
+import { DecodedToken, RequestWithCookies, User } from "@/interfaces";
 
 /** @types */
-import { DecodedToken, UserRequestBody } from "@/types";
+import { type UserRequestBody } from "@/types";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -21,24 +21,28 @@ import { loginSchema, registerSchema } from "@/lib/validator";
 import { validatorErrorHandler } from "@/lib/validatorErrorHandler";
 
 /**
- * Class based controller for user authentication.
- * All methods will be used in authRouter.
+ * Class-based controller for user authentication
+ * handling registration, login, logout, and token management.
  *
- * @method `registerUser`
- * @method `loginUser`
- * @method `logoutUser`
+ * @class AuthController
+ * @classdesc Manages user authentication, including registration, login, logout, and token management.
+ * Utilizes {@link UserModel} for database interactions and Zod for input validation.
  */
 class AuthController {
   /**
-   * This method is used to registering new user.
+   * Registers a new user.
    *
-   * @param req
-   * @param res
-   * @param next
+   * @method registerUser
+   * @memberof AuthController
    *
-   * @returns {Promise<void>} Response with status code 201, success message and user object.
+   * @param {Request<{}, {}, UserRequestBody>} req - The Express request object.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The next middleware function in the stack.
    *
    * @throws {CustomError} An error with status code 400, 409 and error message.
+   * @throws {ZodError} If the request body does not match the {@link UserRequestBody} schema.
+   *
+   * @returns {Promise<void>} Response with status code 201, success message and user object.
    *
    * @example
    * router.post("/register", authController.registerUser);
@@ -69,11 +73,10 @@ class AuthController {
       res.status(201).json({
         message: "Register success! You can now log in.",
       }); // send response
-    } catch (err: unknown) {
+    } catch (err) {
       if (err instanceof ZodError) {
         validatorErrorHandler(err)(req, res, next); // if the error is coming from validation, then return the validatorError function
       } else {
-        // else return the error in this block
         logger.error(err); // logging error
         next(err); // pass error to error middleware
       }
@@ -81,17 +84,21 @@ class AuthController {
   };
 
   /**
-   * This method is used to log in a user.
+   * Logs in a user.
    *
-   * @param req
-   * @param res
-   * @param next
+   * @method loginUser
+   * @memberof AuthController
+   *
+   * @param {Request<{}, {}, UserRequestBody>} req - The Express request object.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The next middleware function in the stack.
+   *
+   * @throws {CustomError} An error with status code 400, 401, 404 and error message.
+   * @throws {ZodError} If the request body does not match the {@link UserRequestBody} schema.
    *
    * @returns {Promise<void>}
    * - Access token and refresh token in http only cookies.
    * - Response with status code 200, message and user object.
-   *
-   * @throws {CustomError} An error with status code 400, 401, 404 and error message.
    *
    * @example
    * router.post("/login", authController.loginUser);
@@ -144,7 +151,7 @@ class AuthController {
           photoURL: user.photoURL,
         },
       }); // send response
-    } catch (err: unknown) {
+    } catch (err) {
       if (err instanceof ZodError) {
         validatorErrorHandler(err)(req, res, next); // if the error is coming from validation, then return the validatorError function
       } else {
@@ -155,16 +162,19 @@ class AuthController {
   };
 
   /**
-   * This method is used to logout a user.
+   * Logs out a user.
    *
-   * @param req
-   * @param res
+   * @method logoutUser
+   * @memberof AuthController
+   *
+   * @param {RequestWithCookies} req - The Express request object with cookies.
+   * @param {Response} res - The Express response object.
+   *
+   * @throws {CustomError} An error with status code 401 and error message.
    *
    * @returns {void}
    * - Response with status code 200 and message.
    * - Delete the access & refresh token from cookie.
-   *
-   * @throws {CustomError} An error with status code 401 and error message.
    *
    * @example
    * router.post("/logout", authController.logoutUser);
@@ -186,26 +196,28 @@ class AuthController {
         res.status(200).json({ message: "You're logged out." });
         return;
       } // if token was valid, clear the access token and refresh token from cookie and send response
-    } catch (err: unknown) {
+    } catch (err) {
       logger.error(err); // logging error
 
-      res.clearCookie("accessToken", { httpOnly: true }); // clear the access token from cookie if the token is invalid
+      res.clearCookie("accessToken", { httpOnly: true }); // clear the access token from cookie, because the token is invalid
       res.clearCookie("refreshToken", { httpOnly: true }); // same thing for refresh token
       throw new CustomError("Invalid token!", 401); // throw invalid token error
     }
   };
 
   /**
-   * This method is used to check the user authentication.
+   * Checks the user authentication.
    *
-   * @param req
-   * @param res
-   * @param next
+   * @method checkAuth
+   * @memberof AuthController
    *
-   * @returns {Promise<void>}
-   * - Response with status code 200 and user data.
+   * @param {RequestWithCookies} req - The Express request object with cookies.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The next middleware function in the stack.
    *
    * @throws {CustomError} An error with status code 404 and error message.
+   *
+   * @returns {Promise<void>} Response with status code 200 and user data.
    *
    * @example
    * router.get("/me", authController.checkAuth);
@@ -240,17 +252,20 @@ class AuthController {
   };
 
   /**
-   * This method is used to logout a user.
+   * Refreshes the access token.
    *
-   * @param req
-   * @param res
-   * @param next
+   * @method refreshToken
+   * @memberof AuthController
    *
+   * @param {RequestWithCookies} req - The Express request object with cookies.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The next middleware function in the stack.
+   *
+   * @throws {CustomError} An error with status code 401 and error message.
+   * 
    * @returns {Promise<void>}
    * - Response with status code 200 and message.
    * - Delete the access token from cookie.
-   *
-   * @throws {CustomError} An error with status code 401 and error message.
    *
    * @example
    * router.post("/refresh-token", authController.refreshToken);
@@ -270,7 +285,7 @@ class AuthController {
           refreshToken,
           process.env.REFRESH_TOKEN_SECRET!
         ) as DecodedToken; // verify the refresh token
-      } catch (decodedErr: unknown) {
+      } catch (decodedErr) {
         res.clearCookie("refreshToken", { httpOnly: true }); // clear the refresh token from cookie
         throw new CustomError("Invalid refresh token!", 401); // throw invalid refresh token error
       }
@@ -299,7 +314,7 @@ class AuthController {
           photoURL: user.photoURL,
         },
       }); // send response
-    } catch (err: unknown) {
+    } catch (err) {
       logger.error(err); // logging error
       next(err); // pass error to error middleware
     }

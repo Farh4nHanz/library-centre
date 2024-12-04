@@ -1,12 +1,6 @@
-export type DecodedToken = {
-  userId: string;
-  iat: number;
-  exp: number;
-};
-
 export type RequestParams = {
   id: string;
-}
+};
 
 export type UserRequestBody = {
   id: string;
