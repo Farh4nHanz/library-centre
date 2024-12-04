@@ -11,6 +11,7 @@ import BookModel from "@/models/bookModel";
 /** @libs */
 import CustomError from "@/lib/customError";
 import { bookSchema } from "@/lib/validator";
+import { validatorErrorHandler } from "@/lib/validatorErrorHandler";
 
 class BookController {
   getAllBooks = async (
@@ -31,7 +32,7 @@ class BookController {
     req: Request<{}, {}, BookRequestBody>,
     res: Response,
     next: NextFunction
-  ) => {
+  ): Promise<void> => {
     try {
       const bookData = req.body; // grab the book data from request body
       bookSchema.parse(bookData); // validate the book data, if error it will throw an error
@@ -45,10 +46,7 @@ class BookController {
       }); // send the book data to client
     } catch (err) {
       if (err instanceof ZodError) {
-        // if the error is coming from validator, then return the error in this block
-        logger.error(err);
-        const errorMessages = err.errors.map((err) => err.message).join(", ");
-        next(new CustomError(errorMessages, 400));
+        validatorErrorHandler(err)(req, res, next); // if the error is coming from validation, then return the validatorError function
       } else {
         // else return the error in this block
         logger.error(err); // logging error
