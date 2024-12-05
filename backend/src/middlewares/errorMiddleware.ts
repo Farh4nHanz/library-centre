@@ -4,19 +4,13 @@ import { ZodError } from "zod";
 import CustomError from "@/utils/customError";
 
 /**
- * Middleware to handle errors occurring in the application.
+ * Error handler middleware to handle errors that have been passed to the
+ * next function from previous middleware.
  *
- * @param err - The error object that was thrown.
- * @param req - The Express request object.
- * @param res - The Express response object.
- * @param next - The next middleware function in the stack.
- *
- * This middleware function checks the type and properties of the error
- * and sends an appropriate HTTP response. If the error is a `CustomError`,
- * it sends the error's status code and message. If it is a MongoDB error
- * with a duplicate key code, it responds with a 409 status. For all other
- * errors, it sends a 500 status with a generic message.
- * The stack trace is included in the response when not in production.
+ * @param {Error} err - The error object
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ * @param {NextFunction} next - The next middleware function
  */
 export const errorHandler: ErrorRequestHandler = (
   err,
