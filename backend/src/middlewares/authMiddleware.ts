@@ -3,10 +3,7 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithCookies, User } from "@/interfaces";
-
-/** @types */
-import { type DecodedToken } from "@/types";
+import { DecodedToken, RequestWithCookies, User } from "@/interfaces";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -15,7 +12,7 @@ import UserModel from "@/models/userModel";
 import { UserRole } from "@/constants";
 
 /** @libs */
-import CustomError from "@/lib/customError";
+import CustomError from "@/utils/customError";
 
 /**
  * Checks if the request is authorized by verifying the access token stored in the cookie.

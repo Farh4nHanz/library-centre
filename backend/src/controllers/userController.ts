@@ -12,7 +12,7 @@ import { type RequestParams } from "@/types";
 import UserModel from "@/models/userModel";
 
 /** @libs */
-import CustomError from "@/lib/customError";
+import CustomError from "@/utils/customError";
 
 /**
  * Class based controller for user crud operations and more.
@@ -102,7 +102,7 @@ class UserController {
    * @param {NextFunction} next - The next middleware function in the stack.
    *
    * @throws {CustomError} An error with status code 400 or 404 and error message.
-   * 
+   *
    * @returns {Promise<void>} Response with status code 200 and user profile data.
    *
    * @example
@@ -140,7 +140,7 @@ class UserController {
    * @param {NextFunction} next - The next middleware function.
    *
    * @throws {CustomError} An error with status code 400 or 404 and error message.
-   * 
+   *
    * @returns {Promise<void>} Response with status code 200 and deleted message.
    *
    * @example

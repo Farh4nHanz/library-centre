@@ -2,7 +2,7 @@ import mongoose, { Model, UpdateQuery } from "mongoose";
 import slugify from "slugify";
 import _ from "lodash";
 import { Book } from "@/interfaces";
-import { capitalizeLetter } from "@/lib/capitalizeLetter";
+import { capitalizeLetter } from "@/utils/capitalizeLetter";
 
 const Schema = mongoose.Schema<Book>;
 

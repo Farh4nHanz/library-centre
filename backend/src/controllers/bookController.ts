@@ -10,9 +10,9 @@ import { type BookRequestBody, type RequestParams } from "@/types";
 import BookModel from "@/models/bookModel";
 
 /** @libs */
-import CustomError from "@/lib/customError";
+import CustomError from "@/utils/customError";
 import { bookSchema } from "@/lib/validator";
-import { validatorErrorHandler } from "@/lib/validatorErrorHandler";
+import { validatorErrorHandler } from "@/utils/validatorErrorHandler";
 
 /**
  * Class based controller for book crud operations and more.

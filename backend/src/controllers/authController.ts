@@ -14,11 +14,14 @@ import { type UserRequestBody } from "@/types";
 import UserModel from "@/models/userModel";
 
 /** @libs */
-import CustomError from "@/lib/customError";
-import hashPassword from "@/lib/hashPassword";
-import { generateAccessToken, generateRefreshToken } from "@/lib/generateToken";
+import CustomError from "@/utils/customError";
+import hashPassword from "@/utils/hashPassword";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "@/utils/generateToken";
 import { loginSchema, registerSchema } from "@/lib/validator";
-import { validatorErrorHandler } from "@/lib/validatorErrorHandler";
+import { validatorErrorHandler } from "@/utils/validatorErrorHandler";
 
 /**
  * Class-based controller for user authentication
@@ -262,7 +265,7 @@ class AuthController {
    * @param {NextFunction} next - The next middleware function in the stack.
    *
    * @throws {CustomError} An error with status code 401 and error message.
-   * 
+   *
    * @returns {Promise<void>}
    * - Response with status code 200 and message.
    * - Delete the access token from cookie.

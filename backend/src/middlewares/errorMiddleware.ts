@@ -1,5 +1,5 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
-import CustomError from "@/lib/customError";
+import CustomError from "@/utils/customError";
 
 /**
  * Middleware to handle errors occurring in the application.
