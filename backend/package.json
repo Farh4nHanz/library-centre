@@ -1,7 +1,7 @@
 {
   "name": "library-centre",
   "version": "1.0.0",
-  "main": "backend/server.js",
+  "main": "server.ts",
   "scripts": {
     "build": "tsc --build",
     "start": "node -r tsconfig-paths/register dist/server.js",

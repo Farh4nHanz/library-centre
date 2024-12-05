@@ -3,6 +3,7 @@ import slugify from "slugify";
 import _ from "lodash";
 import { Book } from "@/interfaces";
 import { capitalizeLetter } from "@/utils/capitalizeLetter";
+import { s3Service } from "@/services/s3Service";
 
 const Schema = mongoose.Schema<Book>;
 
@@ -79,11 +80,26 @@ bookSchema.pre("save", function (next) {
   next();
 });
 
-bookSchema.pre("findOneAndUpdate", function (next) {
+bookSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate() as UpdateQuery<Book>;
 
   if (update?.$set) {
-    Object.keys(update.$set).forEach((key) => {
+    const cover: Express.Multer.File = update.$set.cover;
+    const existingBook = await this.model.findById(this.getQuery()._id);
+
+    if (cover && existingBook) {
+      const key = existingBook.coverURL.split(".com/")[1];
+      await s3Service.deleteFile(key);
+
+      const newKey = `uploads/${Date.now()}-${cover.originalname}`;
+      update.$set.coverURL = await s3Service.uploadFile(
+        newKey,
+        cover.buffer,
+        cover.mimetype
+      );
+    }
+
+    Object.keys(update.$set).forEach(async (key) => {
       const typedKey = key as keyof Book;
       switch (typedKey) {
         case "title":
@@ -95,14 +111,14 @@ bookSchema.pre("findOneAndUpdate", function (next) {
           update.$set.author = capitalizeLetter(update.$set.author);
           break;
 
+        case "description":
+          update.$set.description = _.upperFirst(update.$set.description);
+          break;
+
         case "genre":
           update.$set.genre = _.split(update.$set.genre.toString(), ",").map(
             (genre) => capitalizeLetter(genre)
           );
-          break;
-
-        case "description":
-          update.$set.description = _.upperFirst(update.$set.description);
           break;
 
         case "publisher":

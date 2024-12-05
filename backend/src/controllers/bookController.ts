@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
 import mongoose from "mongoose";
 import logger from "@/config/logger";
 
@@ -17,7 +16,6 @@ import { bookSchema } from "@/lib/validator";
 
 /** @utils */
 import CustomError from "@/utils/customError";
-import { validatorErrorHandler } from "@/utils/validatorErrorHandler";
 
 /**
  * Class based controller for book crud operations and more.
@@ -160,13 +158,60 @@ class BookController {
         book: newBook,
       }); // send the book data to client
     } catch (err) {
-      if (err instanceof ZodError) {
-        validatorErrorHandler(err)(req, res, next); // if the error is coming from validation, then return the validatorError function
-      } else {
-        // else return the error in this block
-        logger.error(err); // logging error
-        next(err); // passing error to error middleware
-      }
+      logger.error(err); // logging error
+      next(err); // passing error to error middleware
+    }
+  };
+
+  /**
+   * Updates a book by its ID in the database.
+   *
+   * @method updateBookById
+   * @memberof BookController
+   *
+   * @param {Request<RequestParams, {}, BookRequestBody>} req - The Express request object with request parameters and request body.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The Express next function.
+   *
+   * @throws {CustomError} If the book ID is invalid or not found.
+   * @throws {MulterError} If there is an error in uploading the cover file.
+   *
+   * @returns {Promise<void>} Response with status code 200 and a message "Book has been updated!" and the updated book document.
+   *
+   * @example
+   * router.put("/:id", bookController.updateBookById);
+   */
+  updateBookById = async (
+    req: Request<RequestParams, {}, BookRequestBody>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { id } = req.params; // destructure the book id from request params
+
+      if (!mongoose.isValidObjectId(id))
+        throw new CustomError("Invalid book id!", 400); // check if the book id is valid
+
+      const updateData: Partial<BookRequestBody> = { ...req.body }; // grab the book data from request body
+      if (req.file) {
+        updateData.cover = req.file;
+      } // if the cover file is uploaded, then update the cover file
+
+      const updatedBook = await BookModel.findOneAndUpdate(
+        { _id: id },
+        { $set: updateData },
+        { new: true }
+      ); // update the book
+
+      if (!updatedBook) throw new CustomError("Book not found!", 404); // if the book is not found, throw an error
+
+      res.status(200).json({
+        message: "Book has been updated!",
+        updatedBook: updatedBook,
+      }); // send the updated book data to client
+    } catch (err) {
+      logger.error(err); // logging error
+      next(err); // passing error to error middleware
     }
   };
 
@@ -234,7 +279,7 @@ class BookController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const books = await BookModel.find(); // count the number of books in database
+      const books = await BookModel.find(); // find to count the number of books in database
       if (books.length < 1)
         throw new CustomError("There are no books data to delete!", 404); // if there are no books in database, throw an error
 

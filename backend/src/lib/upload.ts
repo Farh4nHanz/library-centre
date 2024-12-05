@@ -12,7 +12,9 @@ const upload: Multer = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_FILE_TYPE.includes(file.mimetype)) {
+    if (file.size > MAX_FILE_SIZE) {
+      cb(new CustomError("Please upload file under 2MB.", 413));
+    } else if (!ALLOWED_FILE_TYPE.includes(file.mimetype)) {
       cb(
         new CustomError(
           "Invalid file type. Only .jpg, .jpeg and .png files are allowed!",

@@ -20,7 +20,7 @@ router
    * Route for request user profile.
    *
    * @private
-   * @access [user, admin]
+   * @access all
    * @method GET
    * @route "/api/v1/users/profile"
    */
@@ -29,8 +29,9 @@ router
     isAuth,
     access([UserRole.user, UserRole.admin]),
     userController.getUserProfile
-  )
+  );
 
+router
   /**
    * Route for deleting a user specified by id.
    *

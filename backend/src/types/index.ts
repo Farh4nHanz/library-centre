@@ -15,6 +15,7 @@ export type BookRequestBody = {
   author: string;
   description: string;
   genre: string[];
+  cover: Express.Multer.File;
   isbn: number | null;
   pages: number;
   publisher: string;

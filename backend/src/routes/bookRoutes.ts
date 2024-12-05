@@ -11,7 +11,7 @@ router
    * Route for fetching all books.
    *
    * @public
-   * @access [user, admin]
+   * @access all
    * @method GET
    * @route "/api/v1/books"
    *
@@ -23,14 +23,15 @@ router
    * Route for fetching a book.
    *
    * @public
-   * @access [user, admin]
+   * @access all
    * @method GET
    * @route "/api/v1/books"
    *
    * This endpoint is used to fetch book data by it's id.
    */
-  .get("/:id", bookController.getBookById)
+  .get("/:id", bookController.getBookById);
 
+router
   /**
    * Route for add a new book.
    *
@@ -47,8 +48,28 @@ router
     access([UserRole.admin]),
     upload.single("cover"),
     bookController.addNewBook
-  )
+  );
 
+router
+  /**
+   * Route for update a new book.
+   *
+   * @private
+   * @access admin
+   * @method PUT
+   * @route "/api/v1/books"
+   *
+   * This endpoint is used to update a book.
+   */
+  .put(
+    "/:id",
+    isAuth,
+    access([UserRole.admin]),
+    upload.single("cover"),
+    bookController.updateBookById
+  );
+
+router
   /**
    * Route for delete a book.
    *

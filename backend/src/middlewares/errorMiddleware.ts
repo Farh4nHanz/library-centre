@@ -1,4 +1,6 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
+import { MulterError } from "multer";
+import { ZodError } from "zod";
 import CustomError from "@/utils/customError";
 
 /**
@@ -30,8 +32,32 @@ export const errorHandler: ErrorRequestHandler = (
     return;
   }
 
+  if (err instanceof ZodError) {
+    res.status(400).json({
+      error: err.issues.map((issue) => {
+        return {
+          path: issue.path.join(""),
+          message: issue.message,
+        };
+      }),
+      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    });
+    return;
+  }
+
+  if (err instanceof MulterError && err.code === "LIMIT_FILE_SIZE") {
+    res.status(413).json({
+      error: "Maximum file size is 2MB!",
+      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    });
+    return;
+  }
+
   if (err.name === "MongoServerError" && err.code === 11000) {
-    res.status(409).json({ message: "Some value already exists in record." });
+    res.status(409).json({
+      message: "Some value already exists in record.",
+      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    });
     return;
   }
 

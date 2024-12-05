@@ -1,5 +1,4 @@
 import { CookieOptions, NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
@@ -23,7 +22,6 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "@/utils/generateToken";
-import { validatorErrorHandler } from "@/utils/validatorErrorHandler";
 
 /**
  * Class-based controller for user authentication
@@ -45,7 +43,6 @@ class AuthController {
    * @param {NextFunction} next - The next middleware function in the stack.
    *
    * @throws {CustomError} An error with status code 400, 409 and error message.
-   * @throws {ZodError} If the request body does not match the {@link UserRequestBody} schema.
    *
    * @returns {Promise<void>} Response with status code 201, success message and user object.
    *
@@ -79,12 +76,8 @@ class AuthController {
         message: "Register success! You can now log in.",
       }); // send response
     } catch (err) {
-      if (err instanceof ZodError) {
-        validatorErrorHandler(err)(req, res, next); // if the error is coming from validation, then return the validatorError function
-      } else {
-        logger.error(err); // logging error
-        next(err); // pass error to error middleware
-      }
+      logger.error(err); // logging error
+      next(err); // pass error to error middleware
     }
   };
 
@@ -99,7 +92,6 @@ class AuthController {
    * @param {NextFunction} next - The next middleware function in the stack.
    *
    * @throws {CustomError} An error with status code 400, 401, 404 and error message.
-   * @throws {ZodError} If the request body does not match the {@link UserRequestBody} schema.
    *
    * @returns {Promise<void>}
    * - Access token and refresh token in http only cookies.
@@ -157,12 +149,8 @@ class AuthController {
         },
       }); // send response
     } catch (err) {
-      if (err instanceof ZodError) {
-        validatorErrorHandler(err)(req, res, next); // if the error is coming from validation, then return the validatorError function
-      } else {
-        logger.error(err); // logging error
-        next(err); // pass error to error middleware
-      }
+      logger.error(err); // logging error
+      next(err); // pass error to error middleware
     }
   };
 

@@ -16,17 +16,6 @@ const transport = pino.transport({
     {
       target: "pino-pretty",
       options: {
-        destination: path.resolve(__dirname, "../../logs/info.log"),
-        mkdir: true,
-        colorize: false,
-        size: "10m",
-        limit: { count: 5 },
-      },
-      level: "info",
-    },
-    {
-      target: "pino-pretty",
-      options: {
         destination: path.resolve(__dirname, "../../logs/error.log"),
         mkdir: true,
         colorize: false,

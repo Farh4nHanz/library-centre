@@ -6,10 +6,24 @@ const router = Router();
 
 router
   /**
+   * Route for checking user authentication.
+   *
+   * @private
+   * @access all
+   * @method GET
+   * @route "/api/v1/auth/me"
+   *
+   * This endpoint is used to check the user authentication.
+   * It will send a user data.
+   */
+  .get("/me", isAuth, authController.checkAuth);
+
+router
+  /**
    * Route for registering new user.
    *
    * @public
-   * @access [user, admin]
+   * @access all
    * @method POST
    * @route "/api/v1/auth/register"
    *
@@ -21,7 +35,7 @@ router
    * Route for logging in a user.
    *
    * @public
-   * @access [user, admin]
+   * @access all
    * @method POST
    * @route "/api/v1/auth/login"
    *
@@ -33,7 +47,7 @@ router
    * Route for logged out a user.
    *
    * @public
-   * @access [user, admin]
+   * @access all
    * @method POST
    * @route "/api/v1/auth/logout"
    *
@@ -43,23 +57,10 @@ router
   .post("/logout", authController.logoutUser)
 
   /**
-   * Route for checking user authentication.
-   *
-   * @private
-   * @access [user, admin]
-   * @method GET
-   * @route "/api/v1/auth/me"
-   *
-   * This endpoint is used to check the user authentication.
-   * It will send a user data.
-   */
-  .get("/me", isAuth, authController.checkAuth)
-
-  /**
    * Route for logged out a user.
    *
    * @public
-   * @access [user, admin]
+   * @access all
    * @method POST
    * @route "/api/v1/auth/refresh-token"
    *
