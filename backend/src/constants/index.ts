@@ -4,4 +4,4 @@ export enum UserRole {
 }
 
 export const ALLOWED_FILE_TYPE = ["image/jpeg", "image/jpg", "image/png"];
-export const MAX_FILE_SIZE = 5 * 1024 * 1024;
+export const MAX_FILE_SIZE = 2 * 1024 * 1024;

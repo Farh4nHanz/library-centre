@@ -11,7 +11,7 @@ import UserModel from "@/models/userModel";
 /** @constants */
 import { UserRole } from "@/constants";
 
-/** @libs */
+/** @utils */
 import CustomError from "@/utils/customError";
 
 /**

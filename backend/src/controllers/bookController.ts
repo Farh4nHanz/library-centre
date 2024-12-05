@@ -9,9 +9,14 @@ import { type BookRequestBody, type RequestParams } from "@/types";
 /** @models */
 import BookModel from "@/models/bookModel";
 
+/** @services */
+import { s3Service } from "@/services/s3Service";
+
 /** @libs */
-import CustomError from "@/utils/customError";
 import { bookSchema } from "@/lib/validator";
+
+/** @utils */
+import CustomError from "@/utils/customError";
 import { validatorErrorHandler } from "@/utils/validatorErrorHandler";
 
 /**
@@ -47,7 +52,14 @@ class BookController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const books = await BookModel.find(); // get all books from database
+      const books = await BookModel.find().select([
+        "title",
+        "author",
+        "description",
+        "genre",
+        "coverURL",
+        "pages",
+      ]); // get all books from database
       res.status(200).json({ books: books }); // send the books data to client
     } catch (err) {
       logger.error(err); // logging error
@@ -118,12 +130,29 @@ class BookController {
   ): Promise<void> => {
     try {
       const bookData = req.body; // grab the book data from request body
-      bookSchema.parse(bookData); // validate the book data, if error it will throw an error
+      bookSchema.parse({
+        ...bookData,
+        isbn: Number(bookData.isbn),
+        pages: Number(bookData.pages),
+      }); // validate the book data, if error it will throw an error
+
+      const coverFile = req.file; // grab the cover file from request
+      if (!coverFile) throw new CustomError("Please upload book's cover!", 400); // if the cover file is not uploaded, throw an error
+
+      const key = `uploads/${Date.now()}-${coverFile.originalname}`; // generate a unique key for the cover file
+      const coverURL = await s3Service.uploadFile(
+        key,
+        coverFile.buffer,
+        coverFile.mimetype
+      ); // upload the cover file to s3
 
       const bookExists = await BookModel.findOne({ title: bookData.title });
       if (bookExists) throw new CustomError("Book already exists!", 400); // if the book is already exist, throw an error
 
-      const newBook = new BookModel(bookData); // store the book data in database
+      const newBook = new BookModel({
+        ...bookData,
+        coverURL,
+      }); // store the book data in database
       await newBook.save();
 
       res.status(201).json({
@@ -172,7 +201,49 @@ class BookController {
       const deletedBook = await BookModel.findByIdAndDelete(id);
       if (!deletedBook) throw new CustomError("Book not found!", 404); // if the book is not exist, throw an error
 
+      const key = deletedBook.coverURL.split(".com/")[1]; // extract the key from the cover url
+      await s3Service.deleteFile(key); // delete the cover file from s3 bucket
+
       res.status(200).json({ message: "One book has been deleted!" }); // return a response message
+    } catch (err) {
+      logger.error(err); // logging the error
+      next(err); // passing the error to next middleware
+    }
+  };
+
+  /**
+   * Deletes all books from the database.
+   *
+   * @method deleteAllBooks
+   * @memberof BookController
+   *
+   * @param {Request} req - The Express request object.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The Express next function.
+   *
+   * @throws {CustomError} If there are no books in the database.
+   *
+   * @returns {Promise<void>} Response with status code 200 and a message "All books successfully deleted!".
+   *
+   * @example
+   * router.delete("/", bookController.deleteAllBooks);
+   */
+  deleteAllBooks = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const books = await BookModel.find(); // count the number of books in database
+      if (books.length < 1)
+        throw new CustomError("There are no books data to delete!", 404); // if there are no books in database, throw an error
+
+      await BookModel.deleteMany(); // delete all books from database
+
+      const keys = books.map((book) => book.coverURL.split(".com/")[1]); // extract the keys from each cover url books
+      await Promise.all(keys.map((key) => s3Service.deleteFile(key))); // delete all cover files from s3 bucket
+
+      res.status(200).json({ message: "All books successfully deleted!" });
     } catch (err) {
       logger.error(err); // logging the error
       next(err); // passing the error to next middleware

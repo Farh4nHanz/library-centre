@@ -11,7 +11,7 @@ import { type RequestParams } from "@/types";
 /** @models */
 import UserModel from "@/models/userModel";
 
-/** @libs */
+/** @utils */
 import CustomError from "@/utils/customError";
 
 /**
@@ -45,7 +45,11 @@ class UserController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const users = await UserModel.find(); // get all users from database
+      const users = await UserModel.find().select([
+        "username",
+        "email",
+        "role",
+      ]); // get all users from database
       res.status(200).json({ users: users }); // send the users data to client
     } catch (err) {
       logger.error(err); // logging error

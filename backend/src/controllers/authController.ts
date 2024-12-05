@@ -14,13 +14,15 @@ import { type UserRequestBody } from "@/types";
 import UserModel from "@/models/userModel";
 
 /** @libs */
+import { loginSchema, registerSchema } from "@/lib/validator";
+
+/** @utils */
 import CustomError from "@/utils/customError";
 import hashPassword from "@/utils/hashPassword";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "@/utils/generateToken";
-import { loginSchema, registerSchema } from "@/lib/validator";
 import { validatorErrorHandler } from "@/utils/validatorErrorHandler";
 
 /**

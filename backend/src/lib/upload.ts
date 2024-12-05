@@ -8,7 +8,7 @@ import { ALLOWED_FILE_TYPE, MAX_FILE_SIZE } from "@/constants";
  * @constant
  * @type {Multer}
  */
-export const upload: Multer = multer({
+const upload: Multer = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter: (req, file, cb) => {
@@ -24,3 +24,5 @@ export const upload: Multer = multer({
     }
   },
 });
+
+export default upload;
