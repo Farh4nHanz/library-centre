@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import App from "@/App";
+import Dashboard from "@/Dashboard";
 
 /** @layouts */
 import AuthLayout from "@/layouts/auth-layout";
@@ -29,6 +30,12 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    errorElement: <ErrorPage />,
+    children: [],
   },
   {
     path: "/auth",

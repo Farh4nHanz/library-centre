@@ -1,7 +1,8 @@
-import { HTMLAttributes, InputHTMLAttributes } from "react";
+import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { VariantProps } from "class-variance-authority";
 import { Alert } from "@/components/ui/alert";
+import { userSidebarMenu } from "@/constants";
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -33,10 +34,22 @@ export type CustomAlertProps = {
 export type CustomDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  children: React.ReactNode;
-};
+} & PropsWithChildren;
 
 export type RedirectButtonProps = {
   url: string;
-  children: React.ReactNode;
+} & PropsWithChildren;
+
+export type AppSidebarProps = {
+  page: "admin" | "user";
 };
+
+export type SidebarHeaderProps = {
+  link: string;
+};
+
+export type SidebarContentProps = {
+  menus: typeof userSidebarMenu;
+};
+
+export type SidebarFooterProps = {} & PropsWithChildren;
