@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 
 /** @types */
@@ -10,11 +10,11 @@ import { SidebarHeader } from "@/components/ui/sidebar";
 /** @icons */
 import { BookOpen } from "lucide-react";
 
-export const Header = React.memo(({ link }: SidebarHeaderProps) => {
+export const Header = memo(({ link }: SidebarHeaderProps) => {
   return (
     <SidebarHeader>
-      <div className="h-8 flex justify-between group-data-[collapsible=icon]:justify-center items-center">
-        <h2 className="text-lg font-bold group-data-[collapsible=icon]:hidden">
+      <div className="h-8 flex justify-between px-2 group-data-[collapsible=icon]:justify-center items-center">
+        <h2 className="text-xl font-bold group-data-[collapsible=icon]:hidden">
           Library Centre
         </h2>
         <Link to={link} className="bg-white shadow-md rounded-sm p-1">

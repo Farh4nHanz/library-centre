@@ -27,7 +27,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CustomDialog as Dialog } from "@/components/custom-dialog";
+import { CustomDialog as Dialog } from "@/components/alert/custom-dialog";
 import { Loader } from "@/components/loader";
 import { Header as SidebarHeader } from "@/components/sidebar/sidebar-header";
 import { Content as SidebarContent } from "@/components/sidebar/sidebar-content";
@@ -53,7 +53,7 @@ export const AdminSidebar = () => {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader link="/dashboard" />
-      <SidebarContent menus={userSidebarMenu} />
+      <SidebarContent contents={userSidebarMenu} />
       <SidebarFooter>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

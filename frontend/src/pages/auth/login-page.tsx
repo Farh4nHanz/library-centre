@@ -13,7 +13,7 @@ import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/form-input";
 import { PasswordInput } from "@/components/password-input";
 import { Button } from "@/components/ui/button";
-import { CustomAlert as Alert } from "@/components/custom-alert";
+import { CustomAlert as Alert } from "@/components/alert/custom-alert";
 import { Loader } from "@/components/loader";
 
 /** @hooks */
@@ -50,7 +50,9 @@ const LoginPage = () => {
     const res = await dispatch(loginUser(values));
     if (loginUser.fulfilled.match(res)) {
       form.reset();
-      navigate("/", { replace: true });
+      return res.payload.user.role === "admin"
+        ? navigate("/dashboard", { replace: true })
+        : navigate("/", { replace: true });
     }
   });
 

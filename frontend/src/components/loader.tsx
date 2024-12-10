@@ -1,30 +1,23 @@
-import { cn, getLoaderSize, getColorClass } from "@/lib/utils";
-import { Loader2, LucideLoader } from "lucide-react";
+import { memo } from "react";
 import { type LoaderProps } from "@/types/props-type";
+import { cn } from "@/lib/utils";
+import { loader, variantMap } from "@/constants";
+import { Loader2 } from "lucide-react";
 
-export const Loader = ({
-  className,
-  variant = "1",
-  size = "md",
-  color = "black",
-}: LoaderProps) => {
-  return variant === "1" ? (
-    <Loader2
-      className={cn(
-        "animate-spin",
-        getLoaderSize(size),
-        getColorClass(color),
-        className
-      )}
-    />
-  ) : variant === "2" ? (
-    <LucideLoader
-      className={cn(
-        "animate-spin",
-        getLoaderSize(size),
-        getColorClass(color),
-        className
-      )}
-    />
-  ) : null;
-};
+export const Loader = memo(
+  ({ className, variant = "1", size = "md", color = "black" }: LoaderProps) => {
+    const LoaderComponent = variantMap[variant] || Loader2;
+
+    return (
+      <LoaderComponent
+        className={cn(
+          "animate-spin duration-500",
+          loader({ color, size }),
+          className
+        )}
+      />
+    );
+  }
+);
+
+Loader.displayName = "Loader";

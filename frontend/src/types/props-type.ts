@@ -2,7 +2,7 @@ import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { VariantProps } from "class-variance-authority";
 import { Alert } from "@/components/ui/alert";
-import { userSidebarMenu } from "@/constants";
+import { loader, userSidebarMenu } from "@/constants";
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -20,9 +20,7 @@ export type PasswordInputProps<T extends FieldValues> = {
 export type LoaderProps = {
   className?: HTMLAttributes<HTMLElement>["className"];
   variant?: "1" | "2";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-  color?: "black" | "white" | "blue" | "green" | "red" | "yellow";
-};
+} & VariantProps<typeof loader>;
 
 export type CustomAlertProps = {
   variant?: VariantProps<typeof Alert>["variant"];
@@ -49,7 +47,7 @@ export type SidebarHeaderProps = {
 };
 
 export type SidebarContentProps = {
-  menus: typeof userSidebarMenu;
+  contents: typeof userSidebarMenu;
 };
 
 export type SidebarFooterProps = {} & PropsWithChildren;

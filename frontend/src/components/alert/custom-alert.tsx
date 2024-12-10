@@ -1,8 +1,8 @@
-import React from "react";
+import { memo } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { type CustomAlertProps } from "@/types/props-type";
 
-export const CustomAlert = React.memo(
+export const CustomAlert = memo(
   ({ variant = "default", Icon, title, description }: CustomAlertProps) => {
     return (
       <Alert variant={variant}>

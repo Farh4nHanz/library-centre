@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
-const App = () => {
+const UserLayout = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -23,4 +23,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default UserLayout;

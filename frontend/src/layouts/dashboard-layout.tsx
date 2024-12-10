@@ -1,9 +1,9 @@
+import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { useEffect } from "react";
 
-const Dashboard = () => {
+const DashboardLayout = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -23,4 +23,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardLayout;

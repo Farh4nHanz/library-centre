@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 /** @types */
@@ -15,29 +15,31 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export const Content = React.memo(({ menus }: SidebarContentProps) => {
+export const Content = memo(({ contents }: SidebarContentProps) => {
   const { pathname } = useLocation();
 
   return (
     <SidebarContent>
-      {menus?.map((item) => (
-        <SidebarGroup key={item.label}>
-          <SidebarGroupLabel>{item.label}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname.startsWith(item.link)}
-                >
-                  <NavLink to={item.link}>
-                    <item.icon />
-                    {item.name}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
+      {contents?.map((content) => (
+        <SidebarGroup key={content.group}>
+          <SidebarGroupLabel>{content.group}</SidebarGroupLabel>
+          {content.menus.map((menu) => (
+            <SidebarGroupContent key={menu.name}>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname.startsWith(menu.link)}
+                  >
+                    <NavLink to={menu.link}>
+                      <menu.icon />
+                      {menu.name}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          ))}
         </SidebarGroup>
       ))}
     </SidebarContent>

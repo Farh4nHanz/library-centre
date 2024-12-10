@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 /** @types */
 import { type SidebarFooterProps } from "@/types/props-type";
@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export const Footer = React.memo(({ children }: SidebarFooterProps) => {
+export const Footer = memo(({ children }: SidebarFooterProps) => {
   return (
     <SidebarFooter>
       <SidebarMenu>
