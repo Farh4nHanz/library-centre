@@ -1,14 +1,10 @@
-import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { usePath } from "@/hooks/use-path";
 
 const UserLayout = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    sessionStorage.setItem("path", pathname);
-  }, [pathname]);
+  usePath();
 
   return (
     <SidebarProvider>

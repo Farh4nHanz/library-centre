@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useIsAuth } from "@/hooks/use-is-auth";
+import { usePath } from "@/hooks/use-path";
 
 const AuthLayout = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    sessionStorage.setItem("path", pathname);
-  }, [pathname]);
+  useIsAuth();
+  usePath();
 
   return (
     <div className="h-screen min-h-fit w-full flex justify-center items-center p-5">

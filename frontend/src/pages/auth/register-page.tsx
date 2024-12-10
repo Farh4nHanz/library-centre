@@ -1,6 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+
+/** @schema */
+import { registerFormSchema } from "@/schema/auth-schema";
+
+/** @types */
+import { type RegisterFormSchema } from "@/types/schema-type";
 
 /** @components */
 import { Form } from "@/components/ui/form";
@@ -9,26 +15,18 @@ import { PasswordInput } from "@/components/password-input";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/loader";
 import { CustomAlert as ErrorAlert } from "@/components/alert/custom-alert";
-
-/** @types */
-import { type RegisterFormSchema } from "@/types/schema-type";
-
-/** @schema */
-import { registerFormSchema } from "@/schema/auth-schema";
-
-/** @context */
-import { registerUser } from "@/redux/thunks/auth-thunk";
+import { AuthLink } from "@/components/auth-link";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
-import { useIsAuth } from "@/hooks/use-is-auth";
+
+/** @context */
+import { registerUser } from "@/redux/thunks/auth-thunk";
 
 /** @icons */
 import { TriangleAlert } from "lucide-react";
 
 const RegisterPage = () => {
-  useIsAuth();
-
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
   });
@@ -112,6 +110,7 @@ const RegisterPage = () => {
           />
         </div>
 
+        {/* Submit button */}
         <Button type="submit" className="w-full">
           {status === "loading" ? (
             <Loader variant="1" color="white" />
@@ -119,6 +118,11 @@ const RegisterPage = () => {
             "Register"
           )}
         </Button>
+
+        {/* Link to login page */}
+        <AuthLink text="Already have an account?" url="/auth/login">
+          Login now!
+        </AuthLink>
       </form>
     </Form>
   );

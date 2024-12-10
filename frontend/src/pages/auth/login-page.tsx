@@ -15,10 +15,10 @@ import { PasswordInput } from "@/components/password-input";
 import { Button } from "@/components/ui/button";
 import { CustomAlert as Alert } from "@/components/alert/custom-alert";
 import { Loader } from "@/components/loader";
+import { AuthLink } from "@/components/auth-link";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
-import { useIsAuth } from "@/hooks/use-is-auth";
 
 /** @context */
 import { loginUser } from "@/redux/thunks/auth-thunk";
@@ -27,8 +27,6 @@ import { loginUser } from "@/redux/thunks/auth-thunk";
 import { CheckCircle, TriangleAlert } from "lucide-react";
 
 const LoginPage = () => {
-  useIsAuth();
-
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
   });
@@ -93,6 +91,7 @@ const LoginPage = () => {
           />
         </div>
 
+        {/* Submit button */}
         <Button type="submit" className="w-full">
           {status === "loading" ? (
             <Loader variant="1" color="white" />
@@ -100,6 +99,11 @@ const LoginPage = () => {
             "Login"
           )}
         </Button>
+
+        {/* Link to register page */}
+        <AuthLink text="Don't have an account?" url="/auth/register">
+          Register here.
+        </AuthLink>
       </form>
     </Form>
   );

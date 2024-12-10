@@ -3,7 +3,7 @@ import { useRouteError } from "react-router-dom";
 import { RedirectButton } from "@/components/redirect-button";
 import { ArrowLeft } from "lucide-react";
 
-type ErrorType = {
+export type ErrorType = {
   error: Error;
   status: number;
   statusText: string;
@@ -37,7 +37,7 @@ const ErrorPage = () => {
         <p className="text-muted-foreground italic">{statusText}</p>
       </div>
 
-      <RedirectButton url={originalURL}>
+      <RedirectButton redirectTo={originalURL}>
         <ArrowLeft />
         Back
       </RedirectButton>

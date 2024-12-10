@@ -1,24 +1,21 @@
-import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Outlet } from "react-router-dom";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { TopBar } from "@/components/top-bar";
+import { usePath } from "@/hooks/use-path";
 
 const DashboardLayout = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    sessionStorage.setItem("path", pathname);
-  }, [pathname]);
+  usePath();
 
   return (
     <SidebarProvider>
       <AppSidebar page="admin" />
-      <main className="relative w-full ps-3">
-        <div className="py-2 fixed z-50 bg-white w-full">
-          <SidebarTrigger />
-        </div>
-        <Outlet />
-      </main>
+      <SidebarInset>
+        <TopBar />
+        <main className="w-full h-screen p-4">
+          <Outlet />
+        </main>
+      </SidebarInset>
     </SidebarProvider>
   );
 };

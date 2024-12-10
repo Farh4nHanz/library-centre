@@ -35,6 +35,11 @@ export type CustomDialogProps = {
 } & PropsWithChildren;
 
 export type RedirectButtonProps = {
+  redirectTo: string;
+} & PropsWithChildren;
+
+export type AuthLinkProps = {
+  text: string;
   url: string;
 } & PropsWithChildren;
 
