@@ -7,10 +7,8 @@ import {
   UserCircle,
   ChartNoAxesCombined,
   BookCopy,
-  BookPlus,
   NotebookText,
   ShoppingBag,
-  UserRoundPlus,
   UsersRound,
   Activity,
   CircleHelp,
@@ -28,7 +26,7 @@ export const adminSidebarMenu = [
       },
       {
         name: "Statistics",
-        link: "/statistics",
+        link: "/dashboard/statistics",
         icon: ChartNoAxesCombined,
       },
     ],
@@ -37,23 +35,18 @@ export const adminSidebarMenu = [
     group: "Books Management",
     menus: [
       {
-        name: "View All Books",
-        link: "books",
+        name: "Books",
+        link: "/dashboard/books",
         icon: BookCopy,
       },
       {
-        name: "Add New Book",
-        link: "books/add",
-        icon: BookPlus,
-      },
-      {
         name: "Categories",
-        link: "books/categories",
+        link: "/dashboard/books/categories",
         icon: NotebookText,
       },
       {
         name: "Borrowed Books",
-        link: "books/borrowed",
+        link: "/dashboard/books/borrowed",
         icon: ShoppingBag,
       },
     ],
@@ -62,18 +55,13 @@ export const adminSidebarMenu = [
     group: "User Management",
     menus: [
       {
-        name: "View All Users",
-        link: "/users",
+        name: "Users",
+        link: "/dashboard/users",
         icon: UsersRound,
       },
       {
-        name: "Add New User",
-        link: "/users/add",
-        icon: UserRoundPlus,
-      },
-      {
         name: "User Activity",
-        link: "/users/activity",
+        link: "/dashboard/users/activity",
         icon: Activity,
       },
     ],
@@ -83,12 +71,12 @@ export const adminSidebarMenu = [
     menus: [
       {
         name: "Library Settings",
-        link: "/settings/library",
+        link: "/dashboard/settings/library",
         icon: Settings,
       },
       {
         name: "Profile",
-        link: "/settings/profile",
+        link: "/dashboard/settings/profile",
         icon: UserCircle,
       },
     ],
@@ -98,17 +86,17 @@ export const adminSidebarMenu = [
     menus: [
       {
         name: "FAQs",
-        link: "/help/faqs",
+        link: "/dashboard/help/faqs",
         icon: CircleHelp,
       },
       {
         name: "Contact Support",
-        link: "/help/contact",
+        link: "/dashboard/help/contact",
         icon: PhoneCall,
       },
     ],
   },
-] as const;
+];
 
 export const loader = cva("loader", {
   variants: {

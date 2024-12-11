@@ -1,5 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 
+/** @components */
+import { ProtectedRoute } from "@/components/protected-route";
+
 /** @layouts */
 import AuthLayout from "@/layouts/auth-layout";
 import UserLayout from "@/layouts/user-layout";
@@ -12,9 +15,6 @@ import HomePage from "@/pages/home-page";
 import DashboardPage from "@/pages/dashboard";
 import ErrorPage from "@/pages/error-page";
 import BookPage from "@/pages/dashboard/book-page";
-
-/** @components */
-import { ProtectedRoute } from "@/components/protected-route";
 
 export const router = createBrowserRouter([
   {

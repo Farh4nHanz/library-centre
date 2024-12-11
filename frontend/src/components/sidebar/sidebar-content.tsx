@@ -27,13 +27,7 @@ export const Content = memo(({ contents }: SidebarContentProps) => {
             <SidebarGroupContent key={menu.name}>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={
-                      pathname === menu.link ||
-                      pathname.split("/dashboard")[1].includes(menu.link)
-                    }
-                  >
+                  <SidebarMenuButton asChild isActive={pathname === menu.link}>
                     <NavLink to={menu.link}>
                       <menu.icon />
                       {menu.name}

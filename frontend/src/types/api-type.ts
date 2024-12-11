@@ -14,9 +14,7 @@ export type AuthURL =
   | "/auth/me"
   | "/auth/refresh-token";
 
-export type UserURL = "/users/profile";
-
-export type URL = AuthURL | UserURL;
+export type URL = AuthURL;
 
 export type AuthResponse = {
   message: string;

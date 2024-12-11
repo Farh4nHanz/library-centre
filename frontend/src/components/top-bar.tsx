@@ -1,17 +1,18 @@
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { adminSidebarMenu } from "@/constants";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { generateBreadcrumbs } from "@/lib/utils";
 
 export const TopBar = () => {
   const { pathname } = useLocation();
+  const breadcrumbs = generateBreadcrumbs(pathname);
 
   return (
     <header className="flex sticky top-0 h-14 z-50 shrink-0 bg-background items-center gap-2 border-b px-4">
@@ -19,20 +20,14 @@ export const TopBar = () => {
       <Separator orientation="vertical" className="mr-2 h-4" />
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem className="hidden md:block">
-            <Link to="/dashboard">Dashboard</Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="hidden md:block" />
-          {adminSidebarMenu.map((items) =>
-            items.menus.map(
-              (menu) =>
-                menu.link.includes(pathname) && (
-                  <BreadcrumbItem key={menu.name}>
-                    <BreadcrumbPage>{menu.name}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                )
-            )
-          )}
+          {breadcrumbs.map((breadcrumb, i) => (
+            <React.Fragment key={i}>
+              <BreadcrumbItem>
+                <Link to={breadcrumb.link}>{breadcrumb.name}</Link>
+              </BreadcrumbItem>
+              {i < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          ))}
         </BreadcrumbList>
       </Breadcrumb>
     </header>
