@@ -5,46 +5,106 @@ import {
   LucideLoader,
   Settings,
   UserCircle,
+  ChartNoAxesCombined,
+  BookCopy,
+  BookPlus,
+  NotebookText,
+  ShoppingBag,
+  UserRoundPlus,
+  UsersRound,
+  Activity,
+  CircleHelp,
+  PhoneCall,
 } from "lucide-react";
 
-export const userSidebarMenu = [
+export const adminSidebarMenu = [
   {
-    group: "Label 1",
+    group: "Dashboard",
     menus: [
       {
-        name: "Dashboard",
+        name: "Home",
         link: "/dashboard",
         icon: LayoutDashboard,
       },
+      {
+        name: "Statistics",
+        link: "/statistics",
+        icon: ChartNoAxesCombined,
+      },
     ],
   },
   {
-    group: "Label 2",
+    group: "Books Management",
     menus: [
       {
-        name: "Settings",
-        link: "/settings",
+        name: "View All Books",
+        link: "books",
+        icon: BookCopy,
+      },
+      {
+        name: "Add New Book",
+        link: "books/add",
+        icon: BookPlus,
+      },
+      {
+        name: "Categories",
+        link: "books/categories",
+        icon: NotebookText,
+      },
+      {
+        name: "Borrowed Books",
+        link: "books/borrowed",
+        icon: ShoppingBag,
+      },
+    ],
+  },
+  {
+    group: "User Management",
+    menus: [
+      {
+        name: "View All Users",
+        link: "/users",
+        icon: UsersRound,
+      },
+      {
+        name: "Add New User",
+        link: "/users/add",
+        icon: UserRoundPlus,
+      },
+      {
+        name: "User Activity",
+        link: "/users/activity",
+        icon: Activity,
+      },
+    ],
+  },
+  {
+    group: "Settings",
+    menus: [
+      {
+        name: "Library Settings",
+        link: "/settings/library",
         icon: Settings,
       },
       {
         name: "Profile",
-        link: "/profile",
+        link: "/settings/profile",
         icon: UserCircle,
       },
     ],
   },
   {
-    group: "Label 3",
+    group: "Help & Support",
     menus: [
       {
-        name: "Settings",
-        link: "/settings",
-        icon: Settings,
+        name: "FAQs",
+        link: "/help/faqs",
+        icon: CircleHelp,
       },
       {
-        name: "Profile",
-        link: "/profile",
-        icon: UserCircle,
+        name: "Contact Support",
+        link: "/help/contact",
+        icon: PhoneCall,
       },
     ],
   },

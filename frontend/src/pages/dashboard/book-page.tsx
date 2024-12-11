@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const DashboardPage = () => {
+const BookPage = () => {
   return (
     <div className="space-y-4 p-4">
       {Array.from({ length: 20 }).map((_, i) => (
@@ -10,4 +10,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default BookPage;

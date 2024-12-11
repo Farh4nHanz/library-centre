@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 import { logoutUser } from "@/redux/thunks/auth-thunk";
 
 /** @constants */
-import { userSidebarMenu } from "@/constants";
+import { adminSidebarMenu } from "@/constants";
 
 /** @components */
 import { Sidebar } from "@/components/ui/sidebar";
@@ -53,7 +53,7 @@ export const AdminSidebar = () => {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader link="/dashboard" />
-      <SidebarContent contents={userSidebarMenu} />
+      <SidebarContent contents={adminSidebarMenu} />
       <SidebarFooter>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

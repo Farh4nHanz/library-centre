@@ -11,6 +11,7 @@ import LoginPage from "@/pages/auth/login-page";
 import HomePage from "@/pages/home-page";
 import DashboardPage from "@/pages/dashboard";
 import ErrorPage from "@/pages/error-page";
+import BookPage from "@/pages/dashboard/book-page";
 
 /** @components */
 import { ProtectedRoute } from "@/components/protected-route";
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "",
         element: <DashboardPage />,
+      },
+      {
+        path: "books",
+        element: <BookPage />,
       },
     ],
   },

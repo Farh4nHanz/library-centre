@@ -29,7 +29,10 @@ export const Content = memo(({ contents }: SidebarContentProps) => {
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
-                    isActive={pathname.startsWith(menu.link)}
+                    isActive={
+                      pathname === menu.link ||
+                      pathname.split("/dashboard")[1].includes(menu.link)
+                    }
                   >
                     <NavLink to={menu.link}>
                       <menu.icon />
