@@ -9,10 +9,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { generateBreadcrumbs } from "@/lib/utils";
+import { adminSidebarMenu } from "@/constants";
 
 export const TopBar = () => {
   const { pathname } = useLocation();
-  const breadcrumbs = generateBreadcrumbs(pathname);
+  const breadcrumbs = generateBreadcrumbs(pathname, adminSidebarMenu);
 
   return (
     <header className="flex sticky top-0 h-14 z-50 shrink-0 bg-background items-center gap-2 border-b px-4">

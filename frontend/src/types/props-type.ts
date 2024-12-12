@@ -2,7 +2,8 @@ import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { VariantProps } from "class-variance-authority";
 import { Alert } from "@/components/ui/alert";
-import { adminSidebarMenu, loader } from "@/constants";
+import { loader } from "@/constants";
+import { type SidebarMenu } from ".";
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -52,7 +53,7 @@ export type SidebarHeaderProps = {
 };
 
 export type SidebarContentProps = {
-  contents: typeof adminSidebarMenu;
+  contents: SidebarMenu[];
 };
 
 export type SidebarFooterProps = {} & PropsWithChildren;

@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import _ from "lodash";
-import { adminSidebarMenu } from "@/constants";
+import { type SidebarMenu } from "@/types";
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -11,14 +11,17 @@ export const capitalizeLetter = (words: string) => {
   return _.startCase(words);
 };
 
-export const generateBreadcrumbs = (pathname: string) => {
+export const generateBreadcrumbs = (
+  pathname: string,
+  sidebarMenu: SidebarMenu[]
+) => {
   const paths = pathname.split("/").filter(Boolean);
   const breadcrumbs = [{ name: "Dashboard", link: "/dashboard" }];
 
   let currentPath = "";
   for (const path of paths) {
     currentPath += `/${path}`;
-    const menuItem = adminSidebarMenu
+    const menuItem = sidebarMenu
       .flatMap((item) => item.menus)
       .find((menu) => menu.link === currentPath);
 

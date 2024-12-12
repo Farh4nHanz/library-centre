@@ -2,12 +2,7 @@ import { useEffect } from "react";
 import { useRouteError } from "react-router-dom";
 import { RedirectButton } from "@/components/redirect-button";
 import { ArrowLeft } from "lucide-react";
-
-export type ErrorType = {
-  error: Error;
-  status: number;
-  statusText: string;
-};
+import { type ErrorType } from "@/types";
 
 const ErrorPage = () => {
   const { error, status, statusText } = useRouteError() as ErrorType;
