@@ -12,9 +12,7 @@ const DashboardLayout = () => {
       <AppSidebar page="admin" />
       <SidebarInset>
         <TopBar />
-        <main className="h-screen w-full">
-          <Outlet />
-        </main>
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   );
