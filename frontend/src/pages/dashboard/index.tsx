@@ -1,3 +1,4 @@
+/** @components */
 import {
   Card,
   CardContent,
@@ -5,7 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Chart } from "@/components/chart";
+
+/** @features */
+import { Chart } from "@/features/dashboard/chart";
+
+/** @icons */
 import { Users2 } from "lucide-react";
 
 const DashboardPage = () => {

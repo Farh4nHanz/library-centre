@@ -1,13 +1,6 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import {
-  format,
-  eachMonthOfInterval,
-  isBefore,
-  isAfter,
-  startOfYear,
-  endOfYear,
-} from "date-fns";
+import { format, isBefore, isAfter, isSameMonth } from "date-fns";
 
 /** @components */
 import {
@@ -24,17 +17,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 
+/** @features */
+import { SelectMonth } from "@/features/dashboard/chart/select-month";
+
+/** @context */
+import { useMonth } from "@/context/month-context";
 /** @icons */
 import { TrendingUp } from "lucide-react";
 
@@ -66,26 +54,16 @@ const chartConfig = {
 
 export const Chart = () => {
   const currentYear = new Date().getFullYear();
-  const [monthState, setMonthState] = useState({
-    startMonth: startOfYear(new Date()),
-    endMonth: endOfYear(new Date()),
-  });
-
-  const months = useMemo(() => {
-    return eachMonthOfInterval({
-      start: startOfYear(new Date()),
-      end: endOfYear(new Date()),
-    });
-  }, []);
+  const { monthState } = useMonth();
 
   const filteredData = useMemo(() => {
     return chartData.filter((_, i) => {
       const dateData = new Date(currentYear, i);
       return (
         (isAfter(dateData, monthState.startMonth) ||
-          dateData.getTime() === monthState.startMonth.getTime()) &&
+          isSameMonth(dateData, monthState.startMonth)) &&
         (isBefore(dateData, monthState.endMonth) ||
-          dateData.getTime() === monthState.endMonth.getTime())
+          isSameMonth(dateData, monthState.endMonth))
       );
     });
   }, [currentYear, monthState.startMonth, monthState.endMonth]);
@@ -106,46 +84,6 @@ export const Chart = () => {
     return (((lastTotal - firstTotal) / firstTotal) * 100).toFixed(1);
   }, [filteredData]);
 
-  const handleStartMonthChange = useCallback(
-    (value: string) => {
-      const newStartMonth = new Date(value);
-      setMonthState((m) => ({
-        ...m,
-        startMonth: newStartMonth,
-      }));
-
-      if (isAfter(newStartMonth, monthState.endMonth)) {
-        setMonthState((m) => ({
-          ...m,
-          endMonth: newStartMonth,
-        }));
-      }
-    },
-    [monthState.endMonth]
-  );
-
-  const handleEndMonthChange = useCallback(
-    (value: string) => {
-      const newEndMonth = new Date(value);
-      setMonthState((m) => ({
-        ...m,
-        endMonth: newEndMonth,
-      }));
-
-      if (isBefore(newEndMonth, monthState.startMonth)) {
-        setMonthState((m) => ({
-          ...m,
-          startMonth: newEndMonth,
-        }));
-      }
-    },
-    [monthState.startMonth]
-  );
-
-  const formatSelectDate = (date: Date) => {
-    return format(date, "yyyy-MM-dd");
-  };
-
   const formatDisplayDate = (date: Date) => {
     return format(date, "MMMM yyyy");
   };
@@ -153,66 +91,18 @@ export const Chart = () => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-wrap justify-between items-start gap-4">
-          <div>
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div className="space-y-1">
             <CardTitle>Bar Chart - Multiple</CardTitle>
             <CardDescription>
-              {monthState.startMonth.getTime() === monthState.endMonth.getTime()
+              {isSameMonth(monthState.startMonth, monthState.endMonth)
                 ? formatDisplayDate(monthState.startMonth)
-                : `${formatDisplayDate(
+                : `Period ${formatDisplayDate(
                     monthState.startMonth
                   )} - ${formatDisplayDate(monthState.endMonth)}`}
             </CardDescription>
           </div>
-
-          <div className="flex justify-between items-center gap-2">
-            <Select
-              value={formatSelectDate(monthState.startMonth)}
-              onValueChange={handleStartMonthChange}
-            >
-              <SelectTrigger className="min-w-fit">
-                <SelectValue placeholder="Start month" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Select Start Month</SelectLabel>
-                  {months.map((month) => (
-                    <SelectItem
-                      key={`start-${formatSelectDate(month)}`}
-                      value={formatSelectDate(month)}
-                    >
-                      {format(month, "MMMM")}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <Separator orientation="horizontal" className="w-2" />
-
-            <Select
-              value={formatSelectDate(monthState.endMonth)}
-              onValueChange={handleEndMonthChange}
-            >
-              <SelectTrigger className="min-w-fit">
-                <SelectValue placeholder="End month" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Select End Month</SelectLabel>
-                  {months.map((month) => (
-                    <SelectItem
-                      key={`end-${formatSelectDate(month)}`}
-                      value={formatSelectDate(month)}
-                      disabled={isBefore(month, monthState.startMonth)}
-                    >
-                      {format(month, "MMMM")}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectMonth />
         </div>
       </CardHeader>
 

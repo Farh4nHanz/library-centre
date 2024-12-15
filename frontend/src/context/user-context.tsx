@@ -1,12 +1,19 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { type User, type UserContextType } from "@/types/user-type";
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { type User } from "@/types/user-type";
+import { type UserContextType } from "@/types/context-type";
 import { useAppDispatch } from "@/hooks/use-redux";
 import { checkAuth } from "@/redux/thunks/auth-thunk";
 import { removeUser, setIsAuthenticated } from "@/redux/slices/auth-slice";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useAppDispatch();

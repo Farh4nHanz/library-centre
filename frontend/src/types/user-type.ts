@@ -11,8 +11,3 @@ export type UserPayload = {
   password: string;
   photoURL?: string;
 };
-
-export type UserContextType = {
-  user: User | null;
-  isLoading: boolean;
-};

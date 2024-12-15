@@ -16,6 +16,9 @@ import DashboardPage from "@/pages/dashboard";
 import ErrorPage from "@/pages/error-page";
 import BookPage from "@/pages/dashboard/book-page";
 
+/** @context */
+import { MonthProvider } from "@/context/month-context";
+
 export const router = createBrowserRouter([
   {
     path: "/auth",
@@ -34,7 +37,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <MonthProvider>
+        <DashboardLayout />
+      </MonthProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
