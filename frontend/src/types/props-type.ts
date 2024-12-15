@@ -3,7 +3,7 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { VariantProps } from "class-variance-authority";
 import { Alert } from "@/components/ui/alert";
 import { loader } from "@/constants";
-import { type SidebarMenu } from ".";
+import { type Statistics, type SidebarMenu } from ".";
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -57,3 +57,7 @@ export type SidebarContentProps = {
 };
 
 export type SidebarFooterProps = {} & PropsWithChildren;
+
+export type StatisticProps = {
+  stats: Statistics[];
+};

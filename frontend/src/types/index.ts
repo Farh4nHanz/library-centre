@@ -16,3 +16,13 @@ export type SidebarMenu = {
     >;
   }[];
 };
+
+export type Statistics = {
+  title: string;
+  value: string;
+  change: {
+    value: number;
+    timeframe: string;
+  };
+  icon: React.ElementType;
+};

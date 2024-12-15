@@ -79,22 +79,25 @@ export const MonthSelect = () => {
         value={formatSelectDate(monthState.startMonth)}
         onValueChange={handleStartMonthChange}
       >
-        <SelectTrigger className="min-w-fit">
-          <SelectValue placeholder="Start month" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Select Start Month</SelectLabel>
-            {months.map((month) => (
-              <SelectItem
-                key={`start-${formatSelectDate(month)}`}
-                value={formatSelectDate(month)}
-              >
-                {format(month, "MMMM")}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
+        <div className="flex justify-between items-center gap-2">
+          <span className="text-sm text-slate-800 text-center">From</span>
+          <SelectTrigger className="min-w-fit">
+            <SelectValue placeholder="Start month" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Select Start Month</SelectLabel>
+              {months.map((month) => (
+                <SelectItem
+                  key={`start-${formatSelectDate(month)}`}
+                  value={formatSelectDate(month)}
+                >
+                  {format(month, "MMMM")}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </div>
       </Select>
 
       <Separator orientation="horizontal" className="w-2" />
@@ -103,23 +106,26 @@ export const MonthSelect = () => {
         value={formatSelectDate(monthState.endMonth)}
         onValueChange={handleEndMonthChange}
       >
-        <SelectTrigger className="min-w-fit">
-          <SelectValue placeholder="End month" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Select End Month</SelectLabel>
-            {months.map((month) => (
-              <SelectItem
-                key={`end-${formatSelectDate(month)}`}
-                value={formatSelectDate(month)}
-                disabled={isBefore(month, monthState.startMonth)}
-              >
-                {format(month, "MMMM")}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
+        <div className="flex justify-between items-center gap-2">
+          <span className="text-sm text-slate-800 text-center">To</span>
+          <SelectTrigger className="min-w-fit">
+            <SelectValue placeholder="End month" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Select End Month</SelectLabel>
+              {months.map((month) => (
+                <SelectItem
+                  key={`end-${formatSelectDate(month)}`}
+                  value={formatSelectDate(month)}
+                  disabled={isBefore(month, monthState.startMonth)}
+                >
+                  {format(month, "MMMM")}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </div>
       </Select>
     </div>
   );

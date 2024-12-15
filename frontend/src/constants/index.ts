@@ -14,6 +14,8 @@ import {
   Activity,
   CircleHelp,
   PhoneCall,
+  Users,
+  BookOpen,
 } from "lucide-react";
 
 export const adminSidebarMenu = [
@@ -150,3 +152,42 @@ export const chartConfig = {
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
+
+export const libraryStats = [
+  {
+    title: "Total Books in Library",
+    value: "20.000",
+    change: {
+      value: 4.5,
+      timeframe: "last month",
+    },
+    icon: BookCopy,
+  },
+  {
+    title: "Total Books Borrowed",
+    value: "1.234",
+    change: {
+      value: 12.5,
+      timeframe: "last month",
+    },
+    icon: ShoppingBag,
+  },
+  {
+    title: "Active Readers",
+    value: "789",
+    change: {
+      value: 5.2,
+      timeframe: "last month",
+    },
+    icon: Users,
+  },
+  {
+    title: "Average Reading Time",
+    value: "3.5 hours",
+    change: {
+      value: 8.7,
+      timeframe: "last month",
+    },
+    icon: BookOpen,
+  },
+];
