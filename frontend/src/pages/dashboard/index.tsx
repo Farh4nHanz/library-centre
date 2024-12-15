@@ -9,6 +9,7 @@ import {
 
 /** @features */
 import { Chart } from "@/features/dashboard/chart";
+import { RecentBorrowers } from "@/features/dashboard/recent-borrowers";
 
 /** @icons */
 import { Users2 } from "lucide-react";
@@ -39,7 +40,7 @@ const DashboardPage = () => {
 
       <section className="min-h-fit grid grid-cols-1 lg:grid-cols-[60fr_40fr] gap-4">
         <Chart />
-        <div className="w-full bg-blue-500"></div>
+        <RecentBorrowers />
       </section>
     </div>
   );

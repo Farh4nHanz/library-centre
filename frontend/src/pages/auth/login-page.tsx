@@ -10,12 +10,12 @@ import { type LoginFormSchema } from "@/types/schema-type";
 
 /** @components */
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/form-input";
-import { PasswordInput } from "@/components/password-input";
+import { FormInput } from "@/components/shared/form-input";
+import { PasswordInput } from "@/features/auth/password-input";
 import { Button } from "@/components/ui/button";
 import { CustomAlert as Alert } from "@/components/alert/custom-alert";
-import { Loader } from "@/components/loader";
-import { AuthLink } from "@/components/auth-link";
+import { Loader } from "@/components/shared/loader";
+import { AuthLink } from "@/components/shared/auth-link";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";

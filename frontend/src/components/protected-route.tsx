@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/user-context";
-import { Loader } from "@/components/loader";
+import { Loader } from "@/components/shared/loader";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 import { setErrorMsg } from "@/redux/slices/auth-slice";
 

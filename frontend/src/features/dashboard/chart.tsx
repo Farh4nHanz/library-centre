@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/chart";
 
 /** @features */
-import { SelectMonth } from "@/features/dashboard/chart/select-month";
+import { SelectMonth } from "@/features/dashboard/chart/month-select";
 
 /** @context */
 import { useMonth } from "@/context/month-context";

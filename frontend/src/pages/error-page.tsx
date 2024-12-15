@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useRouteError } from "react-router-dom";
-import { RedirectButton } from "@/components/redirect-button";
+import { RedirectButton } from "@/components/shared/redirect-button";
 import { ArrowLeft } from "lucide-react";
 import { type ErrorType } from "@/types";
 

@@ -10,12 +10,12 @@ import { type RegisterFormSchema } from "@/types/schema-type";
 
 /** @components */
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/form-input";
-import { PasswordInput } from "@/components/password-input";
+import { FormInput } from "@/components/shared/form-input";
+import { PasswordInput } from "@/features/auth/password-input";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/loader";
+import { Loader } from "@/components/shared/loader";
 import { CustomAlert as ErrorAlert } from "@/components/alert/custom-alert";
-import { AuthLink } from "@/components/auth-link";
+import { AuthLink } from "@/components/shared/auth-link";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
