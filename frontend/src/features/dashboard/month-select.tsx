@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 /** @context */
 import { useMonth } from "@/context/month-context";
 
-export const SelectMonth = () => {
+export const MonthSelect = () => {
   const { monthState, setMonthState } = useMonth();
 
   const months = useMemo(() => {

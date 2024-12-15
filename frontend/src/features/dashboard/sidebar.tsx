@@ -27,8 +27,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CustomDialog as Dialog } from "@/components/alert/custom-dialog";
-import { Loader } from "@/components/shared/loader";
+import { CustomDialog as Dialog } from "@/components/ui/custom-alert/custom-dialog";
+import { Loader } from "@/components/ui/loader";
 import { Header as SidebarHeader } from "@/components/sidebar/sidebar-header";
 import { Content as SidebarContent } from "@/components/sidebar/sidebar-content";
 import { Footer as SidebarFooter } from "@/components/sidebar/sidebar-footer";

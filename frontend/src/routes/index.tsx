@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 /** @components */
-import { ProtectedRoute } from "@/components/protected-route";
+import { ProtectedRoute } from "@/components/shared/protected-route";
 
 /** @layouts */
 import AuthLayout from "@/layouts/auth-layout";
