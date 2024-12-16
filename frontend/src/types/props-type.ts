@@ -4,6 +4,7 @@ import { VariantProps } from "class-variance-authority";
 import { Alert } from "@/components/ui/alert";
 import { loader } from "@/constants";
 import { type Statistics, type SidebarMenu } from ".";
+import { ColumnDef } from "@tanstack/react-table";
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -60,4 +61,9 @@ export type SidebarFooterProps = {} & PropsWithChildren;
 
 export type StatisticProps = {
   stats: Statistics[];
+};
+
+export type BooksTableProps<TData, TValue> = {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 };
