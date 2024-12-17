@@ -1,4 +1,14 @@
 import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+
+/** @types */
+import { type BookTableProps } from "@/types/props-type";
+
+/** @components */
+import {
   Table,
   TableBody,
   TableCell,
@@ -6,20 +16,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type BooksTableProps } from "@/types/props-type";
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 
-export const BooksTable = <TData, TValue>({
+export const BookTable = <TData, TValue>({
   columns,
   data,
-}: BooksTableProps<TData, TValue>) => {
+}: BookTableProps<TData, TValue>) => {
   const table = useReactTable({
-    data,
     columns,
+    data,
     getCoreRowModel: getCoreRowModel(),
   });
 

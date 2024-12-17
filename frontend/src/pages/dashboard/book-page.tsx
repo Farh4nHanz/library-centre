@@ -1,8 +1,7 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { BooksTable } from "@/features/book-management/books-table/data-table";
-import { columns } from "@/features/book-management/books-table/columns";
+import { BookTable } from "@/features/book-management/tables/book-table";
+import { bookColumns } from "@/features/book-management/tables/columns";
 
-const data = [
+const booksData = [
   {
     id: "102oiq01",
     title: "Book 1",
@@ -26,11 +25,7 @@ const data = [
 const BookPage = () => {
   return (
     <div className="space-y-4 p-4">
-      <BooksTable columns={columns} data={data} />
-
-      {Array.from({ length: 20 }).map((_, i) => (
-        <Skeleton className="w-full h-12" key={i} />
-      ))}
+      <BookTable columns={bookColumns} data={booksData} />
     </div>
   );
 };

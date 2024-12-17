@@ -1,10 +1,10 @@
 import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
+import { ColumnDef } from "@tanstack/react-table";
 import { VariantProps } from "class-variance-authority";
+import { type Statistics, type SidebarMenu } from ".";
 import { Alert } from "@/components/ui/alert";
 import { loader } from "@/constants";
-import { type Statistics, type SidebarMenu } from ".";
-import { ColumnDef } from "@tanstack/react-table";
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;
@@ -63,7 +63,7 @@ export type StatisticProps = {
   stats: Statistics[];
 };
 
-export type BooksTableProps<TData, TValue> = {
+export type BookTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 };
