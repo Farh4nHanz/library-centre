@@ -15,16 +15,32 @@ import {
 import { Button } from "@/components/ui/button";
 
 /** @icons */
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 export const bookColumns: ColumnDef<Book>[] = [
   {
     accessorKey: "title",
-    header: () => <div className="font-bold">Title</div>,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Title
+        <ArrowUpDown className="ml-2 w-4 h-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: "author",
-    header: () => <div className="font-bold">Author</div>,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Author
+        <ArrowUpDown className="ml-2 w-4 h-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: "pages",
