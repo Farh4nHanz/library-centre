@@ -13,33 +13,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { TableColumnHeader } from "@/components/ui/table/table-column-header";
 
 /** @icons */
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 export const bookColumns: ColumnDef<Book>[] = [
   {
     accessorKey: "title",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Title
-        <ArrowUpDown className="ml-2 w-4 h-4" />
-      </Button>
-    ),
+    header: ({ column }) => <TableColumnHeader column={column} title="Title" />,
   },
   {
     accessorKey: "author",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Author
-        <ArrowUpDown className="ml-2 w-4 h-4" />
-      </Button>
+      <TableColumnHeader column={column} title="Author" />
     ),
   },
   {

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {
-  flexRender,
+  ColumnFiltersState,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
@@ -13,15 +14,6 @@ import { type BookTableProps } from "@/types/props-type";
 
 /** @components */
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -30,9 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-/** @icons */
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { TablePagination } from "@/components/ui/table/table-pagination";
+import { TableData } from "@/components/ui/table/table-data";
 
 export const BookTable = <TData, TValue>({
   columns,
@@ -47,6 +39,7 @@ export const BookTable = <TData, TValue>({
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     columns,
@@ -71,120 +64,67 @@ export const BookTable = <TData, TValue>({
     },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       pagination: {
         pageIndex: pageState.pageIndex,
         pageSize: pageState.pageSize,
       },
+      columnFilters,
     },
   });
 
   return (
     <>
-      <div className="grid grid-cols-[50fr_5fr] items-center gap-2">
-        <h1 className="text-xl font-bold">Books Data</h1>
+      <div className="grid grid-cols-[60fr_40fr] items-center gap-2">
+        <h1 className="text-2xl font-bold">Books Data</h1>
 
-        <Select
-          value={String(pageState.pageSize)}
-          onValueChange={(value) => {
-            setPageState((p) => ({
-              ...p,
-              pageSize: Number(value),
-              pageIndex: 0,
-            }));
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Rows per page" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Rows per page</SelectLabel>
-              {[5, 10, 20, 50, 100].map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-nowrap gap-2 justify-between items-center">
+          <Input
+            placeholder="Filter by title"
+            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+            onChange={(e) =>
+              table.getColumn("title")?.setFilterValue(e.target.value)
+            }
+          />
+
+          <div className="flex-1">
+            <Select
+              value={String(pageState.pageSize)}
+              onValueChange={(value) => {
+                setPageState((p) => ({
+                  ...p,
+                  pageSize: Number(value),
+                  pageIndex: 0,
+                }));
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Rows per page" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Rows per page</SelectLabel>
+                  {[5, 10, 20, 50, 100].map((size) => (
+                    <SelectItem key={size} value={String(size)}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-md border px-2">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <TableData table={table} columns={columns} />
       </div>
 
       <div className="flex justify-start items-center py-2 space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <ArrowLeft />
-          Prev
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-          <ArrowRight />
-        </Button>
-
-        <span className="text-sm">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
-        </span>
+        <TablePagination table={table} />
       </div>
     </>
   );

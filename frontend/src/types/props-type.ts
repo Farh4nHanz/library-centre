@@ -1,6 +1,6 @@
 import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
-import { ColumnDef } from "@tanstack/react-table";
+import { Column, ColumnDef, Table } from "@tanstack/react-table";
 import { VariantProps } from "class-variance-authority";
 import { type Statistics, type SidebarMenu } from ".";
 import { Alert } from "@/components/ui/alert";
@@ -66,4 +66,18 @@ export type StatisticProps = {
 export type BookTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+};
+
+export type TableColumnHeaderProps<TData, TValue> = {
+  column: Column<TData, TValue>;
+  title: string;
+} & React.HTMLAttributes<HTMLDivElement>;
+
+export type TablePaginationProps<TData> = {
+  table: Table<TData>;
+};
+
+export type TableDataProps<TData, TValue> = {
+  table: Table<TData>;
+  columns: ColumnDef<TData, TValue>[];
 };
