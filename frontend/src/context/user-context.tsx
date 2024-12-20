@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { type User } from "@/types/user-type";
+import { type User } from "@/types";
 import { type UserContextType } from "@/types/context-type";
 import { useAppDispatch } from "@/hooks/use-redux";
 import { checkAuth } from "@/redux/thunks/auth-thunk";

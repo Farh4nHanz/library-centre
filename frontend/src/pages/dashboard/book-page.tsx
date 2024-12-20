@@ -100,6 +100,11 @@ const BookPage = () => {
               <FormInput name="title" control={control} />
               <FormInput name="author" control={control} />
             </div>
+            <FormInput
+              name="description"
+              control={control}
+              component="textarea"
+            />
             <FormInput name="genre" control={control} />
             <FormInput name="cover" control={control} type="file" />
             <FormInput name="isbn" control={control} description="*Optional" />

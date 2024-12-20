@@ -14,11 +14,14 @@ export const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     .addCase(registerUser.pending, (state) => {
       state.status = "loading";
     })
-    .addCase(registerUser.fulfilled, (state, action) => {
-      state.status = "succeeded";
-      state.successMsg = action.payload;
-      state.errorMsg = null;
-    })
+    .addCase(
+      registerUser.fulfilled,
+      (state, action: PayloadAction<AuthResponse>) => {
+        state.status = "succeeded";
+        state.successMsg = action.payload.message;
+        state.errorMsg = null;
+      }
+    )
     .addCase(registerUser.rejected, (state, action) => {
       state.status = "failed";
       state.successMsg = null;
@@ -50,7 +53,7 @@ export const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     .addCase(logoutUser.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.errorMsg = null;
-      state.successMsg = action.payload;
+      state.successMsg = action.payload.message;
       state.isAuthenticated = false;
 
       localStorage.removeItem("user");

@@ -27,6 +27,14 @@ export type Statistics = {
   icon: React.ElementType;
 };
 
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+  photoURL: string | null;
+  role: "user" | "admin";
+};
+
 export type Book = {
   id: string;
   title: string;

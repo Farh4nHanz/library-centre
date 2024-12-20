@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { User } from "@/types/user-type";
+import { type User } from ".";
 
 export type UserContextType = {
   user: User | null;

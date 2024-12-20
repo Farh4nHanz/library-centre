@@ -144,6 +144,7 @@ class AuthController {
         user: {
           id: user.id,
           username: user.username,
+          email: user.email,
           role: user.role,
           photoURL: user.photoURL,
         },
@@ -234,6 +235,7 @@ class AuthController {
         user: {
           id: user.id,
           username: user.username,
+          email: user.email,
           role: user.role,
           photoURL: user.photoURL,
         },
@@ -303,6 +305,7 @@ class AuthController {
         user: {
           id: user.id,
           username: user.username,
+          email: user.email,
           role: user.role,
           photoURL: user.photoURL,
         },
