@@ -150,6 +150,7 @@ class BookController {
       const newBook = new BookModel({
         ...bookData,
         coverURL,
+        availableCopies: bookData.totalCopies,
       }); // store the book data in database
       await newBook.save();
 

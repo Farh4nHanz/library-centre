@@ -26,8 +26,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { CustomDialog as Dialog } from "@/components/ui/custom-alert/custom-dialog";
+} from "@/components/ui/alert/alert-dialog";
+import { CustomAlertDialog as AlertDialog } from "@/components/ui/alert/custom-alert-dialog";
 import { Loader } from "@/components/ui/loader";
 import { Header as SidebarHeader } from "@/components/sidebar/sidebar-header";
 import { Content as SidebarContent } from "@/components/sidebar/sidebar-content";
@@ -85,7 +85,7 @@ export const AdminSidebar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogHeader>
             <AlertDialogTitle>
               Are you sure you want to logout?
@@ -104,7 +104,7 @@ export const AdminSidebar = () => {
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
-        </Dialog>
+        </AlertDialog>
       </SidebarFooter>
     </Sidebar>
   );

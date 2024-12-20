@@ -14,7 +14,7 @@ import { FormInput } from "@/components/ui/form-input";
 import { PasswordInput } from "@/features/auth/password-input";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
-import { CustomAlert as ErrorAlert } from "@/components/ui/custom-alert/custom-alert";
+import { CustomAlert as ErrorAlert } from "@/components/ui/alert/custom-alert";
 import { AuthLink } from "@/components/ui/auth-link";
 
 /** @hooks */

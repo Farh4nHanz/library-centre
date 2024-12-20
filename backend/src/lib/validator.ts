@@ -74,4 +74,10 @@ export const bookSchema = z.object({
     .refine((date) => !isNaN(Date.parse(date)), {
       message: "Invalid date format!",
     }),
+  totalCopies: z
+    .number({
+      required_error: "Total copies is required!",
+      invalid_type_error: "Total copies must be a number!",
+    })
+    .min(1, "Total copies must be greater than 0!"),
 });

@@ -13,7 +13,7 @@ import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
 import { PasswordInput } from "@/features/auth/password-input";
 import { Button } from "@/components/ui/button";
-import { CustomAlert as Alert } from "@/components/ui/custom-alert/custom-alert";
+import { CustomAlert as Alert } from "@/components/ui/alert/custom-alert";
 import { Loader } from "@/components/ui/loader";
 import { AuthLink } from "@/components/ui/auth-link";
 

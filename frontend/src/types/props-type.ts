@@ -3,7 +3,7 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { Column, ColumnDef, Table } from "@tanstack/react-table";
 import { VariantProps } from "class-variance-authority";
 import { type Statistics, type SidebarMenu } from ".";
-import { Alert } from "@/components/ui/alert";
+import { Alert } from "@/components/ui/alert/alert";
 import { loader } from "@/constants";
 
 export type FormInputProps<T extends FieldValues> = {
@@ -13,7 +13,9 @@ export type FormInputProps<T extends FieldValues> = {
   placeholder?: string;
   description?: string;
   Icon?: React.ComponentType<HTMLAttributes<Element>>;
-} & InputHTMLAttributes<HTMLInputElement>;
+  component?: "input" | "textarea";
+  display?: "row" | "column";
+} & InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>;
 
 export type PasswordInputProps<T extends FieldValues> = {
   errors: any;
@@ -31,10 +33,13 @@ export type CustomAlertProps = {
   description: string | null;
 };
 
-export type CustomDialogProps = {
+export type CustomAlertDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 } & PropsWithChildren;
+
+export type CustomDialogProps = {} & CustomAlertDialogProps &
+  React.HTMLAttributes<HTMLDivElement>;
 
 export type RedirectButtonProps = {
   redirectTo: string;

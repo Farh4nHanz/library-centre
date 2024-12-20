@@ -48,6 +48,15 @@ const bookSchema = new Schema(
       type: Date,
       required: true,
     },
+    totalCopies: {
+      type: Number,
+      min: 1,
+      required: true,
+    },
+    availableCopies: {
+      type: Number,
+      min: 0,
+    },
     rating: {
       type: Number,
       min: 0,

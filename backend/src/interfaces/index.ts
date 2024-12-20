@@ -24,6 +24,8 @@ export interface Book extends Document {
   pages: number;
   publisher: string;
   publicationDate: Date;
+  totalCopies: number;
+  availableCopies: number;
   rating: number;
   slug: string;
 }

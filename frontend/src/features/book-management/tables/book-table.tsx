@@ -78,10 +78,8 @@ export const BookTable = <TData, TValue>({
 
   return (
     <>
-      <div className="grid grid-cols-[60fr_40fr] items-center gap-2">
-        <h1 className="text-2xl font-bold">Books Data</h1>
-
-        <div className="flex flex-nowrap gap-2 justify-between items-center">
+      <div className="grid grid-cols-1 place-items-start items-center gap-2">
+        <div className="flex flex-nowrap gap-2 justify-between items-center flex-row-reverse">
           <Input
             placeholder="Filter by title"
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -123,7 +121,7 @@ export const BookTable = <TData, TValue>({
         <TableData table={table} columns={columns} />
       </div>
 
-      <div className="flex justify-start items-center py-2 space-x-2">
+      <div className="flex justify-start items-center space-x-2">
         <TablePagination table={table} />
       </div>
     </>

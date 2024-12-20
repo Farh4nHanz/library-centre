@@ -20,4 +20,5 @@ export type BookRequestBody = {
   pages: number;
   publisher: string;
   publicationDate: Date;
+  totalCopies: number;
 };
