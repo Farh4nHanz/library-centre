@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/context/user-context";
 import { Loader } from "@/components/ui/loader";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 import { setErrorMsg } from "@/redux/slices/auth-slice";
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+export const ProtectedRoute = ({ children }: PropsWithChildren) => {
   const { isLoading } = useAuth();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, isLogout } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isLogout) {
       dispatch(setErrorMsg("Please login first!"));
     }
-  }, [dispatch, isAuthenticated]);
+  }, [dispatch, isAuthenticated, isLogout]);
 
   if (isLoading)
     return (

@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { endOfYear, startOfYear } from "date-fns";
-import { MonthContextType } from "@/types/context-type";
+import { type MonthContextType } from "@/types/context-type";
 
 const MonthContext = createContext<MonthContextType | undefined>(undefined);
 

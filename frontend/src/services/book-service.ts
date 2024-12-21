@@ -1,9 +1,6 @@
-import { apiCall } from "@/lib/api-call";
+import api from "@/api";
+import { type Book } from "@/types";
 
-export const addBook = async (bookData) => {
-  try {
-    return await apiCall("post", "", bookData);
-  } catch (err) {
-    return err;
-  }
+export const addBook = (bookData: Book) => {
+  return api.post("/books", bookData);
 };

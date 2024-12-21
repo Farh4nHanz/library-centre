@@ -5,6 +5,7 @@ import { type AuthState } from "@/types/redux-type";
 
 const initialState: AuthState = {
   isAuthenticated: false,
+  isLogout: false,
   status: "idle",
   successMsg: null,
   errorMsg: null,

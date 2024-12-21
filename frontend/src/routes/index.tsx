@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 /** @components */
 import { ProtectedRoute } from "@/components/shared/protected-route";
+import { AccessRole } from "@/components/shared/access-role";
 
 /** @layouts */
 import AuthLayout from "@/layouts/auth-layout";
@@ -18,11 +19,16 @@ import BookPage from "@/pages/dashboard/book-page";
 
 /** @context */
 import { MonthProvider } from "@/context/month-context";
+import { PathProvider } from "@/context/path-context";
 
 export const router = createBrowserRouter([
   {
     path: "/auth",
-    element: <AuthLayout />,
+    element: (
+      <PathProvider>
+        <AuthLayout />
+      </PathProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -38,19 +44,21 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <MonthProvider>
-        <DashboardLayout />
-      </MonthProvider>
+      <ProtectedRoute>
+        <PathProvider>
+          <MonthProvider>
+            <AccessRole role="admin">
+              <DashboardLayout />
+            </AccessRole>
+          </MonthProvider>
+        </PathProvider>
+      </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
     children: [
       {
         path: "",
-        element: (
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        ),
+        element: <DashboardPage />,
       },
       {
         path: "books",
@@ -60,7 +68,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <UserLayout />,
+    element: (
+      <PathProvider>
+        <UserLayout />
+      </PathProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {

@@ -2,9 +2,13 @@ import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { Column, ColumnDef, Table } from "@tanstack/react-table";
 import { VariantProps } from "class-variance-authority";
-import { type Statistics, type SidebarMenu } from ".";
+import { type Statistics, type SidebarMenu, type User } from ".";
 import { Alert } from "@/components/ui/alert/alert";
 import { loader } from "@/constants";
+
+export type AccessRoleProps = {
+  role: User["role"];
+} & PropsWithChildren;
 
 export type FormInputProps<T extends FieldValues> = {
   control: Control<T>;

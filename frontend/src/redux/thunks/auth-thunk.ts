@@ -1,33 +1,38 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import api from "@/api";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { type AuthResponse, type UserPayload } from "@/types/api-type";
-import { register } from "@/services/auth-service";
+import {
+  login,
+  logout,
+  refreshToken,
+  register,
+  verifyCredentials,
+} from "@/services/auth-service";
 
-export const registerUser = createAsyncThunk<AuthResponse, UserPayload>(
-  "auth/registerUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const { data } = await register(userData);
-      return data;
-    } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        console.error(`API Error:`, err.message);
-        return rejectWithValue(err.response.data.message);
-      }
-
-      console.error("Unexpected error:", err);
-      return rejectWithValue("Unable to register. Please try again later.");
+export const registerUser = createAsyncThunk<
+  Omit<AuthResponse, "user">,
+  UserPayload
+>("auth/registerUser", async (userData, { rejectWithValue }) => {
+  try {
+    const { data } = await register(userData);
+    return data;
+  } catch (err) {
+    if (err instanceof AxiosError && err.response) {
+      console.error(`API Error:`, err.message);
+      return rejectWithValue(err.response.data.message);
     }
+
+    console.error("Unexpected error:", err);
+    return rejectWithValue("Unable to register. Please try again later.");
   }
-);
+});
 
 export const loginUser = createAsyncThunk<
   AuthResponse,
   Omit<UserPayload, "username" | "photoURL">
 >("auth/loginUser", async (userData, { rejectWithValue }) => {
   try {
-    const { data } = await api.post<AuthResponse>("/auth/login", userData);
+    const { data } = await login(userData);
     return data;
   } catch (err) {
     if (err instanceof AxiosError && err.response) {
@@ -40,12 +45,12 @@ export const loginUser = createAsyncThunk<
   }
 });
 
-export const logoutUser = createAsyncThunk<AuthResponse>(
+export const logoutUser = createAsyncThunk<string>(
   "auth/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await api.post<AuthResponse>("/auth/logout");
-      return data;
+      const { data } = await logout();
+      return data.message;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         console.error(`API Error:`, err.message);
@@ -62,7 +67,7 @@ export const checkAuth = createAsyncThunk<AuthResponse>(
   "auth/checkAuth",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await api.get<AuthResponse>("/auth/me");
+      const { data } = await verifyCredentials();
       return data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -82,7 +87,7 @@ export const refreshTokenUser = createAsyncThunk<AuthResponse>(
   "auth/refreshToken",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await api.post<AuthResponse>("/auth/refresh-token");
+      const { data } = await refreshToken();
       return data;
     } catch (err) {
       if (err instanceof AxiosError && err.response) {

@@ -13,3 +13,7 @@ export type MonthContextType = {
   };
   setMonthState: Dispatch<SetStateAction<{ startMonth: Date; endMonth: Date }>>;
 };
+
+export type PathContextType = {
+  path: string;
+};

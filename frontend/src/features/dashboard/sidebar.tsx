@@ -44,9 +44,9 @@ export const AdminSidebar = () => {
   const { status } = useAppSelector((state) => state.auth);
 
   const logout = useCallback(async () => {
-    const res = await dispatch(logoutUser()).unwrap();
+    const res = await dispatch(logoutUser());
     if (logoutUser.fulfilled.match(res)) {
-      navigate("/login", { replace: true });
+      navigate("/auth/login", { replace: true });
     }
   }, [dispatch, navigate]);
 

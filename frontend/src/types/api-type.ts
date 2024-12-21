@@ -16,3 +16,7 @@ export type UserPayload = {
   password: string;
   photoURL?: string;
 };
+
+// export type BookPayload = {
+
+// }

@@ -272,7 +272,8 @@ class AuthController {
   ): Promise<void> => {
     try {
       const { refreshToken } = req.cookies; // grab the refresh token from cookie
-      if (!refreshToken) throw new CustomError("Refresh token not found!", 401); // check if there's a refresh token, if not, throw an error
+      if (!refreshToken)
+        throw new CustomError("Session expired. Please log in again!", 401); // check if there's a refresh token, if not, throw an error
 
       let decoded: DecodedToken;
       try {
