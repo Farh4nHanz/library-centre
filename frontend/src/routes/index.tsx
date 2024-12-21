@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 /** @components */
 import { ProtectedRoute } from "@/components/shared/protected-route";
-import { AccessRole } from "@/components/shared/access-role";
 
 /** @layouts */
 import AuthLayout from "@/layouts/auth-layout";
@@ -47,9 +46,7 @@ export const router = createBrowserRouter([
       <ProtectedRoute>
         <PathProvider>
           <MonthProvider>
-            <AccessRole role="admin">
-              <DashboardLayout />
-            </AccessRole>
+            <DashboardLayout />
           </MonthProvider>
         </PathProvider>
       </ProtectedRoute>

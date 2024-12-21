@@ -1,9 +1,15 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { TopBar } from "@/components/ui/top-bar";
+import { useAuth } from "@/context/user-context";
 
 const DashboardLayout = () => {
+  const { user } = useAuth();
+  const path = sessionStorage.getItem("path") || "/";
+
+  if (user?.role !== "admin") return <Navigate to={path} replace={true} />;
+
   return (
     <SidebarProvider>
       <AppSidebar page="admin" />
