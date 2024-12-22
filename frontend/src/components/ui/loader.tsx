@@ -11,7 +11,7 @@ export const Loader = memo(
     return (
       <LoaderComponent
         className={cn(
-          "animate-spin duration-150",
+          "animate-spin",
           loader({ color, size }),
           className
         )}

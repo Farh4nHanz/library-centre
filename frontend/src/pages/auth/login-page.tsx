@@ -47,12 +47,9 @@ const LoginPage = () => {
   const login = handleSubmit(async (values) => {
     const res = await dispatch(loginUser(values));
     if (loginUser.fulfilled.match(res)) {
-      const role = res.payload.user.role;
-
       form.reset();
-      return navigate(role === "admin" ? "/dashboard" : "/", {
-        replace: true,
-      });
+      const role = res.payload.user.role;
+      return navigate(role === "admin" ? "/dashboard" : "/", { replace: true });
     }
   });
 
