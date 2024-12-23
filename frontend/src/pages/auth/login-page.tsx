@@ -21,6 +21,9 @@ import { AuthLink } from "@/components/ui/auth-link";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 
 /** @context */
+import { useAuth } from "@/context/user-context";
+
+/** @redux */
 import { loginUser } from "@/redux/thunks/auth-thunk";
 
 /** @icons */
@@ -41,6 +44,7 @@ const LoginPage = () => {
   const { status, successMsg, errorMsg } = useAppSelector(
     (state) => state.auth
   );
+  const { setUser, setIsLoading } = useAuth();
 
   const navigate = useNavigate();
 
@@ -48,8 +52,14 @@ const LoginPage = () => {
     const res = await dispatch(loginUser(values));
     if (loginUser.fulfilled.match(res)) {
       form.reset();
-      const role = res.payload.user.role;
-      return navigate(role === "admin" ? "/dashboard" : "/", { replace: true });
+
+      const user = res.payload.user;
+      setUser(res.payload.user);
+      setIsLoading(false);
+
+      return navigate(user.role === "admin" ? "/dashboard" : "/", {
+        replace: true,
+      });
     }
   });
 

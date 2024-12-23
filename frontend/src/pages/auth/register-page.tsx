@@ -20,7 +20,7 @@ import { AuthLink } from "@/components/ui/auth-link";
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
 
-/** @context */
+/** @redux */
 import { registerUser } from "@/redux/thunks/auth-thunk";
 
 /** @icons */

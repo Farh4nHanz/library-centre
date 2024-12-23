@@ -16,12 +16,12 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isAuthenticated = JSON.parse(localStorage.getItem("isAuthenticated")!);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const initAuth = async () => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
+    if (isAuthenticated) {
+      const initAuth = async () => {
         try {
           const { user } = await dispatch(checkAuth()).unwrap();
           if (user) {
@@ -32,18 +32,17 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
           dispatch(setIsAuthenticated(false));
           dispatch(removeUser());
           setUser(null);
+        } finally {
+          setIsLoading(false);
         }
-      } else {
-        dispatch(setIsAuthenticated(false));
-      }
-      setIsLoading(false);
-    };
+      };
 
-    initAuth();
-  }, [dispatch]);
+      initAuth();
+    }
+  }, [isAuthenticated, dispatch]);
 
   return (
-    <UserContext.Provider value={{ user, isLoading }}>
+    <UserContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
       {children}
     </UserContext.Provider>
   );

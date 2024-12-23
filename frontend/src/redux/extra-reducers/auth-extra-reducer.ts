@@ -26,13 +26,13 @@ export const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
     .addCase(loginUser.pending, (state) => {
       state.status = "loading";
     })
-    .addCase(loginUser.fulfilled, (state, action) => {
+    .addCase(loginUser.fulfilled, (state) => {
       state.status = "succeeded";
       state.successMsg = null;
       state.errorMsg = null;
       state.isAuthenticated = true;
 
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem("isAuthenticated", JSON.stringify(true));
     })
     .addCase(loginUser.rejected, (state, action) => {
       state.status = "failed";
@@ -50,7 +50,7 @@ export const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
       state.isAuthenticated = false;
       state.isLogout = true;
 
-      localStorage.removeItem("user");
+      localStorage.removeItem("isAuthenticated");
     })
     .addCase(logoutUser.rejected, (state, action) => {
       state.status = "failed";
@@ -66,13 +66,13 @@ export const extraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
       state.isAuthenticated = false;
       state.errorMsg = action.payload as string;
     })
-    .addCase(refreshTokenUser.fulfilled, (state, action) => {
+    .addCase(refreshTokenUser.fulfilled, (state) => {
       state.isAuthenticated = true;
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
     })
     .addCase(refreshTokenUser.rejected, (state, action) => {
       state.isAuthenticated = false;
       state.errorMsg = action.payload as string;
-      localStorage.removeItem("user");
+      
+      localStorage.removeItem("isAuthenticated");
     });
 };

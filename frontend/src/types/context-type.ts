@@ -3,7 +3,9 @@ import { type User } from ".";
 
 export type UserContextType = {
   user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
   isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
 export type MonthContextType = {
