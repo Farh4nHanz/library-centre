@@ -54,7 +54,7 @@ const LoginPage = () => {
       form.reset();
 
       const user = res.payload.user;
-      setUser(res.payload.user);
+      setUser(user);
       setIsLoading(false);
 
       return navigate(user.role === "admin" ? "/dashboard" : "/", {

@@ -5,8 +5,8 @@ export const reducers = {
   setIsAuthenticated: (state: AuthState, action: PayloadAction<boolean>) => {
     state.isAuthenticated = action.payload;
   },
-  removeUser: () => {
-    localStorage.removeItem("user");
+  removeIsAuthenticated: () => {
+    localStorage.removeItem("isAuthenticated");
   },
   setErrorMsg: (state: AuthState, action: PayloadAction<string>) => {
     state.errorMsg = action.payload;

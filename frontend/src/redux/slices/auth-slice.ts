@@ -18,7 +18,11 @@ const authSlice = createSlice({
   extraReducers,
 });
 
-export const { setIsAuthenticated, removeUser, setErrorMsg, resetMessage } =
-  authSlice.actions;
+export const {
+  setIsAuthenticated,
+  removeIsAuthenticated,
+  setErrorMsg,
+  resetMessage,
+} = authSlice.actions;
 
 export default authSlice.reducer;

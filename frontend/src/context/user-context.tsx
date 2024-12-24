@@ -9,37 +9,41 @@ import { type User } from "@/types";
 import { type UserContextType } from "@/types/context-type";
 import { useAppDispatch } from "@/hooks/use-redux";
 import { checkAuth } from "@/redux/thunks/auth-thunk";
-import { removeUser, setIsAuthenticated } from "@/redux/slices/auth-slice";
+import {
+  removeIsAuthenticated,
+  setIsAuthenticated,
+} from "@/redux/slices/auth-slice";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const isAuthenticated = JSON.parse(localStorage.getItem("isAuthenticated")!);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const initAuth = async () => {
-        try {
-          const { user } = await dispatch(checkAuth()).unwrap();
-          if (user) {
-            dispatch(setIsAuthenticated(true));
-            setUser(user);
-          }
-        } catch {
-          dispatch(setIsAuthenticated(false));
-          dispatch(removeUser());
-          setUser(null);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+    const initAuth = async () => {
+      const isAuthenticated = JSON.parse(
+        localStorage.getItem("isAuthenticated")!
+      );
 
-      initAuth();
-    }
-  }, [isAuthenticated, dispatch]);
+      if (isAuthenticated) {
+        const res = await dispatch(checkAuth());
+        if (checkAuth.fulfilled.match(res)) {
+          dispatch(setIsAuthenticated(true));
+          setUser(res.payload.user);
+        } else {
+          dispatch(setIsAuthenticated(false));
+          dispatch(removeIsAuthenticated());
+          setUser(null);
+        }
+      }
+
+      setIsLoading(false);
+    };
+
+    void initAuth();
+  }, [dispatch]);
 
   return (
     <UserContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
