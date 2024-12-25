@@ -23,22 +23,15 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const isAuthenticated = JSON.parse(
-        localStorage.getItem("isAuthenticated")!
-      );
-
-      if (isAuthenticated) {
-        const res = await dispatch(checkAuth());
-        if (checkAuth.fulfilled.match(res)) {
-          dispatch(setIsAuthenticated(true));
-          setUser(res.payload.user);
-        } else {
-          dispatch(setIsAuthenticated(false));
-          dispatch(removeIsAuthenticated());
-          setUser(null);
-        }
+      const res = await dispatch(checkAuth());
+      if (checkAuth.fulfilled.match(res)) {
+        dispatch(setIsAuthenticated(true));
+        setUser(res.payload.user);
+      } else {
+        dispatch(setIsAuthenticated(false));
+        dispatch(removeIsAuthenticated());
+        setUser(null);
       }
-
       setIsLoading(false);
     };
 

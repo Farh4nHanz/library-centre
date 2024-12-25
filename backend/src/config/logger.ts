@@ -9,8 +9,6 @@ const transport = pino.transport({
         destination: path.resolve(__dirname, "../../logs/app.log"),
         mkdir: true,
         colorize: false,
-        size: "10m",
-        limit: { count: 5 },
       },
     },
     {
@@ -19,8 +17,6 @@ const transport = pino.transport({
         destination: path.resolve(__dirname, "../../logs/error.log"),
         mkdir: true,
         colorize: false,
-        size: "10m",
-        limit: { count: 5 },
       },
       level: "error",
     },

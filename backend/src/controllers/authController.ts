@@ -118,7 +118,7 @@ class AuthController {
         ); // check if email is registered
 
       const isValidPassword = await user.comparePassword(password);
-      if (!isValidPassword) throw new CustomError("Invalid password.", 401); // check if password is valid
+      if (!isValidPassword) throw new CustomError("Invalid password!", 401); // check if password is valid
 
       const accessToken = generateAccessToken(user.id); // generate access token
       const refreshToken = generateRefreshToken(user.id); // generate refresh token
@@ -232,13 +232,7 @@ class AuthController {
 
       res.status(200).json({
         message: "User is authenticated.",
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          photoURL: user.photoURL,
-        },
+        user: user,
       }); // send user data as response
     } catch (err) {
       logger.error(err); // logging error
@@ -303,13 +297,7 @@ class AuthController {
 
       res.status(200).json({
         message: "Access token refreshed.",
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          photoURL: user.photoURL,
-        },
+        user: user,
       }); // send response
     } catch (err) {
       logger.error(err); // logging error
