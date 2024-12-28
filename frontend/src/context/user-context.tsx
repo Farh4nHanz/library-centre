@@ -9,10 +9,7 @@ import { type User } from "@/types";
 import { type UserContextType } from "@/types/context-type";
 import { useAppDispatch } from "@/hooks/use-redux";
 import { checkAuth } from "@/redux/thunks/auth-thunk";
-import {
-  removeIsAuthenticated,
-  setIsAuthenticated,
-} from "@/redux/slices/auth-slice";
+import { setIsAuthenticated, setUserRole } from "@/redux/slices/auth-slice";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -23,15 +20,22 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      const res = await dispatch(checkAuth());
-      if (checkAuth.fulfilled.match(res)) {
-        dispatch(setIsAuthenticated(true));
-        setUser(res.payload.user);
-      } else {
-        dispatch(setIsAuthenticated(false));
-        dispatch(removeIsAuthenticated());
-        setUser(null);
+      const isAuthenticated = JSON.parse(
+        localStorage.getItem("isAuthenticated")!
+      );
+
+      if (isAuthenticated) {
+        const res = await dispatch(checkAuth());
+        if (checkAuth.fulfilled.match(res)) {
+          dispatch(setIsAuthenticated(true));
+          setUser(res.payload.user);
+          dispatch(setUserRole(res.payload.user.role));
+        } else {
+          dispatch(setIsAuthenticated(false));
+          setUser(null);
+        }
       }
+
       setIsLoading(false);
     };
 

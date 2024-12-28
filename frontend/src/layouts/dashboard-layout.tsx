@@ -6,7 +6,7 @@ import { useAuth } from "@/context/user-context";
 
 const DashboardLayout = () => {
   const { user } = useAuth();
-  const path = sessionStorage.getItem("path") || "/";
+  const path = sessionStorage.getItem("path")!;
 
   if (user?.role !== "admin") return <Navigate to={path} replace={true} />;
 

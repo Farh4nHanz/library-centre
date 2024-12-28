@@ -36,14 +36,13 @@ export const isAuth = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.cookies.accessToken; // grab the access token from cookie
-
-  if (!token) throw new CustomError("Unauthorized!", 401); // if the token is missing, throw an error
+  const { refreshToken } = req.cookies; // grab the refresh token from cookie
+  if (!refreshToken) throw new CustomError("Unauthorized!", 403); // if the token is missing, throw an error
 
   try {
     const decoded = jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET!
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET!
     ) as DecodedToken; // if there's a token, verify the token
 
     const user = await UserModel.findById(decoded.userId).select("-password"); // find the user by id

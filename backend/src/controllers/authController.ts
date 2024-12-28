@@ -222,6 +222,9 @@ class AuthController {
     next: NextFunction
   ): Promise<void> => {
     try {
+      const { accessToken } = req.cookies; // grab the access token from cookie
+      if (!accessToken) throw new CustomError("Please login first!", 401); // check if there's a token, if not, throw an error
+
       const { id } = req.user as User; // destructure the user id from request
 
       if (!mongoose.isValidObjectId(id))

@@ -26,7 +26,9 @@ export const axiosInterceptors = () => {
       const originalRequest = error.config as CustomAxiosRequestConfig;
 
       // Check if the error is due to an invalid password or if the refresh token is missing
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        
         // Check if the original request is for login
         if (originalRequest.url?.includes("/auth/login")) {
           // This means the credentials were invalid, so we should not refresh the token
