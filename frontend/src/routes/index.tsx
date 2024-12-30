@@ -4,7 +4,6 @@ import { createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute } from "@/components/shared/protected-route";
 
 /** @layouts */
-import AuthLayout from "@/layouts/auth-layout";
 import UserLayout from "@/layouts/user-layout";
 import DashboardLayout from "@/layouts/dashboard-layout";
 
@@ -22,34 +21,33 @@ import { PathProvider } from "@/context/path-context";
 
 export const router = createBrowserRouter([
   {
-    path: "/auth",
+    path: "/register",
     element: (
       <PathProvider>
-        <AuthLayout />
+        <RegisterPage />,
       </PathProvider>
     ),
     errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "login",
-        element: <LoginPage />,
-      },
-    ],
+  },
+  {
+    path: "/login",
+    element: (
+      <PathProvider>
+        <LoginPage />,
+      </PathProvider>
+    ),
+    errorElement: <ErrorPage />,
   },
   {
     path: "/dashboard",
     element: (
-      <ProtectedRoute>
-        <PathProvider>
-          <MonthProvider>
-            <DashboardLayout />
-          </MonthProvider>
-        </PathProvider>
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <PathProvider>
+        <MonthProvider>
+          <DashboardLayout />
+        </MonthProvider>
+      </PathProvider>
+      // </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
     children: [

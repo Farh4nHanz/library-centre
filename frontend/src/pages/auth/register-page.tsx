@@ -19,6 +19,7 @@ import { AuthLink } from "@/components/ui/auth-link";
 
 /** @hooks */
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux";
+import { useIsAuth } from "@/hooks/use-is-auth";
 
 /** @redux */
 import { registerUser } from "@/redux/thunks/auth-thunk";
@@ -27,6 +28,8 @@ import { registerUser } from "@/redux/thunks/auth-thunk";
 import { TriangleAlert } from "lucide-react";
 
 const RegisterPage = () => {
+  useIsAuth();
+
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
   });
