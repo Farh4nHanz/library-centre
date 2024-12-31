@@ -37,7 +37,7 @@ export const isAuth = async (
   next: NextFunction
 ): Promise<void> => {
   const { refreshToken } = req.cookies; // grab the refresh token from cookie
-  if (!refreshToken) throw new CustomError("Unauthorized!", 403); // if the token is missing, throw an error
+  if (!refreshToken) throw new CustomError("Unauthorized!", 401); // if the token is missing, throw an error
 
   try {
     const decoded = jwt.verify(

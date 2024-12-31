@@ -61,3 +61,5 @@ export const libraryStats = [
     icon: BookOpen,
   },
 ];
+
+export const BOOK_QUERY_KEY = ["books", "book"] as const;

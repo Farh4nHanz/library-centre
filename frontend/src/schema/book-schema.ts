@@ -14,32 +14,40 @@ export const bookSchema = z.object({
     invalid_type_error: "Book description must be a string!",
   }),
   genre: z.string({ required_error: "Please add at least one genre!" }),
-  cover: z.string({ required_error: "Book cover is required!" }),
+  cover: z.instanceof(File, { message: "Book cover is required!" }),
   isbn: z
-    .number({ invalid_type_error: "ISBN must be a number!" })
-    .positive("ISBN must be a valid number!")
-    .min(1000000000000, "ISBN must be 13 digits long!")
-    .max(9999999999999, "ISBN must be 13 digits long!")
-    .optional(),
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (val === undefined || val === "") return true;
+        return /^\d{13}$/.test(val);
+      },
+      { message: "ISBN must be 13 digits long!" }
+    )
+    .transform((val) => (val ? parseInt(val, 10) : undefined)),
   pages: z
-    .number({
-      required_error: "Book pages is required!",
-      invalid_type_error: "Book pages must be a number!",
-    })
-    .min(1, "Book pages must be greater than 0!"),
+    .string({ required_error: "Book pages is required!" })
+    .transform((val) => parseInt(val, 10))
+    .pipe(
+      z
+        .number({ invalid_type_error: "Book pages must be a number!" })
+        .min(1, "Book pages must be greater than 0!")
+    ),
+  totalCopies: z
+    .string({ required_error: "Total book copies is required!" })
+    .transform((val) => parseInt(val, 10))
+    .pipe(
+      z
+        .number({ invalid_type_error: "Total book copies must be a number!" })
+        .min(1, "Total book copies must be greater than 0!")
+    ),
   publisher: z.string({
     required_error: "Publisher is required!",
     invalid_type_error: "Publisher must be a string!",
   }),
   publicationDate: z
     .string({ required_error: "Publication date is required!" })
-    .refine((date) => !isNaN(Date.parse(date)), {
-      message: "Invalid date format!",
-    }),
-  totalCopies: z
-    .number({
-      required_error: "Total book copies is required!",
-      invalid_type_error: "Total book copies must be a number!",
-    })
-    .min(1, "Total book copies must be greater than 0!"),
+    .transform((val) => new Date(val))
+    .pipe(z.date({ invalid_type_error: "Invalid date format!" })),
 });

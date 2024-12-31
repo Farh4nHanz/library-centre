@@ -130,8 +130,9 @@ class BookController {
       const bookData = req.body; // grab the book data from request body
       bookSchema.parse({
         ...bookData,
-        isbn: Number(bookData.isbn),
-        pages: Number(bookData.pages),
+        isbn: bookData.isbn ? String(bookData.isbn) : null,
+        pages: parseInt(bookData.pages as unknown as string, 10),
+        totalCopies: parseInt(bookData.totalCopies as unknown as string, 10),
       }); // validate the book data, if error it will throw an error
 
       const coverFile = req.file; // grab the cover file from request
@@ -150,7 +151,10 @@ class BookController {
       const newBook = new BookModel({
         ...bookData,
         coverURL,
-        availableCopies: bookData.totalCopies,
+        availableCopies: parseInt(
+          bookData.totalCopies as unknown as string,
+          10
+        ),
       }); // store the book data in database
       await newBook.save();
 

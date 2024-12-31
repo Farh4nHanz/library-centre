@@ -41,13 +41,13 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      // <ProtectedRoute>
-      <PathProvider>
-        <MonthProvider>
-          <DashboardLayout />
-        </MonthProvider>
-      </PathProvider>
-      // </ProtectedRoute>
+      <ProtectedRoute>
+        <PathProvider>
+          <MonthProvider>
+            <DashboardLayout />
+          </MonthProvider>
+        </PathProvider>
+      </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
     children: [

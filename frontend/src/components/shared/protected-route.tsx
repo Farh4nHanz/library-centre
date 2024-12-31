@@ -23,5 +23,5 @@ export const ProtectedRoute = ({ children }: PropsWithChildren) => {
       </div>
     );
 
-  return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };

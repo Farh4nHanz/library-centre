@@ -46,7 +46,7 @@ export const AdminSidebar = () => {
   const logout = useCallback(async () => {
     const res = await dispatch(logoutUser());
     if (logoutUser.fulfilled.match(res)) {
-      navigate("/auth/login", { replace: true });
+      navigate("/login", { replace: true });
     }
   }, [dispatch, navigate]);
 

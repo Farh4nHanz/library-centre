@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import { type User } from ".";
+import { type Book, type User } from ".";
 
 export type CustomAxiosRequestConfig = {
   _retry?: boolean;
@@ -17,6 +17,9 @@ export type UserPayload = {
   photoURL?: string;
 };
 
-// export type BookPayload = {
+export type BookPayload = Omit<Book, "id">;
 
-// }
+export type BookResponse<T> = {
+  message: string;
+  data: T;
+};

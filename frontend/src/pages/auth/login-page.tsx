@@ -67,57 +67,59 @@ const LoginPage = () => {
   });
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={login}
-        className="w-full max-w-md p-5 space-y-5 border rounded-md"
-      >
-        {/* form header */}
-        <h1 className="text-xl font-bold text-start">Welcome Back!</h1>
+    <div className="h-screen min-h-fit w-full flex justify-center items-center p-5">
+      <Form {...form}>
+        <form
+          onSubmit={login}
+          className="w-full max-w-md p-5 space-y-5 border rounded-md"
+        >
+          {/* form header */}
+          <h1 className="text-xl font-bold text-start">Welcome Back!</h1>
 
-        {/* show alert for success or error message */}
-        {(errorMsg || successMsg) && (
-          <Alert
-            variant={errorMsg ? "destructive" : "success"}
-            Icon={errorMsg ? TriangleAlert : CheckCircle}
-            title={errorMsg ? "Error" : "Success"}
-            description={errorMsg || successMsg}
-          />
-        )}
-
-        <div className="flex flex-col gap-3">
-          {/* email input */}
-          <FormInput
-            control={control}
-            type="email"
-            name="email"
-            placeholder="your@email.com"
-          />
-
-          {/* password input */}
-          <PasswordInput
-            control={control}
-            name="password"
-            placeholder="********"
-            errors={errors}
-          />
-        </div>
-
-        {/* Submit button */}
-        <Button type="submit" className="w-full">
-          {status === "loading" ? (
-            <Loader variant="1" color="white" />
-          ) : (
-            "Login"
+          {/* show alert for success or error message */}
+          {(errorMsg || successMsg) && (
+            <Alert
+              variant={errorMsg ? "destructive" : "success"}
+              Icon={errorMsg ? TriangleAlert : CheckCircle}
+              title={errorMsg ? "Error" : "Success"}
+              description={errorMsg || successMsg}
+            />
           )}
-        </Button>
 
-        {/* Link to register page */}
-        <AuthLink text="Don't have an account?" url="/auth/register">
-          Register here.
-        </AuthLink>
-      </form>
-    </Form>
+          <div className="flex flex-col gap-3">
+            {/* email input */}
+            <FormInput
+              control={control}
+              type="email"
+              name="email"
+              placeholder="your@email.com"
+            />
+
+            {/* password input */}
+            <PasswordInput
+              control={control}
+              name="password"
+              placeholder="********"
+              errors={errors}
+            />
+          </div>
+
+          {/* Submit button */}
+          <Button type="submit" className="w-full">
+            {status === "loading" ? (
+              <Loader variant="1" color="white" />
+            ) : (
+              "Login"
+            )}
+          </Button>
+
+          {/* Link to register page */}
+          <AuthLink text="Don't have an account?" url="/register">
+            Register here.
+          </AuthLink>
+        </form>
+      </Form>
+    </div>
   );
 };
 

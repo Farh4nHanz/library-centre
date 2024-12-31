@@ -1,4 +1,4 @@
-import { forwardRef, LegacyRef } from "react";
+import { forwardRef } from "react";
 import { FieldValues } from "react-hook-form";
 
 /** @types */
@@ -26,7 +26,7 @@ export const FormInput = forwardRef<
   <T extends FieldValues>(
     {
       control,
-      type,
+      type = "text",
       name,
       placeholder,
       description,
@@ -68,6 +68,15 @@ export const FormInput = forwardRef<
                       placeholder={placeholder}
                       autoComplete="off"
                       className={Icon ? "pe-9" : ""}
+                      value={type === "file" ? undefined : field.value}
+                      onChange={(e) => {
+                        if (type === "file") {
+                          const file = e.target.files?.[0] || null;
+                          field.onChange(file);
+                        } else {
+                          field.onChange(e);
+                        }
+                      }}
                       {...props}
                     />
                     {Icon && (

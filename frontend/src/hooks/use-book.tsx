@@ -1,6 +1,24 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addBook, getAllBooks, getBookById } from "@/services/book-service";
+import { BOOK_QUERY_KEY } from "@/features/dashboard/constants";
+
+export const useGetAllBooks = () =>
+  useQuery({
+    queryKey: [BOOK_QUERY_KEY[0]],
+    queryFn: getAllBooks,
+    refetchOnWindowFocus: false,
+    staleTime: 3000,
+  });
+
+export const useGetBookById = (id: string) =>
+  useQuery({
+    queryKey: [BOOK_QUERY_KEY[1]],
+    queryFn: () => getBookById(id),
+    refetchOnWindowFocus: false,
+    staleTime: 3000,
+  });
 
 export const useAddBook = () =>
   useMutation({
-    mutationFn: () => {},
+    mutationFn: addBook,
   });

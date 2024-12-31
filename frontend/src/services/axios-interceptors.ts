@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import api from "@/api";
-import { type CustomAxiosRequestConfig } from "@/types/api-type";
+import { AuthResponse, type CustomAxiosRequestConfig } from "@/types/api-type";
 import { store } from "@/redux/store";
 import { logoutUser, refreshTokenUser } from "@/redux/thunks/auth-thunk";
 
@@ -22,13 +22,17 @@ const processQueue = (error: AxiosError | null) => {
 export const axiosInterceptors = () => {
   api.interceptors.response.use(
     (response) => response,
-    async (error: AxiosError) => {
+    async (error: AxiosError<AuthResponse>) => {
       const originalRequest = error.config as CustomAxiosRequestConfig;
 
       // Check if the error is due to an invalid password or if the refresh token is missing
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      if (
+        error.response?.status === 403 &&
+        error.response?.data.message === "Please login first!" &&
+        !originalRequest._retry
+      ) {
         originalRequest._retry = true;
-        
+
         // Check if the original request is for login
         if (originalRequest.url?.includes("/auth/login")) {
           // This means the credentials were invalid, so we should not refresh the token
