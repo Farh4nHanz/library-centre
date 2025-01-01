@@ -128,15 +128,20 @@ class BookController {
   ): Promise<void> => {
     try {
       const bookData = req.body; // grab the book data from request body
-      bookSchema.parse({
+      const parsedBookData = bookSchema.parse({
         ...bookData,
         isbn: bookData.isbn ? String(bookData.isbn) : null,
-        pages: parseInt(bookData.pages as unknown as string, 10),
-        totalCopies: parseInt(bookData.totalCopies as unknown as string, 10),
+        pages: String(bookData.pages),
+        totalCopies: String(bookData.totalCopies),
       }); // validate the book data, if error it will throw an error
 
       const coverFile = req.file; // grab the cover file from request
       if (!coverFile) throw new CustomError("Please upload book's cover!", 400); // if the cover file is not uploaded, throw an error
+
+      const bookExists = await BookModel.findOne({
+        title: { $regex: new RegExp(parsedBookData.title, "i") },
+      });
+      if (bookExists) throw new CustomError("Book already exists!", 409); // if the book is already exist, throw an error
 
       const key = `uploads/${Date.now()}-${coverFile.originalname}`; // generate a unique key for the cover file
       const coverURL = await s3Service.uploadFile(
@@ -145,16 +150,10 @@ class BookController {
         coverFile.mimetype
       ); // upload the cover file to s3
 
-      const bookExists = await BookModel.findOne({ title: bookData.title });
-      if (bookExists) throw new CustomError("Book already exists!", 400); // if the book is already exist, throw an error
-
       const newBook = new BookModel({
-        ...bookData,
+        ...parsedBookData,
         coverURL,
-        availableCopies: parseInt(
-          bookData.totalCopies as unknown as string,
-          10
-        ),
+        availableCopies: parsedBookData.totalCopies,
       }); // store the book data in database
       await newBook.save();
 

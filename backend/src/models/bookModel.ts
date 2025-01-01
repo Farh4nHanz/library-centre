@@ -65,7 +65,6 @@ const bookSchema = new Schema(
     },
     slug: {
       type: String,
-      unique: true,
     },
   },
   { timestamps: true }
@@ -81,7 +80,6 @@ bookSchema.pre("save", function (next) {
       capitalizeLetter(genre)
     );
     this.publisher = capitalizeLetter(this.publisher);
-    this.publicationDate = new Date(this.publicationDate);
 
     next();
   }

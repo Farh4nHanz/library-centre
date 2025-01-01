@@ -60,23 +60,34 @@ export const bookSchema = z.object({
     .refine(
       (val) => {
         if (val === undefined || val === null) return true;
+        return !val.startsWith("0");
+      },
+      { message: "ISBN cannot start with 0!" }
+    )
+    .refine(
+      (val) => {
+        if (val === undefined || val === null) return true;
         return /^\d{13}$/.test(val);
       },
       { message: "ISBN must be 13 digits long!" }
     )
     .transform((val) => (val ? parseInt(val, 10) : undefined)),
   pages: z
-    .number({
-      required_error: "Book pages is required!",
-      invalid_type_error: "Book pages must be a number!",
-    })
-    .min(1, "Book pages must be greater than 0!"),
+    .string({ required_error: "Book pages is required!" })
+    .transform((val) => parseInt(val, 10))
+    .pipe(
+      z
+        .number({ invalid_type_error: "Book pages must be a number!" })
+        .min(1, "Book pages must be greater than 0!")
+    ),
   totalCopies: z
-    .number({
-      required_error: "Total copies is required!",
-      invalid_type_error: "Total copies must be a number!",
-    })
-    .min(1, "Total copies must be greater than 0!"),
+    .string({ required_error: "Total book copies is required!" })
+    .transform((val) => parseInt(val, 10))
+    .pipe(
+      z
+        .number({ invalid_type_error: "Total book copies must be a number!" })
+        .min(1, "Total book copies must be greater than 0!")
+    ),
   publisher: z.string({
     required_error: "Publisher is required!",
     invalid_type_error: "Publisher must be a string!",

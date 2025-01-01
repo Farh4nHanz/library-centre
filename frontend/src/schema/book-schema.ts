@@ -14,10 +14,26 @@ export const bookSchema = z.object({
     invalid_type_error: "Book description must be a string!",
   }),
   genre: z.string({ required_error: "Please add at least one genre!" }),
-  cover: z.instanceof(File, { message: "Book cover is required!" }),
+  cover: z
+    .instanceof(File, { message: "Book cover is required!" })
+    .refine(
+      (file) => file.size <= 2 * 1024 * 1024,
+      "File size must be less than 2MB!"
+    )
+    .refine(
+      (file) => ["image/jpg", "image/jpeg", "image/png"].includes(file.type),
+      "Only .jpg, .jpeg, and .png formats are allowed."
+    ),
   isbn: z
     .string()
     .optional()
+    .refine(
+      (val) => {
+        if (val === undefined || val === "") return true;
+        return !val.startsWith("0");
+      },
+      { message: "ISBN cannot start with 0!" }
+    )
     .refine(
       (val) => {
         if (val === undefined || val === "") return true;

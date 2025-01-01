@@ -10,6 +10,7 @@ import { type BookSchema } from "@/types/schema-type";
 
 /** @hooks */
 import { useAddBook } from "@/hooks/use-book";
+import { useToast } from "@/hooks/use-toast";
 
 /** @components */
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CustomDialog as AddBookDialog } from "@/components/ui/custom-dialog";
+import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
+import { Loader } from "@/components/ui/loader";
 
 /** @features */
 import { BookTable } from "@/features/book-management/tables/book-table";
@@ -29,8 +32,6 @@ import { bookColumns } from "@/features/book-management/tables/columns";
 
 /** @icons */
 import { PlusSquare } from "lucide-react";
-import { Form } from "@/components/ui/form";
-import { Loader } from "@/components/ui/loader";
 
 const booksData = [
   {
@@ -62,12 +63,13 @@ const BookPage = () => {
   });
 
   const { control, handleSubmit, reset } = form;
+  const { toast } = useToast();
 
   const {
     mutate: addBookMutate,
     isPending: isAddBookPending,
-    isError: isAddBookError,
     error: addBookError,
+    data: addBookData,
   } = useAddBook();
 
   const handleDialogClose = useCallback(() => {
@@ -76,18 +78,19 @@ const BookPage = () => {
   }, [reset]);
 
   const addBook = handleSubmit((values) => {
-    const formattedValues: BookSchema = {
-      ...values,
-      isbn: values.isbn && Number(values.isbn),
-      pages: Number(values.pages),
-      totalCopies: Number(values.totalCopies),
-      publicationDate: new Date(values.publicationDate),
-    };
-    console.log(formattedValues);
-
-    addBookMutate(formattedValues, {
+    addBookMutate(values, {
       onSuccess: () => {
         setIsAddBookDialogOpen(false);
+        toast({
+          title: "Success",
+          description: addBookData?.data.message,
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Error",
+          description: addBookError?.message,
+        });
       },
     });
   });
@@ -137,7 +140,13 @@ const BookPage = () => {
               component="textarea"
             />
             <FormInput name="genre" control={control} />
-            <FormInput name="cover" control={control} type="file" />
+            <FormInput
+              name="cover"
+              control={control}
+              type="file"
+              description="Only .jpg, .jpeg, or .png extensions are allowed. Max file size: 2MB."
+              accept="image/*"
+            />
             <FormInput
               name="isbn"
               control={control}

@@ -16,5 +16,9 @@ export const getBookById = (
 export const addBook = (
   bookData: BookPayload
 ): Promise<AxiosResponse<BookResponse<Book>>> => {
-  return api.post("/books", bookData);
+  return api.post("/books", bookData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
