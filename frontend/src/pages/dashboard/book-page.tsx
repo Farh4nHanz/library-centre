@@ -1,16 +1,21 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { QueryClient } from "@tanstack/react-query";
 
 /** @schema */
 import { bookSchema } from "@/schema/book-schema";
 
 /** @types */
+import { type Book } from "@/types";
 import { type BookSchema } from "@/types/schema-type";
 
 /** @hooks */
-import { useAddBook } from "@/hooks/use-book";
+import { useAddBook, useGetAllBooks } from "@/hooks/use-book";
 import { useToast } from "@/hooks/use-toast";
+
+/** @constants */
+import { BOOK_QUERY_KEY } from "@/features/dashboard/constants";
 
 /** @components */
 import { Button } from "@/components/ui/button";
@@ -33,27 +38,6 @@ import { bookColumns } from "@/features/book-management/tables/columns";
 /** @icons */
 import { PlusSquare } from "lucide-react";
 
-const booksData = [
-  {
-    id: "102oiq01",
-    title: "Book 1",
-    author: "Author 1",
-    pages: 100,
-  },
-  {
-    id: "oq092j1q",
-    title: "Book 2",
-    author: "Author 2",
-    pages: 200,
-  },
-  {
-    id: "qskoq91js",
-    title: "Book 3",
-    author: "Author 3",
-    pages: 300,
-  },
-];
-
 const BookPage = () => {
   const [isAddBookDialogOpen, setIsAddBookDialogOpen] =
     useState<boolean>(false);
@@ -65,10 +49,11 @@ const BookPage = () => {
   const { control, handleSubmit, reset } = form;
   const { toast } = useToast();
 
+  const queryClient = new QueryClient();
+  const { data: booksData } = useGetAllBooks();
   const {
     mutate: addBookMutate,
     isPending: isAddBookPending,
-    error: addBookError,
     data: addBookData,
   } = useAddBook();
 
@@ -79,17 +64,42 @@ const BookPage = () => {
 
   const addBook = handleSubmit((values) => {
     addBookMutate(values, {
-      onSuccess: () => {
+      onSuccess: ({ books: newBooksData }) => {
         setIsAddBookDialogOpen(false);
         toast({
           title: "Success",
-          description: addBookData?.data.message,
+          description: addBookData?.message,
+          className: "bg-green-500 text-white",
         });
+
+        try {
+          queryClient.setQueryData(
+            [BOOK_QUERY_KEY[0]],
+            (oldBooksData: Book[]) => {
+              console.log("old data", oldBooksData);
+              console.log("new data", newBooksData);
+
+              if (oldBooksData) {
+                return [...oldBooksData, newBooksData];
+              } else {
+                return [newBooksData];
+              }
+            }
+          );
+        } catch (err) {
+          console.log(err);
+          toast({
+            title: "Error",
+            description: "Failed to update query data.",
+            className: "bg-red-500 text-white",
+          });
+        }
       },
       onError: () => {
         toast({
           title: "Error",
-          description: addBookError?.message,
+          description: addBookData?.message,
+          className: "bg-red-500 text-white",
         });
       },
     });
@@ -111,7 +121,7 @@ const BookPage = () => {
           </Button>
         </div>
 
-        <BookTable columns={bookColumns} data={booksData} />
+        {booksData && <BookTable columns={bookColumns} data={booksData} />}
       </div>
 
       <AddBookDialog

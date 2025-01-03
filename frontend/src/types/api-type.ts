@@ -21,5 +21,5 @@ export type BookPayload = Omit<Book, "id">;
 
 export type BookResponse<T> = {
   message: string;
-  data: T;
+  books: T;
 };

@@ -3,8 +3,11 @@ import api from "@/api";
 import { type Book } from "@/types";
 import { type BookResponse, type BookPayload } from "@/types/api-type";
 
-export const getAllBooks = (): Promise<AxiosResponse<BookResponse<Book[]>>> => {
-  return api.get("/books");
+export const getAllBooks = async (): Promise<Book[]> => {
+  const {
+    data: { books },
+  } = await api.get<BookResponse<Book[]>>("/books");
+  return books;
 };
 
 export const getBookById = (
@@ -13,12 +16,14 @@ export const getBookById = (
   return api.get(`/books/${id}`);
 };
 
-export const addBook = (
+export const addBook = async (
   bookData: BookPayload
-): Promise<AxiosResponse<BookResponse<Book>>> => {
-  return api.post("/books", bookData, {
+): Promise<BookResponse<Book>> => {
+  const { data } = await api.post<BookResponse<Book>>("/books", bookData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+
+  return data;
 };

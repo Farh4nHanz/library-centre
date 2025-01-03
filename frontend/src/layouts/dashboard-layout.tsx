@@ -27,8 +27,8 @@ const DashboardLayout = () => {
       <SidebarInset>
         <TopBar />
         <Outlet />
+        <Toaster />
       </SidebarInset>
-      <Toaster />
     </SidebarProvider>
   );
 };
