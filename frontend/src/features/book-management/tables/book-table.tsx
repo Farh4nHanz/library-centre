@@ -117,7 +117,7 @@ export const BookTable = <TData, TValue>({
         </div>
       </div>
 
-      <div className="rounded-md border px-2">
+      <div className="grid grid-cols-1 rounded-md border px-2">
         <TableData table={table} columns={columns} />
       </div>
 

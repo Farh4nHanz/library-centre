@@ -50,14 +50,16 @@ class BookController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const books = await BookModel.find().select([
-        "title",
-        "author",
-        "description",
-        "genre",
-        "coverURL",
-        "pages",
-      ]); // get all books from database
+      const books = await BookModel.find()
+        .select([
+          "title",
+          "author",
+          "description",
+          "genre",
+          "coverURL",
+          "pages"
+        ])
+        .sort({ createdAt: -1 }); // get all books from database
       res.status(200).json({ books: books }); // send the books data to client
     } catch (err) {
       logger.error(err); // logging error

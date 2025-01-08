@@ -19,7 +19,8 @@ export type UserPayload = {
 
 export type BookPayload = Omit<Book, "id">;
 
-export type BookResponse<T> = {
+export type BookResponse = {
   message: string;
-  books: T;
+  book?: Book;
+  books?: Book[];
 };

@@ -1,12 +1,22 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+
+/** @context */
+import { useAuth } from "@/context/user-context";
+
+/** @hooks */
+import { useAppDispatch } from "@/hooks/use-redux";
+
+/** @redux */
+import { setErrorMsg } from "@/redux/slices/auth-slice";
+
+/** @components */
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { TopBar } from "@/components/ui/top-bar";
 import { Toaster } from "@/components/ui/toaster";
-import { useAuth } from "@/context/user-context";
-import { useAppDispatch } from "@/hooks/use-redux";
-import { setErrorMsg } from "@/redux/slices/auth-slice";
+
+/** @features */
+import { AdminSidebar } from "@/features/dashboard/admin-sidebar";
 
 const DashboardLayout = () => {
   const { user } = useAuth();
@@ -23,7 +33,7 @@ const DashboardLayout = () => {
 
   return (
     <SidebarProvider>
-      <AppSidebar page="admin" />
+      <AdminSidebar />
       <SidebarInset>
         <TopBar />
         <Outlet />

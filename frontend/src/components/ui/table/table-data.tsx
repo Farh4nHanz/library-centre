@@ -14,7 +14,7 @@ export const TableData = <TData, TValue>({
   columns,
 }: TableDataProps<TData, TValue>) => {
   return (
-    <Table>
+    <Table className="w-full">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

@@ -39,11 +39,11 @@ export type Book = {
   id: string;
   title: string;
   author: string;
-  description?: string;
-  genre?: string;
+  description: string;
+  genre: string;
   isbn?: number;
-  publisher?: string;
-  publicationDate?: Date;
+  publisher: string;
+  publicationDate: Date;
   pages: number;
-  totalCopies?: number;
+  totalCopies: number;
 };

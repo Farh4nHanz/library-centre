@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { type TableColumnHeaderProps } from "@/types/props-type";
-import { Button } from "@/components/ui/button";
 import { useCapitalizeLetter } from "@/hooks/use-capitalize-letter";
+import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
 export const TableColumnHeader = <TData, TValue>({
@@ -16,7 +16,7 @@ export const TableColumnHeader = <TData, TValue>({
   }
 
   return (
-    <div className={cn("flex items-center space-x-2", className)}>
+    <div className={cn("flex justify-start items-center space-x-2", className)}>
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}

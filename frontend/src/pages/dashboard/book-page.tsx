@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 /** @schema */
 import { bookSchema } from "@/schema/book-schema";
 
 /** @types */
-import { type Book } from "@/types";
 import { type BookSchema } from "@/types/schema-type";
 
 /** @hooks */
@@ -49,13 +49,9 @@ const BookPage = () => {
   const { control, handleSubmit, reset } = form;
   const { toast } = useToast();
 
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const { data: booksData } = useGetAllBooks();
-  const {
-    mutate: addBookMutate,
-    isPending: isAddBookPending,
-    data: addBookData,
-  } = useAddBook();
+  const { mutate: addBookMutate, isPending: isAddBookPending } = useAddBook();
 
   const handleDialogClose = useCallback(() => {
     setIsAddBookDialogOpen(false);
@@ -64,50 +60,37 @@ const BookPage = () => {
 
   const addBook = handleSubmit((values) => {
     addBookMutate(values, {
-      onSuccess: ({ books: newBooksData }) => {
+      onSuccess: (data) => {
         setIsAddBookDialogOpen(false);
         toast({
           title: "Success",
-          description: addBookData?.message,
+          description: data.message,
           className: "bg-green-500 text-white",
         });
 
-        try {
-          queryClient.setQueryData(
-            [BOOK_QUERY_KEY[0]],
-            (oldBooksData: Book[]) => {
-              console.log("old data", oldBooksData);
-              console.log("new data", newBooksData);
-
-              if (oldBooksData) {
-                return [...oldBooksData, newBooksData];
-              } else {
-                return [newBooksData];
-              }
-            }
-          );
-        } catch (err) {
-          console.log(err);
+        queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
+      },
+      onError: (err) => {
+        if (err instanceof AxiosError && err.response) {
           toast({
             title: "Error",
-            description: "Failed to update query data.",
+            description: err.response.data.message,
+            className: "bg-red-500 text-white",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: err.message,
             className: "bg-red-500 text-white",
           });
         }
-      },
-      onError: () => {
-        toast({
-          title: "Error",
-          description: addBookData?.message,
-          className: "bg-red-500 text-white",
-        });
       },
     });
   });
 
   return (
     <>
-      <div className="space-y-6 p-4">
+      <div className="min-h-screen w-full space-y-6 p-4">
         <div className="flex justify-between items-center gap-2 mb-10">
           <h1 className="text-2xl font-bold">Books Data</h1>
 
@@ -116,8 +99,8 @@ const BookPage = () => {
             className="bg-green-500 hover:bg-green-600"
             onClick={() => setIsAddBookDialogOpen(true)}
           >
-            Add New Book
             <PlusSquare />
+            Add New Book
           </Button>
         </div>
 

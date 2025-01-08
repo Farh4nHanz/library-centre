@@ -3,8 +3,9 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { Column, ColumnDef, Table } from "@tanstack/react-table";
 import { VariantProps } from "class-variance-authority";
 import { type Statistics, type SidebarMenu, type User } from ".";
-import { Alert } from "@/components/ui/alert/alert";
 import { loader } from "@/constants";
+import { Alert } from "@/components/ui/alert/alert";
+import { Sidebar } from "@/components/ui/sidebar";
 
 export type AccessRoleProps = {
   role: User["role"];
@@ -42,7 +43,7 @@ export type CustomAlertDialogProps = {
   onOpenChange: (open: boolean) => void;
 } & PropsWithChildren;
 
-export type CustomDialogProps = {} & CustomAlertDialogProps &
+export type CustomDialogProps = CustomAlertDialogProps &
   React.HTMLAttributes<HTMLDivElement>;
 
 export type RedirectButtonProps = {
@@ -54,9 +55,8 @@ export type AuthLinkProps = {
   url: string;
 } & PropsWithChildren;
 
-export type AppSidebarProps = {
-  page: "admin" | "user";
-};
+export type AppSidebarProps = React.ComponentProps<typeof Sidebar> &
+  PropsWithChildren;
 
 export type SidebarHeaderProps = {
   link: string;

@@ -1,9 +1,8 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 
 const UserLayout = () => {
-
   return (
     <SidebarProvider>
       <AppSidebar page="user" />

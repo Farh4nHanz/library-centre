@@ -1,29 +1,39 @@
 import { AxiosResponse } from "axios";
 import api from "@/api";
-import { type Book } from "@/types";
 import { type BookResponse, type BookPayload } from "@/types/api-type";
 
-export const getAllBooks = async (): Promise<Book[]> => {
+export const getAllBooks = async () => {
   const {
+    status,
     data: { books },
-  } = await api.get<BookResponse<Book[]>>("/books");
-  return books;
+  }: AxiosResponse<BookResponse> = await api.get("/books");
+
+  if (status === 200) return books;
 };
 
 export const getBookById = (
   id: string
-): Promise<AxiosResponse<BookResponse<Book>>> => {
+): Promise<AxiosResponse<BookResponse>> => {
   return api.get(`/books/${id}`);
 };
 
-export const addBook = async (
-  bookData: BookPayload
-): Promise<BookResponse<Book>> => {
-  const { data } = await api.post<BookResponse<Book>>("/books", bookData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const addBook = async (bookData: BookPayload): Promise<BookResponse> => {
+  const { data }: AxiosResponse<BookResponse> = await api.post(
+    "/books",
+    bookData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
   return data;
+};
+
+export const deleteBookById = async (bookId: string): Promise<string> => {
+  const {
+    data: { message },
+  }: AxiosResponse<BookResponse> = await api.delete(`/books/${bookId}`);
+  return message;
 };
