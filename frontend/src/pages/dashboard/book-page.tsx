@@ -75,13 +75,13 @@ const BookPage = () => {
           toast({
             title: "Error",
             description: err.response.data.message,
-            className: "bg-red-500 text-white",
+            variant: "destructive",
           });
         } else {
           toast({
             title: "Error",
             description: err.message,
-            className: "bg-red-500 text-white",
+            variant: "destructive",
           });
         }
       },

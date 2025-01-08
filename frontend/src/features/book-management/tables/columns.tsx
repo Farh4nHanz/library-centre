@@ -1,24 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-/** @types */
 import { type Book } from "@/types";
-
-/** @components */
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { TableColumnHeader } from "@/components/ui/table/table-column-header";
-import { CustomAlertDialog as DeleteBookAlertDialog } from "@/components/ui/alert/custom-alert-dialog";
-
-/** @icons */
-import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { ColumnActions } from "@/features/book-management/tables/column-actions";
 
 export const bookColumns: ColumnDef<Book>[] = [
   {
@@ -60,47 +43,6 @@ export const bookColumns: ColumnDef<Book>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const book = row.original;
-      const [isDeleteBookDialogOpen, setIsDeleteBookDialogOpen] =
-        useState<boolean>(false);
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="size-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(book.id)}
-              >
-                Copy book ID
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem>View book details</DropdownMenuItem>
-              <DropdownMenuItem>Edit book</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setIsDeleteBookDialogOpen(true)}>
-                Delete book
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DeleteBookAlertDialog
-            open={isDeleteBookDialogOpen}
-            onOpenChange={setIsDeleteBookDialogOpen}
-          >
-            
-          </DeleteBookAlertDialog>
-        </>
-      );
-    },
+    cell: ({ row }) => <ColumnActions book={row.original} />,
   },
 ];

@@ -31,9 +31,11 @@ export const addBook = async (bookData: BookPayload): Promise<BookResponse> => {
   return data;
 };
 
-export const deleteBookById = async (bookId: string): Promise<string> => {
-  const {
-    data: { message },
-  }: AxiosResponse<BookResponse> = await api.delete(`/books/${bookId}`);
-  return message;
+export const deleteBookById = async (
+  bookId: string
+): Promise<Omit<BookResponse, "books" | "book">> => {
+  const { data }: AxiosResponse<BookResponse> = await api.delete(
+    `/books/${bookId}`
+  );
+  return data;
 };

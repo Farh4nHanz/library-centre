@@ -48,7 +48,7 @@ import {
 } from "lucide-react";
 
 export const AdminSidebar = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState<boolean>(false);
 
   const { path } = usePath();
   const navigate = useNavigate();
@@ -126,7 +126,7 @@ export const AdminSidebar = () => {
               >
                 <DropdownMenuItem
                   className="cursor-pointer"
-                  onClick={() => setIsDialogOpen(true)}
+                  onClick={() => setIsLogoutDialogOpen(true)}
                 >
                   <LogOut />
                   <span>Logout</span>
@@ -135,8 +135,8 @@ export const AdminSidebar = () => {
             </DropdownMenu>
 
             <LogoutAlertDialog
-              open={isDialogOpen}
-              onOpenChange={setIsDialogOpen}
+              open={isLogoutDialogOpen}
+              onOpenChange={setIsLogoutDialogOpen}
             >
               <LogoutAlertDialog.Header>
                 <AlertDialogTitle>
