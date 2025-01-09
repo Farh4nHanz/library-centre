@@ -33,8 +33,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogDescription,
-  AlertDialogTitle,
 } from "@/components/ui/alert/alert-dialog";
 import { CustomAlertDialog as LogoutAlertDialog } from "@/components/ui/alert/custom-alert-dialog";
 import { Loader } from "@/components/ui/loader";
@@ -138,20 +136,15 @@ export const AdminSidebar = () => {
               open={isLogoutDialogOpen}
               onOpenChange={setIsLogoutDialogOpen}
             >
-              <LogoutAlertDialog.Header>
-                <AlertDialogTitle>
-                  Are you sure you want to logout?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Logout will remove all your data from this device. Are you
-                  sure?
-                </AlertDialogDescription>
-              </LogoutAlertDialog.Header>
+              <LogoutAlertDialog.Header
+                title="Are you sure you want to logout?"
+                description="Logout will remove all your data from this device. Are you sure?"
+              />
               <LogoutAlertDialog.Footer>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={logout}>
                   {status === "loading" ? (
-                    <Loader variant="1" color="white" />
+                    <Loader size="sm" color="white" />
                   ) : (
                     "Logout"
                   )}

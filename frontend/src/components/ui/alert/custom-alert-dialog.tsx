@@ -1,10 +1,15 @@
 import { memo, PropsWithChildren } from "react";
-import { type CustomAlertDialogProps } from "@/types/props-type";
+import {
+  type CustomAlertDialogHeaderProps,
+  type CustomAlertDialogProps,
+} from "@/types/props-type";
 import {
   AlertDialog,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert/alert-dialog";
 
 const CustomAlertDialogComponent: React.FC<CustomAlertDialogProps> = ({
@@ -19,15 +24,24 @@ const CustomAlertDialogComponent: React.FC<CustomAlertDialogProps> = ({
   );
 };
 
-const CustomAlertDialogHeader = memo(({ children }: PropsWithChildren) => {
-  return <AlertDialogHeader>{children}</AlertDialogHeader>;
-});
+const CustomAlertDialogHeader = memo(
+  ({ title, description, ...props }: CustomAlertDialogHeaderProps) => {
+    return (
+      <AlertDialogHeader {...props}>
+        <AlertDialogTitle>{title}</AlertDialogTitle>
+        <AlertDialogDescription>{description}</AlertDialogDescription>
+      </AlertDialogHeader>
+    );
+  }
+);
 
 CustomAlertDialogHeader.displayName = "CustomAlertDialogHeader";
 
-const CustomAlertDialogFooter = memo(({ children }: PropsWithChildren) => {
-  return <AlertDialogFooter>{children}</AlertDialogFooter>;
-});
+const CustomAlertDialogFooter = memo(
+  ({ children, ...props }: PropsWithChildren) => {
+    return <AlertDialogFooter {...props}>{children}</AlertDialogFooter>;
+  }
+);
 
 CustomAlertDialogFooter.displayName = "CustomAlertDialogFooter";
 

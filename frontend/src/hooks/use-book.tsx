@@ -1,11 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { type BookPayload } from "@/types/api-type";
+import { BOOK_QUERY_KEY } from "@/constants/dashboard";
 import {
   addBook,
   deleteBookById,
   getAllBooks,
   getBookById,
+  updateBookById,
 } from "@/services/book-service";
-import { BOOK_QUERY_KEY } from "@/features/dashboard/constants";
 
 export const useGetAllBooks = () =>
   useQuery({
@@ -26,6 +28,17 @@ export const useGetBookById = (id: string) =>
 export const useAddBook = () =>
   useMutation({
     mutationFn: addBook,
+  });
+
+export const useUpdateBookById = () =>
+  useMutation({
+    mutationFn: ({
+      bookId,
+      bookData,
+    }: {
+      bookId: string;
+      bookData: BookPayload;
+    }) => updateBookById(bookId, bookData),
   });
 
 export const useDeleteBookById = () =>

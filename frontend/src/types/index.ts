@@ -41,9 +41,13 @@ export type Book = {
   author: string;
   description: string;
   genre: string;
+  coverURL: string;
   isbn?: number;
+  pages: number;
   publisher: string;
   publicationDate: Date;
-  pages: number;
   totalCopies: number;
+  availableCopies: number;
+  rating: number;
+  slug: string;
 };

@@ -24,7 +24,7 @@ import { MonthSelect } from "@/features/dashboard/month-select";
 import { useMonth } from "@/context/month-context";
 
 /** @constants */
-import { chartConfig, chartData } from "@/features/dashboard/constants";
+import { chartConfig, chartData } from "@/constants/dashboard";
 
 /** @icons */
 import { TrendingUp } from "lucide-react";

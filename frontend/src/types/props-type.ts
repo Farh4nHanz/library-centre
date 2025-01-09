@@ -2,10 +2,15 @@ import { HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { Column, ColumnDef, Table } from "@tanstack/react-table";
 import { VariantProps } from "class-variance-authority";
-import { type Statistics, type SidebarMenu, type User } from ".";
+import { type Statistics, type User } from ".";
 import { loader } from "@/constants";
 import { Alert } from "@/components/ui/alert/alert";
 import { Sidebar } from "@/components/ui/sidebar";
+import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import {
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert/alert-dialog";
 
 export type AccessRoleProps = {
   role: User["role"];
@@ -43,8 +48,22 @@ export type CustomAlertDialogProps = {
   onOpenChange: (open: boolean) => void;
 } & PropsWithChildren;
 
+export type CustomAlertDialogHeaderProps = {
+  title: string;
+  description?: string;
+} & React.ComponentProps<typeof AlertDialogHeader>;
+
+export type CustomAlertDialogFooterProps = PropsWithChildren &
+  React.ComponentProps<typeof AlertDialogFooter>;
+
 export type CustomDialogProps = CustomAlertDialogProps &
   React.HTMLAttributes<HTMLDivElement>;
+
+export type CustomDialogHeaderProps = CustomAlertDialogHeaderProps &
+  React.ComponentProps<typeof DialogHeader>;
+
+export type CustomDialogFooterProps = PropsWithChildren &
+  React.ComponentProps<typeof DialogFooter>;
 
 export type RedirectButtonProps = {
   redirectTo: string;
@@ -55,18 +74,8 @@ export type AuthLinkProps = {
   url: string;
 } & PropsWithChildren;
 
-export type AppSidebarProps = React.ComponentProps<typeof Sidebar> &
-  PropsWithChildren;
-
-export type SidebarHeaderProps = {
-  link: string;
-};
-
-export type SidebarContentProps = {
-  contents: SidebarMenu[];
-};
-
-export type SidebarFooterProps = {} & PropsWithChildren;
+export type AppSidebarProps = PropsWithChildren &
+  React.ComponentProps<typeof Sidebar>;
 
 export type StatisticProps = {
   stats: Statistics[];

@@ -31,6 +31,19 @@ export const addBook = async (bookData: BookPayload): Promise<BookResponse> => {
   return data;
 };
 
+export const updateBookById = async (
+  bookId: string,
+  bookData: BookPayload
+): Promise<BookResponse> => {
+  const { data }: AxiosResponse<BookResponse> = await api.put(
+    `/books/${bookId}`,
+    bookData,
+    { headers: { "Content-Type": "multipart/form-data" } }
+  );
+
+  return data;
+};
+
 export const deleteBookById = async (
   bookId: string
 ): Promise<Omit<BookResponse, "books" | "book">> => {

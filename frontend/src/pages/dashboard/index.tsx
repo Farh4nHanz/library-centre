@@ -4,7 +4,7 @@ import { RecentBorrowers } from "@/features/dashboard/recent-borrowers";
 import { Statistics } from "@/features/dashboard/statistics";
 
 /** @constants */
-import { libraryStats } from "@/features/dashboard/constants";
+import { libraryStats } from "@/constants/dashboard";
 
 const DashboardPage = () => {
   return (

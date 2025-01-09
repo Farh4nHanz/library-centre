@@ -17,7 +17,10 @@ export type UserPayload = {
   photoURL?: string;
 };
 
-export type BookPayload = Omit<Book, "id">;
+export type BookPayload = Omit<
+  Book,
+  "id" | "coverURL" | "availableCopies" | "rating" | "slug"
+>;
 
 export type BookResponse = {
   message: string;

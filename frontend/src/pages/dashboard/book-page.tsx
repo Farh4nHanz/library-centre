@@ -15,17 +15,11 @@ import { useAddBook, useGetAllBooks } from "@/hooks/use-book";
 import { useToast } from "@/hooks/use-toast";
 
 /** @constants */
-import { BOOK_QUERY_KEY } from "@/features/dashboard/constants";
+import { BOOK_QUERY_KEY } from "@/constants/dashboard";
 
 /** @components */
 import { Button } from "@/components/ui/button";
-import {
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogClose } from "@/components/ui/dialog";
 import { CustomDialog as AddBookDialog } from "@/components/ui/custom-dialog";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
@@ -45,8 +39,8 @@ const BookPage = () => {
   const form = useForm<BookSchema>({
     resolver: zodResolver(bookSchema),
   });
-
   const { control, handleSubmit, reset } = form;
+
   const { toast } = useToast();
 
   const queryClient = useQueryClient();
@@ -65,7 +59,7 @@ const BookPage = () => {
         toast({
           title: "Success",
           description: data.message,
-          className: "bg-green-500 text-white",
+          variant: "success",
         });
 
         queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
@@ -112,10 +106,11 @@ const BookPage = () => {
         onOpenChange={handleDialogClose}
         className="max-w-md"
       >
-        <DialogHeader className="items-start">
-          <DialogTitle>Add New Book</DialogTitle>
-          <DialogDescription>Fill out the details below.</DialogDescription>
-        </DialogHeader>
+        <AddBookDialog.Header
+          title="Add New Book"
+          description="Fill out the details below."
+          className="text-start"
+        />
 
         <Form {...form}>
           <form
@@ -161,12 +156,13 @@ const BookPage = () => {
               <FormInput name="publicationDate" control={control} type="date" />
             </div>
 
-            <DialogFooter className="mt-5 sm:gap-0 gap-2">
+            <AddBookDialog.Footer className="mt-5 sm:gap-0 gap-2">
               <DialogClose asChild>
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={handleDialogClose}
+                  disabled={isAddBookPending}
                 >
                   Cancel
                 </Button>
@@ -175,7 +171,7 @@ const BookPage = () => {
               <Button type="submit" disabled={isAddBookPending}>
                 {isAddBookPending ? <Loader size="sm" color="white" /> : "Add"}
               </Button>
-            </DialogFooter>
+            </AddBookDialog.Footer>
           </form>
         </Form>
       </AddBookDialog>
