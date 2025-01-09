@@ -2,7 +2,14 @@ import { cn } from "@/lib/utils";
 import { type TableColumnHeaderProps } from "@/types/props-type";
 import { useCapitalizeLetter } from "@/hooks/use-capitalize-letter";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../dropdown-menu";
 
 export const TableColumnHeader = <TData, TValue>({
   column,
@@ -17,13 +24,35 @@ export const TableColumnHeader = <TData, TValue>({
 
   return (
     <div className={cn("flex justify-start items-center space-x-2", className)}>
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        <div className="font-bold">{columnTitle}</div>
-        <ArrowUpDown className="ml-2 w-4 h-4" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 data-[state=open]:bg-accent">
+            <div className="font-bold">{columnTitle}</div>
+            {column.getIsSorted() === "desc" ? (
+              <ArrowDown />
+            ) : column.getIsSorted() === "asc" ? (
+              <ArrowUp />
+            ) : (
+              <ChevronsUpDown />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+            <ArrowUp className="h-3.5 w-3.5 text-muted-foreground/70" />
+            Asc
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+            <ArrowDown className="h-3.5 w-3.5 text-muted-foreground/70" />
+            Desc
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+            <EyeOff className="h-3.5 w-3.5 text-muted-foreground/70" />
+            Hide
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

@@ -25,12 +25,16 @@ export const bookColumns: ColumnDef<Book>[] = [
     accessorKey: "genre",
     header: () => <div className="font-bold text-start">Genre</div>,
     cell: ({ row }) => (
-      <div className="text-start">{row.getValue("genre")}</div>
+      <div className="text-start">
+        {Array(row.getValue("genre")).join(", ")}
+      </div>
     ),
   },
   {
     accessorKey: "pages",
-    header: () => <div className="font-bold text-center">Total Pages</div>,
+    header: () => (
+      <div className="font-bold text-center text-sm">Total Pages</div>
+    ),
     cell: ({ row }) => (
       <div className="text-center">{row.getValue("pages")}</div>
     ),

@@ -25,6 +25,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { TablePagination } from "@/components/ui/table/table-pagination";
 import { TableData } from "@/components/ui/table/table-data";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-react";
 
 export const BookTable = <TData, TValue>({
   columns,
@@ -78,8 +88,8 @@ export const BookTable = <TData, TValue>({
 
   return (
     <>
-      <div className="grid grid-cols-1 place-items-start items-center gap-2">
-        <div className="flex flex-nowrap gap-2 justify-between items-center flex-row-reverse">
+      <div className="grid grid-cols-[60fr_40fr] items-center justify-between gap-2">
+        <div className="grid grid-cols-[40fr_20fr] gap-2">
           <Input
             placeholder="Filter by title"
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -88,33 +98,69 @@ export const BookTable = <TData, TValue>({
             }
           />
 
-          <div className="flex-1">
-            <Select
-              value={String(pageState.pageSize)}
-              onValueChange={(value) => {
-                setPageState((p) => ({
-                  ...p,
-                  pageSize: Number(value),
-                  pageIndex: 0,
-                }));
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Rows per page" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Rows per page</SelectLabel>
-                  {[5, 10, 20, 50, 100].map((size) => (
-                    <SelectItem key={size} value={String(size)}>
-                      {size}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            value={String(pageState.pageSize)}
+            onValueChange={(value) => {
+              setPageState((p) => ({
+                ...p,
+                pageSize: Number(value),
+                pageIndex: 0,
+              }));
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Rows per page" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Rows per page</SelectLabel>
+                {[5, 10, 20, 50, 100].map((size) => (
+                  <SelectItem key={size} value={String(size)}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto hidden h-8 lg:flex"
+            >
+              <Settings2 />
+              View
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[150px]">
+            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {table
+              .getAllColumns()
+              .filter(
+                (column) =>
+                  typeof column.accessorFn !== "undefined" &&
+                  column.getCanHide()
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="grid grid-cols-1 rounded-md border px-2">

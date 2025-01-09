@@ -5,12 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 
 /** @schema */
-import { bookSchema } from "@/schema/book-schema";
+import { updateBookSchema } from "@/schema/book-schema";
 
 /** @types */
 import { type Book } from "@/types";
-import { type BookPayload } from "@/types/api-type";
-import { type BookSchema } from "@/types/schema-type";
+import { type UpdateBookSchema } from "@/types/schema-type";
 
 /** @hooks */
 import { useDeleteBookById, useUpdateBookById } from "@/hooks/use-book";
@@ -41,7 +40,7 @@ import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
 
 /** @icons */
-import { MoreHorizontal } from "lucide-react";
+import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 
 type BookDialogState = {
   isDetailBookDialogOpen: boolean;
@@ -63,8 +62,21 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     []
   );
 
-  const form = useForm<BookSchema>({
-    resolver: zodResolver(bookSchema),
+  const form = useForm<UpdateBookSchema>({
+    resolver: zodResolver(updateBookSchema),
+    defaultValues: {
+      title: book.title,
+      author: book.author,
+      description: book.description,
+      genre: Array(book.genre).join(", "),
+      isbn: book.isbn,
+      pages: String(book.pages) as unknown as number,
+      totalCopies: String(book.totalCopies) as unknown as number,
+      publisher: book.publisher,
+      publicationDate: new Date(book.publicationDate)
+        .toISOString()
+        .split("T")[0] as unknown as Date,
+    },
   });
   const { control, handleSubmit, reset } = form;
 
@@ -77,12 +89,20 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
   const queryClient = useQueryClient();
 
+  const handleCopyToClipboard = useCallback(() => {
+    navigator.clipboard.writeText(book.id);
+    toast({
+      description: "Copied to clipboard.",
+      duration: 2500,
+    });
+  }, [book.id, toast]);
+
   // update book mutation
   const { mutate: updateBookMutate, isPending: isUpdateBookPending } =
     useUpdateBookById();
   const updateBookById = handleSubmit((values) => {
     updateBookMutate(
-      { bookId: book.id, bookData: values as BookPayload },
+      { bookId: book.id, bookData: values },
       {
         onSuccess: (data) => {
           toast({
@@ -91,9 +111,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
             variant: "success",
           });
 
-          queryClient.invalidateQueries({
-            queryKey: [BOOK_QUERY_KEY[1], book.id],
-          });
+          queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
 
           handleDialogStateChange("isUpdateBookDialogOpen", false);
         },
@@ -158,7 +176,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="size-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -168,27 +186,35 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(book.id)}
-          >
+          <DropdownMenuItem onClick={handleCopyToClipboard}>
+            <Copy />
             Copy book ID
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem>View book details</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Eye />
+            View book details
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
               handleDialogStateChange("isUpdateBookDialogOpen", true)
             }
           >
+            <Edit />
             Edit book
           </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
           <DropdownMenuItem
             onClick={() =>
               handleDialogStateChange("isDeleteBookDialogOpen", true)
             }
+            className="text-destructive focus:text-destructive"
           >
+            <Trash2 />
             Delete book
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -200,7 +226,11 @@ export const ColumnActions = ({ book }: { book: Book }) => {
         onOpenChange={handleUpdateBookDialogClose}
         className="max-w-md"
       >
-        <UpdateBookDialog.Header title="Edit book" />
+        <UpdateBookDialog.Header
+          title="Edit book"
+          description="Make changes to selected book here. Click save when you're done."
+          className="text-start"
+        />
 
         <Form {...form}>
           <form
@@ -209,27 +239,18 @@ export const ColumnActions = ({ book }: { book: Book }) => {
             encType="multipart/form-data"
           >
             <div className="grid grid-cols-2 gap-4 items-center">
-              <FormInput
-                name="title"
-                control={control}
-                defaultValue={book.title}
-              />
-              <FormInput
-                name="author"
-                control={control}
-                defaultValue={book.author}
-              />
+              <FormInput name="title" control={control} />
+              <FormInput name="author" control={control} />
             </div>
             <FormInput
               name="description"
               control={control}
               component="textarea"
-              defaultValue={book.description}
             />
             <FormInput
               name="genre"
               control={control}
-              defaultValue={book.genre}
+              description="Add book genre(s) separated by a comma."
             />
             <FormInput
               name="cover"
@@ -244,36 +265,19 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               type="number"
               min={0}
               description="*Optional"
-              defaultValue={book.isbn}
             />
             <div className="grid grid-cols-2 gap-4 items-center">
-              <FormInput
-                name="pages"
-                control={control}
-                type="number"
-                min={0}
-                defaultValue={book.pages}
-              />
+              <FormInput name="pages" control={control} type="number" min={0} />
               <FormInput
                 name="totalCopies"
                 control={control}
                 type="number"
                 min={0}
-                defaultValue={book.totalCopies}
               />
             </div>
             <div className="grid grid-cols-[60fr_40fr] gap-4">
-              <FormInput
-                name="publisher"
-                control={control}
-                defaultValue={book.publisher}
-              />
-              <FormInput
-                name="publicationDate"
-                control={control}
-                type="date"
-                defaultValue={book.publicationDate}
-              />
+              <FormInput name="publisher" control={control} />
+              <FormInput name="publicationDate" control={control} type="date" />
             </div>
 
             <UpdateBookDialog.Footer>
