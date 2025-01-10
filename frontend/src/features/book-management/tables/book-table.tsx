@@ -34,7 +34,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Settings2 } from "lucide-react";
+
+/** @icons */
+import { Search, Settings2 } from "lucide-react";
 
 export const BookTable = <TData, TValue>({
   columns,
@@ -88,42 +90,57 @@ export const BookTable = <TData, TValue>({
 
   return (
     <>
-      <div className="grid grid-cols-[60fr_40fr] items-center justify-between gap-2">
-        <div className="grid grid-cols-[40fr_20fr] gap-2">
-          <Input
-            placeholder="Filter by title"
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(e) =>
-              table.getColumn("title")?.setFilterValue(e.target.value)
-            }
-          />
+      <div className="grid grid-cols-1 lg:grid-cols-[60fr_40fr] items-center justify-between gap-5">
+        <div className="flex gap-2 lg:max-w-sm flex-row-reverse justify-between">
+          {/* filter */}
+          <div className="flex-shrink lg:flex-1 relative">
+            <Input
+              id="filter"
+              className="peer pe-9"
+              placeholder="Filter by title"
+              type="text"
+              value={
+                (table.getColumn("title")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(e) =>
+                table.getColumn("title")?.setFilterValue(e.target.value)
+              }
+            />
+            <div className="pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 text-muted-foreground/80 peer-disabled:opacity-50">
+              <Search size={16} strokeWidth={2} aria-hidden="true" />
+            </div>
+          </div>
 
-          <Select
-            value={String(pageState.pageSize)}
-            onValueChange={(value) => {
-              setPageState((p) => ({
-                ...p,
-                pageSize: Number(value),
-                pageIndex: 0,
-              }));
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Rows per page" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Rows per page</SelectLabel>
-                {[5, 10, 20, 50, 100].map((size) => (
-                  <SelectItem key={size} value={String(size)}>
-                    {size}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          {/* select rows per page */}
+          <div className="max-w-xs">
+            <Select
+              value={String(pageState.pageSize)}
+              onValueChange={(value) => {
+                setPageState((p) => ({
+                  ...p,
+                  pageSize: Number(value),
+                  pageIndex: 0,
+                }));
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Rows per page" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Rows per page</SelectLabel>
+                  {[5, 10, 20, 50, 100].map((size) => (
+                    <SelectItem key={size} value={String(size)}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
+        {/* columns toggle */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

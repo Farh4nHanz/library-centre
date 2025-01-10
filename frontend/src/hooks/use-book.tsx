@@ -14,7 +14,7 @@ export const useGetAllBooks = () =>
     queryKey: [BOOK_QUERY_KEY[0]],
     queryFn: getAllBooks,
     refetchOnWindowFocus: false,
-    staleTime: 3000,
+    staleTime: 0,
   });
 
 export const useGetBookById = (id: string) =>
@@ -22,7 +22,7 @@ export const useGetBookById = (id: string) =>
     queryKey: [BOOK_QUERY_KEY[1]],
     queryFn: () => getBookById(id),
     refetchOnWindowFocus: false,
-    staleTime: 3000,
+    staleTime: 0,
   });
 
 export const useAddBook = () =>

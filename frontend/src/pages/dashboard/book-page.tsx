@@ -98,7 +98,7 @@ const BookPage = () => {
           </Button>
         </div>
 
-        {booksData && <BookTable columns={bookColumns} data={booksData} />}
+        <BookTable columns={bookColumns} data={booksData || []} />
       </div>
 
       <AddBookDialog
