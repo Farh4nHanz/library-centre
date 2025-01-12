@@ -97,26 +97,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     reset();
   }, [handleDialogStateChange, reset]);
 
-  // const handleUpdateBookDialogOpen = useCallback(
-  //   (bookId: string) => {
-  //     const bookToEdit = booksData?.find((book) => book.id === bookId);
-  //     if (bookToEdit) {
-  //       reset(); // Reset the form first
-  //       reset({
-  //         ...bookToEdit,
-  //         genre: Array.from(bookToEdit.genre).join(", "), // Convert genre array to string
-  //         pages: String(bookToEdit.pages), // Convert pages to string
-  //         totalCopies: String(bookToEdit.totalCopies), // Convert totalCopies to string
-  //         publicationDate: new Date(bookToEdit.publicationDate)
-  //           .toISOString()
-  //           .split("T")[0], // Format date
-  //       });
-  //       handleDialogStateChange("isUpdateBookDialogOpen", true); // Open the edit dialog
-  //     }
-  //   },
-  //   [handleDialogStateChange, reset]
-  // );
-
   // update book mutation
   const { mutate: updateBookMutate, isPending: isUpdateBookPending } =
     useUpdateBookById();
