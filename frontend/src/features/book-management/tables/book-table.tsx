@@ -46,7 +46,7 @@ export const BookTable = <TData, TValue>({
     pageSize: number;
     pageIndex: number;
   }>({
-    pageSize: 10,
+    pageSize: 5,
     pageIndex: 0,
   });
 

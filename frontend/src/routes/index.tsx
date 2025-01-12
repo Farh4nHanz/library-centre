@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
     path: "/register",
     element: (
       <PathProvider>
-        <RegisterPage />,
+        <RegisterPage />
       </PathProvider>
     ),
     errorElement: <ErrorPage />,
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
     path: "/login",
     element: (
       <PathProvider>
-        <LoginPage />,
+        <LoginPage />
       </PathProvider>
     ),
     errorElement: <ErrorPage />,

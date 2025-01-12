@@ -16,7 +16,7 @@ export const bookColumns: ColumnDef<Book>[] = [
         <img
           src={row.getValue("coverURL")}
           alt={row.getValue("title")}
-          className="size-10"
+          className="size-12 aspect-square"
         />
       </div>
     ),

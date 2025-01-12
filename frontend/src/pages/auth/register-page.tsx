@@ -55,7 +55,7 @@ const RegisterPage = () => {
   });
 
   return (
-    <div className="h-screen min-h-fit w-full flex justify-center items-center p-5">
+    <div className="h-screen flex justify-center items-center p-5">
       <Form {...form}>
         <form
           onSubmit={register}

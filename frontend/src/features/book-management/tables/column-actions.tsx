@@ -105,6 +105,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
       { bookId: book.id, bookData: values },
       {
         onSuccess: (data) => {
+          handleDialogStateChange("isUpdateBookDialogOpen", false);
           toast({
             title: "Success",
             description: data.message,
@@ -112,10 +113,10 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           });
 
           queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
-
-          handleDialogStateChange("isUpdateBookDialogOpen", false);
         },
         onError: (err) => {
+          handleDialogStateChange("isUpdateBookDialogOpen", false);
+
           if (err instanceof AxiosError && err.response) {
             toast({
               title: "Error",
@@ -129,8 +130,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               variant: "destructive",
             });
           }
-
-          handleDialogStateChange("isUpdateBookDialogOpen", false);
         },
       }
     );
@@ -143,6 +142,8 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     (bookId: string) => {
       deleteBookMutate(bookId, {
         onSuccess: (data) => {
+          handleDialogStateChange("isDeleteBookDialogOpen", false);
+
           toast({
             title: "Success",
             description: data.message,
@@ -150,9 +151,10 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           });
 
           queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
-          handleDialogStateChange("isDeleteBookDialogOpen", false);
         },
         onError: (err) => {
+          handleDialogStateChange("isDeleteBookDialogOpen", false);
+
           if (err instanceof AxiosError && err.response) {
             toast({
               title: "Error",
@@ -166,8 +168,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               variant: "destructive",
             });
           }
-
-          handleDialogStateChange("isDeleteBookDialogOpen", false);
         },
       });
     },
@@ -316,7 +316,9 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           description="This will permanently delete the book and all its associated data."
         />
         <DeleteBookAlertDialog.Footer>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleteBookPending}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
               e.preventDefault();

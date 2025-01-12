@@ -33,7 +33,7 @@ const logger = pino(
   {
     level: process.env.NODE_ENV === "production" ? "info" : "debug",
     redact: {
-      paths: ["req.headers.cookie", "res.headers"],
+      paths: ["req.headers.cookie", "res.headers['set-cookie']"],
       remove: true,
     },
   },

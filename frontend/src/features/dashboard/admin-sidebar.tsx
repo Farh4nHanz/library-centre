@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 /** @context */
+import { useAuth } from "@/context/user-context";
 import { usePath } from "@/context/path-context";
 
 /** @hooks */
@@ -50,6 +51,8 @@ export const AdminSidebar = () => {
 
   const { path } = usePath();
   const navigate = useNavigate();
+
+  const { user } = useAuth();
 
   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.auth);
@@ -106,14 +109,14 @@ export const AdminSidebar = () => {
               <DropdownMenuTrigger asChild>
                 <div className="flex justify-between items-center cursor-pointer gap-3">
                   <Avatar className="rounded-md size-8">
-                    <AvatarImage src="" />
+                    <AvatarImage src={user?.photoURL as string} />
                     <AvatarFallback>
                       <CircleUserRound />
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
-                    <span className="text-sm">Username</span>
-                    <small>user@gmail.com</small>
+                    <span className="text-sm">{user?.username}</span>
+                    <small>{user?.email}</small>
                   </div>
                   <ChevronsUpDown className="ml-auto size-5" />
                 </div>
@@ -141,8 +144,16 @@ export const AdminSidebar = () => {
                 description="Logout will remove all your data from this device. Are you sure?"
               />
               <LogoutAlertDialog.Footer>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={logout}>
+                <AlertDialogCancel disabled={status === "loading"}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                  }}
+                  disabled={status === "loading"}
+                >
                   {status === "loading" ? (
                     <Loader size="sm" color="white" />
                   ) : (
