@@ -28,7 +28,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { CustomDialog as UpdateBookDialog } from "@/components/ui/custom-dialog";
+import { Modal as DetailBookModal } from "@/components/ui/modal";
+import { Modal as UpdateBookModal } from "@/components/ui/modal";
 import { DialogClose } from "@/components/ui/dialog";
 import { CustomAlertDialog as DeleteBookAlertDialog } from "@/components/ui/alert/custom-alert-dialog";
 import {
@@ -41,15 +42,14 @@ import { FormInput } from "@/components/ui/form-input";
 
 /** @icons */
 import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-
-type BookDialogState = {
-  isDetailBookDialogOpen: boolean;
-  isUpdateBookDialogOpen: boolean;
-  isDeleteBookDialogOpen: boolean;
-};
+import { Separator } from "@/components/ui/separator";
 
 export const ColumnActions = ({ book }: { book: Book }) => {
-  const [dialogState, setDialogState] = useState<BookDialogState>({
+  const [dialogState, setDialogState] = useState<{
+    isDetailBookDialogOpen: boolean;
+    isUpdateBookDialogOpen: boolean;
+    isDeleteBookDialogOpen: boolean;
+  }>({
     isDetailBookDialogOpen: false,
     isUpdateBookDialogOpen: false,
     isDeleteBookDialogOpen: false,
@@ -174,8 +174,24 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     [deleteBookMutate, toast, queryClient, handleDialogStateChange]
   );
 
+  const detailBooksData = [
+    {
+      title: "Title",
+      value: book.title,
+    },
+    {
+      title: "Author",
+      value: book.author,
+    },
+    {
+      title: "Genre",
+      value: book.genre,
+    },
+  ];
+
   return (
     <>
+      {/* actions dropdown */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="size-8 p-0">
@@ -193,7 +209,11 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              handleDialogStateChange("isDetailBookDialogOpen", true)
+            }
+          >
             <Eye />
             View book details
           </DropdownMenuItem>
@@ -220,17 +240,53 @@ export const ColumnActions = ({ book }: { book: Book }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* update book dialog */}
-      <UpdateBookDialog
+      {/* book detail modal */}
+      <DetailBookModal
+        open={dialogState.isDetailBookDialogOpen}
+        onOpenChange={() =>
+          handleDialogStateChange("isDetailBookDialogOpen", false)
+        }
+      >
+        <DetailBookModal.Header
+          title={`Detail book: ${book.title}`}
+          description="View book details here."
+          className="text-start"
+        />
+
+        <Separator />
+
+        <div className="grid grid-cols-[40fr_60fr] items-center gap-5">
+          <div>
+            <img
+              src={book.coverURL}
+              alt={book.title}
+              className="w-full min-h-fit h-full border rounded-lg shadow-lg"
+            />
+          </div>
+          <div className="self-start flex flex-col gap-1">
+            {detailBooksData.map((data, i) => (
+              <div className="grid grid-cols-[40fr_60fr] w-full" key={i}>
+                <span className="font-bold">{data.title}</span>
+                <span className="">: {data.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </DetailBookModal>
+
+      {/* update book modal */}
+      <UpdateBookModal
         open={dialogState.isUpdateBookDialogOpen}
         onOpenChange={handleUpdateBookDialogClose}
         className="max-w-md"
       >
-        <UpdateBookDialog.Header
+        <UpdateBookModal.Header
           title="Edit book"
           description="Make changes to selected book here. Click save when you're done."
           className="text-start"
         />
+
+        <Separator />
 
         <Form {...form}>
           <form
@@ -280,7 +336,9 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               <FormInput name="publicationDate" control={control} type="date" />
             </div>
 
-            <UpdateBookDialog.Footer>
+            <Separator />
+
+            <UpdateBookModal.Footer>
               <DialogClose asChild>
                 <Button
                   type="button"
@@ -299,10 +357,10 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                   "Save"
                 )}
               </Button>
-            </UpdateBookDialog.Footer>
+            </UpdateBookModal.Footer>
           </form>
         </Form>
-      </UpdateBookDialog>
+      </UpdateBookModal>
 
       {/* delete book dialog */}
       <DeleteBookAlertDialog

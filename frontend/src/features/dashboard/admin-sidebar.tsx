@@ -126,11 +126,11 @@ export const AdminSidebar = () => {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem
-                  className="cursor-pointer"
+                  className="cursor-pointer text-destructive focus:text-destructive"
                   onClick={() => setIsLogoutDialogOpen(true)}
                 >
                   <LogOut />
-                  <span>Logout</span>
+                  Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

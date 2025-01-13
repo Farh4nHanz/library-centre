@@ -20,7 +20,7 @@ import { BOOK_QUERY_KEY } from "@/constants/dashboard";
 /** @components */
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
-import { CustomDialog as AddBookDialog } from "@/components/ui/custom-dialog";
+import { Modal as AddBookModal } from "@/components/ui/modal";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
 import { Loader } from "@/components/ui/loader";
@@ -101,15 +101,19 @@ const BookPage = () => {
           </Button>
         </div>
 
-        <BookTable columns={bookColumns} data={booksData || []} />
+        <BookTable
+          key={booksData?.length}
+          columns={bookColumns}
+          data={booksData || []}
+        />
       </div>
 
-      <AddBookDialog
+      <AddBookModal
         open={isAddBookDialogOpen}
         onOpenChange={handleDialogClose}
         className="max-w-md"
       >
-        <AddBookDialog.Header
+        <AddBookModal.Header
           title="Add New Book"
           description="Fill out the details below."
           className="text-start"
@@ -159,7 +163,7 @@ const BookPage = () => {
               <FormInput name="publicationDate" control={control} type="date" />
             </div>
 
-            <AddBookDialog.Footer className="mt-5 sm:gap-0 gap-2">
+            <AddBookModal.Footer className="mt-5 sm:gap-0 gap-2">
               <DialogClose asChild>
                 <Button
                   type="button"
@@ -174,10 +178,10 @@ const BookPage = () => {
               <Button type="submit" disabled={isAddBookPending}>
                 {isAddBookPending ? <Loader size="sm" color="white" /> : "Add"}
               </Button>
-            </AddBookDialog.Footer>
+            </AddBookModal.Footer>
           </form>
         </Form>
-      </AddBookDialog>
+      </AddBookModal>
     </>
   );
 };

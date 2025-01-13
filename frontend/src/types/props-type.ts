@@ -56,13 +56,13 @@ export type CustomAlertDialogHeaderProps = {
 export type CustomAlertDialogFooterProps = PropsWithChildren &
   React.ComponentProps<typeof AlertDialogFooter>;
 
-export type CustomDialogProps = CustomAlertDialogProps &
+export type ModalProps = CustomAlertDialogProps &
   React.HTMLAttributes<HTMLDivElement>;
 
-export type CustomDialogHeaderProps = CustomAlertDialogHeaderProps &
+export type ModalHeaderProps = CustomAlertDialogHeaderProps &
   React.ComponentProps<typeof DialogHeader>;
 
-export type CustomDialogFooterProps = PropsWithChildren &
+export type ModalFooterProps = PropsWithChildren &
   React.ComponentProps<typeof DialogFooter>;
 
 export type RedirectButtonProps = {

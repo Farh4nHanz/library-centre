@@ -2,7 +2,9 @@ import { type TablePaginationProps } from "@/types/props-type";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-export const TablePagination = <TData,>({ table }: TablePaginationProps<TData>) => {
+export const TablePagination = <TData,>({
+  table,
+}: TablePaginationProps<TData>) => {
   return (
     <>
       <Button
@@ -26,7 +28,7 @@ export const TablePagination = <TData,>({ table }: TablePaginationProps<TData>) 
 
       <span className="text-sm">
         Page {table.getState().pagination.pageIndex + 1} of{" "}
-        {table.getPageCount()}
+        {table.getPageCount() === 0 ? 1 : table.getPageCount()}
       </span>
     </>
   );

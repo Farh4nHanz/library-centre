@@ -58,7 +58,6 @@ export const BookTable = <TData, TValue>({
     data,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    pageCount: Math.ceil(data.length / pageState.pageSize),
     onPaginationChange: (updater) => {
       const newState =
         typeof updater === "function"
