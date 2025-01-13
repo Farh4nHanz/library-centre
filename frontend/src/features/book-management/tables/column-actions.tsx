@@ -43,6 +43,7 @@ import { FormInput } from "@/components/ui/form-input";
 /** @icons */
 import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 export const ColumnActions = ({ book }: { book: Book }) => {
   const [dialogState, setDialogState] = useState<{
@@ -68,8 +69,8 @@ export const ColumnActions = ({ book }: { book: Book }) => {
       title: book.title,
       author: book.author,
       description: book.description,
-      genre: Array.from(book.genre).join(", "),
-      isbn: book.isbn,
+      genre: Array.from(book.genre).join(", ").trim(),
+      isbn: book.isbn ? (String(book.isbn) as unknown as number) : book.isbn,
       pages: String(book.pages) as unknown as number,
       totalCopies: String(book.totalCopies) as unknown as number,
       publisher: book.publisher,
@@ -115,8 +116,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
         },
         onError: (err) => {
-          handleDialogStateChange("isUpdateBookDialogOpen", false);
-
           if (err instanceof AxiosError && err.response) {
             toast({
               title: "Error",
@@ -173,21 +172,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     },
     [deleteBookMutate, toast, queryClient, handleDialogStateChange]
   );
-
-  const detailBooksData = [
-    {
-      title: "Title",
-      value: book.title,
-    },
-    {
-      title: "Author",
-      value: book.author,
-    },
-    {
-      title: "Genre",
-      value: book.genre,
-    },
-  ];
 
   return (
     <>
@@ -246,31 +230,49 @@ export const ColumnActions = ({ book }: { book: Book }) => {
         onOpenChange={() =>
           handleDialogStateChange("isDetailBookDialogOpen", false)
         }
+        className="max-w-md min-w-fit"
       >
         <DetailBookModal.Header
-          title={`Detail book: ${book.title}`}
+          title="Detail Book"
           description="View book details here."
           className="text-start"
         />
 
         <Separator />
 
-        <div className="grid grid-cols-[40fr_60fr] items-center gap-5">
-          <div>
-            <img
-              src={book.coverURL}
-              alt={book.title}
-              className="w-full min-h-fit h-full border rounded-lg shadow-lg"
-            />
-          </div>
-          <div className="self-start flex flex-col gap-1">
-            {detailBooksData.map((data, i) => (
-              <div className="grid grid-cols-[40fr_60fr] w-full" key={i}>
-                <span className="font-bold">{data.title}</span>
-                <span className="">: {data.value}</span>
+        <div className="grid grid-cols-[40fr_60fr] gap-5 items-start mb-5">
+          <img
+            src={book.coverURL}
+            alt={book.title}
+            className="w-full h-auto border rounded-lg shadow-lg object-cover"
+          />
+
+          <div className="space-y-5">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-xl font-bold">{book.title}</h1>
+              <h3 className="text-sm text-muted-foreground">
+                Written by: {book.author}
+              </h3>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <span className="text-base text-slate-800 font-medium">
+                Genre:
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {Object.keys(book.genre).map((_, i) => (
+                  <Badge variant="secondary" key={`genre-${i}`}>
+                    {book.genre[i]}
+                  </Badge>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <h1 className="text-lg font-bold">About this eBook</h1>
+          <p className="text-[0.85rem]">{book.description}</p>
         </div>
       </DetailBookModal>
 

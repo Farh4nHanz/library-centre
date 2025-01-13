@@ -26,7 +26,7 @@ export const bookColumns: ColumnDef<Book>[] = [
     header: () => <div className="font-bold text-start">Genre</div>,
     cell: ({ row }) => (
       <div className="text-start">
-        {Array.from(row.getValue("genre") as string).join(", ")}
+        {Array.from(row.getValue("genre") as string).join(", ").trim()}
       </div>
     ),
   },

@@ -66,8 +66,6 @@ const BookPage = () => {
         queryClient.invalidateQueries({ queryKey: [BOOK_QUERY_KEY[0]] });
       },
       onError: (err) => {
-        setIsAddBookDialogOpen(false);
-
         if (err instanceof AxiosError && err.response) {
           toast({
             title: "Error",
