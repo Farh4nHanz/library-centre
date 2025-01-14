@@ -49,5 +49,6 @@ export type Book = {
   totalCopies: number;
   availableCopies: number;
   rating: number;
+  totalRating: number[];
   slug: string;
 };

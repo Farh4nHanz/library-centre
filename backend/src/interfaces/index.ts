@@ -27,6 +27,7 @@ export interface Book extends Document {
   totalCopies: number;
   availableCopies: number;
   rating: number;
+  totalRating: number[];
   slug: string;
 }
 

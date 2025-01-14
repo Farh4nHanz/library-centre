@@ -42,7 +42,8 @@ import { FormInput } from "@/components/ui/form-input";
 import { Badge } from "@/components/ui/badge";
 
 /** @icons */
-import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { Copy, Edit, Eye, MoreHorizontal, Star, Trash2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 export const ColumnActions = ({ book }: { book: Book }) => {
   const [dialogState, setDialogState] = useState<{
@@ -238,13 +239,16 @@ export const ColumnActions = ({ book }: { book: Book }) => {
         />
 
         <div className="grid grid-cols-[40fr_60fr] gap-5 mb-5">
+          {/* left column, book cover */}
           <img
             src={book.coverURL}
             alt={book.title}
-            className="size-auto border rounded-lg shadow-lg object-cover place-self-center"
+            className="size-auto border rounded-lg shadow-lg object-cover place-self-center md:self-center self-start"
           />
 
+          {/* right column */}
           <div className="space-y-5">
+            {/* book title */}
             <div className="flex flex-col gap-1">
               <h1 className="text-xl font-bold">{book.title}</h1>
               <h3 className="text-sm text-muted-foreground">
@@ -252,6 +256,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               </h3>
             </div>
 
+            {/* book genre(s) */}
             <div className="flex items-start gap-2">
               <span className="text-sm text-slate-800 font-medium">Genre:</span>
               <div className="flex flex-wrap items-center gap-2">
@@ -265,9 +270,70 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           </div>
         </div>
 
-        <div className="space-y-1">
-          <h1 className="text-lg font-bold">About this eBook</h1>
-          <p className="text-[0.85rem]">{book.description}</p>
+        <div className="space-y-5">
+          {/* book description */}
+          <div className="space-y-1">
+            <h1 className="text-lg font-semibold">About this eBook</h1>
+            <p className="text-[0.85rem]">{book.description}</p>
+          </div>
+
+          {/* book rating */}
+          <div className="flex flex-col space-y-2">
+            <h1 className="text-lg font-semibold">Rating</h1>
+
+            <div className="grid grid-cols-[20fr_80fr] gap-2">
+              <div className="flex flex-col space-y-2 items-center justify-center">
+                {/* rating number */}
+                <h1 className="font-semibold text-xl">{book.rating}</h1>
+
+                {/* star rating indicator */}
+                <div className="inline-flex gap-0">
+                  {Array.from({ length: Math.floor(book.rating) }, (_, i) => (
+                    <Star
+                      key={`filled-star-${i}`}
+                      size={16}
+                      className="fill-amber-500"
+                      color="transparent"
+                    />
+                  ))}
+                  {Array.from(
+                    { length: 5 - Math.floor(book.rating) },
+                    (_, i) => (
+                      <Star
+                        key={`empty-star-${i}`}
+                        size={16}
+                        className="fill-gray-500"
+                        color="transparent"
+                      />
+                    )
+                  )}
+                </div>
+
+                {/* total book rating */}
+                <p className="text-xs text-muted-foreground">
+                  Total {book.totalRating.length}
+                </p>
+              </div>
+
+              {/* rating indicator */}
+              <div className="flex flex-col justify-center">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <div
+                    className="flex flex-nowrap items-center gap-3"
+                    key={`rate-${i}`}
+                  >
+                    <span className="text-sm">{i + 1}</span>
+                    <Progress
+                      value={
+                        book.totalRating.filter((r) => r === i + 1).length || 0
+                      }
+                      className="bg-amber-500"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </DetailBookModal>
 
