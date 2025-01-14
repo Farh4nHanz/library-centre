@@ -39,11 +39,10 @@ import {
 import { Loader } from "@/components/ui/loader";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
+import { Badge } from "@/components/ui/badge";
 
 /** @icons */
 import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 
 export const ColumnActions = ({ book }: { book: Book }) => {
   const [dialogState, setDialogState] = useState<{
@@ -175,7 +174,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
   return (
     <>
-      {/* actions dropdown */}
+      {/* dropdown actions */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="size-8 p-0">
@@ -238,13 +237,11 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           className="text-start"
         />
 
-        <Separator />
-
-        <div className="grid grid-cols-[40fr_60fr] gap-5 items-start mb-5">
+        <div className="grid grid-cols-[40fr_60fr] gap-5 mb-5">
           <img
             src={book.coverURL}
             alt={book.title}
-            className="w-full h-auto border rounded-lg shadow-lg object-cover"
+            className="size-auto border rounded-lg shadow-lg object-cover place-self-center"
           />
 
           <div className="space-y-5">
@@ -256,9 +253,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
             </div>
 
             <div className="flex items-start gap-2">
-              <span className="text-base text-slate-800 font-medium">
-                Genre:
-              </span>
+              <span className="text-sm text-slate-800 font-medium">Genre:</span>
               <div className="flex flex-wrap items-center gap-2">
                 {Object.keys(book.genre).map((_, i) => (
                   <Badge variant="secondary" key={`genre-${i}`}>
@@ -287,8 +282,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           description="Make changes to selected book here. Click save when you're done."
           className="text-start"
         />
-
-        <Separator />
 
         <Form {...form}>
           <form
@@ -337,8 +330,6 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               <FormInput name="publisher" control={control} />
               <FormInput name="publicationDate" control={control} type="date" />
             </div>
-
-            <Separator />
 
             <UpdateBookModal.Footer>
               <DialogClose asChild>

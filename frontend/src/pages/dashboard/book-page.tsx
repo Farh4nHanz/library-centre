@@ -86,6 +86,7 @@ const BookPage = () => {
   return (
     <>
       <div className="min-h-screen w-full space-y-6 p-4">
+        {/* header */}
         <div className="flex justify-between items-center gap-2 mb-10">
           <h1 className="text-2xl font-bold">Books Data</h1>
 
@@ -99,6 +100,7 @@ const BookPage = () => {
           </Button>
         </div>
 
+        {/* table */}
         <BookTable
           key={booksData?.length}
           columns={bookColumns}
@@ -106,6 +108,7 @@ const BookPage = () => {
         />
       </div>
 
+      {/* add book modal */}
       <AddBookModal
         open={isAddBookDialogOpen}
         onOpenChange={handleDialogClose}
@@ -161,7 +164,7 @@ const BookPage = () => {
               <FormInput name="publicationDate" control={control} type="date" />
             </div>
 
-            <AddBookModal.Footer className="mt-5 sm:gap-0 gap-2">
+            <AddBookModal.Footer>
               <DialogClose asChild>
                 <Button
                   type="button"

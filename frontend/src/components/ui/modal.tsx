@@ -4,6 +4,7 @@ import {
   type ModalHeaderProps,
   type ModalProps,
 } from "@/types/props-type";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 const ModalComponent: React.FC<ModalProps> = ({
   open,
@@ -35,6 +36,7 @@ const ModalHeader = memo(
       <DialogHeader {...props}>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
+        <Separator />
       </DialogHeader>
     );
   }
@@ -43,7 +45,14 @@ const ModalHeader = memo(
 ModalHeader.displayName = "ModalHeader";
 
 const ModalFooter = memo(({ children, ...props }: ModalFooterProps) => {
-  return <DialogFooter {...props}>{children}</DialogFooter>;
+  return (
+    <>
+      <Separator />
+      <DialogFooter {...props} className="sm:space-x-0 gap-2">
+        {children}
+      </DialogFooter>
+    </>
+  );
 });
 
 ModalFooter.displayName = "ModalFooter";

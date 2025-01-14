@@ -108,12 +108,18 @@ export const AdminSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex justify-between items-center cursor-pointer gap-3">
-                  <Avatar className="rounded-md size-8">
-                    <AvatarImage src={user?.photoURL as string} />
-                    <AvatarFallback>
-                      <CircleUserRound />
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="rounded-md size-8">
+                      <AvatarImage src={user?.photoURL as string} />
+                      <AvatarFallback>
+                        <CircleUserRound />
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <span className="absolute bottom-0 end-0 size-3 rounded-full border-2 border-background bg-emerald-500">
+                      <span className="sr-only">Online</span>
+                    </span>
+                  </div>
                   <div className="flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
                     <span className="text-sm">{user?.username}</span>
                     <small>{user?.email}</small>
