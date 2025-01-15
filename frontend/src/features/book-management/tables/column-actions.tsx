@@ -40,10 +40,13 @@ import { Loader } from "@/components/ui/loader";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+
+/** @features */
+import { StarRating } from "@/features/book-management/star-rating";
 
 /** @icons */
-import { Copy, Edit, Eye, MoreHorizontal, Star, Trash2 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 
 export const ColumnActions = ({ book }: { book: Book }) => {
   const [dialogState, setDialogState] = useState<{
@@ -173,6 +176,15 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     [deleteBookMutate, toast, queryClient, handleDialogStateChange]
   );
 
+  const releasedBookDate = new Intl.DateTimeFormat("us-EN", {
+    dateStyle: "medium",
+  }).format(new Date(book.publicationDate));
+
+  const totalReviews = new Intl.NumberFormat("us-EN", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(10200);
+
   return (
     <>
       {/* dropdown actions */}
@@ -238,6 +250,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           className="text-start"
         />
 
+        {/* book details */}
         <div className="grid grid-cols-[40fr_60fr] gap-5 mb-5">
           {/* left column, book cover */}
           <img
@@ -248,12 +261,17 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
           {/* right column */}
           <div className="space-y-5">
-            {/* book title */}
-            <div className="flex flex-col gap-1">
+            {/* book title, author, and released date */}
+            <div className="flex flex-col space-y-2">
               <h1 className="text-xl font-bold">{book.title}</h1>
-              <h3 className="text-sm text-muted-foreground">
-                Written by: {book.author}
-              </h3>
+              <div className="space-y-1">
+                <h3 className="text-sm text-blue-500 underline">
+                  {book.author}
+                </h3>
+                <h3 className="text-sm text-muted-foreground">
+                  Released on {releasedBookDate}
+                </h3>
+              </div>
             </div>
 
             {/* book genre(s) */}
@@ -265,6 +283,27 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                     {book.genre[i]}
                   </Badge>
                 ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 py-4 gap-4">
+              {/* rating and total reviews */}
+              <div className="flex flex-col justify-center items-center border-r border-gray-300 pr-4">
+                <div className="flex items-center gap-1">
+                  <span className="font-medium">4,7</span>
+                  <StarRating className="fill-amber-500" />
+                </div>
+
+                <span className="text-muted-foreground text-xs text-center text-nowrap">
+                  {totalReviews} reviews
+                </span>
+              </div>
+
+              <div className="flex justify-center items-center border-r border-gray-300 pr-4">
+                <span>4,7</span>
+              </div>
+              <div className="flex justify-center items-center">
+                <span>4,7</span>
               </div>
             </div>
           </div>
@@ -289,21 +328,17 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                 {/* star rating indicator */}
                 <div className="inline-flex gap-0">
                   {Array.from({ length: Math.floor(book.rating) }, (_, i) => (
-                    <Star
+                    <StarRating
                       key={`filled-star-${i}`}
-                      size={16}
                       className="fill-amber-500"
-                      color="transparent"
                     />
                   ))}
                   {Array.from(
                     { length: 5 - Math.floor(book.rating) },
                     (_, i) => (
-                      <Star
+                      <StarRating
                         key={`empty-star-${i}`}
-                        size={16}
                         className="fill-gray-500"
-                        color="transparent"
                       />
                     )
                   )}
