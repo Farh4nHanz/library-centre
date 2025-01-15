@@ -41,12 +41,25 @@ import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/ui/form-input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 /** @features */
 import { StarRating } from "@/features/book-management/star-rating";
 
 /** @icons */
-import { Copy, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  BookMarked,
+  Copy,
+  Edit,
+  Eye,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 
 export const ColumnActions = ({ book }: { book: Book }) => {
   const [dialogState, setDialogState] = useState<{
@@ -185,6 +198,49 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     maximumFractionDigits: 1,
   }).format(10200);
 
+  const items = [
+    {
+      column: "Title",
+      data: book.title,
+    },
+    {
+      column: "Author",
+      data: book.author,
+    },
+    {
+      column: "ISBN",
+      data: book.isbn,
+    },
+    {
+      column: "Total page",
+      data: book.pages,
+    },
+    {
+      column: "Genre",
+      data: Array.from(book.genre).join(", "),
+    },
+    {
+      column: "Publisher",
+      data: book.publisher,
+    },
+    {
+      column: "Published on",
+      data: releasedBookDate,
+    },
+    {
+      column: "Total copies",
+      data: book.totalCopies,
+    },
+    {
+      column: "Available copies",
+      data: book.availableCopies,
+    },
+    {
+      column: "Rating",
+      data: book.rating,
+    },
+  ];
+
   return (
     <>
       {/* dropdown actions */}
@@ -245,13 +301,13 @@ export const ColumnActions = ({ book }: { book: Book }) => {
         className="max-w-md min-w-fit"
       >
         <DetailBookModal.Header
-          title="Detail Book"
+          title="Detail eBook"
           description="View book details here."
           className="text-start"
         />
 
         {/* book details */}
-        <div className="grid grid-cols-[40fr_60fr] gap-5 mb-5">
+        <div className="grid grid-cols-[40fr_60fr] gap-8 mb-5">
           {/* left column, book cover */}
           <img
             src={book.coverURL}
@@ -286,30 +342,36 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 py-4 gap-4">
+            {/* rating, review(s), book type, and pages */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 py-4 gap-4 justify-items-center">
               {/* rating and total reviews */}
-              <div className="flex flex-col justify-center items-center border-r border-gray-300 pr-4">
+              <div className="w-full flex flex-col justify-center items-center border-r border-gray-300 pr-4 text-center">
                 <div className="flex items-center gap-1">
-                  <span className="font-medium">4,7</span>
+                  <span className="font-medium">{book.rating}</span>
                   <StarRating className="fill-amber-500" />
                 </div>
 
-                <span className="text-muted-foreground text-xs text-center text-nowrap">
-                  {totalReviews} reviews
+                <span className="text-muted-foreground text-xs text-nowrap">
+                  {totalReviews} review(s)
                 </span>
               </div>
 
-              <div className="flex justify-center items-center border-r border-gray-300 pr-4">
-                <span>4,7</span>
+              {/* book type */}
+              <div className="w-full flex flex-col justify-center items-center lg:border-r lg:border-gray-300 pr-4 text-center gap-1">
+                <BookMarked className="m-auto" />
+                <span className="text-muted-foreground text-xs">eBook</span>
               </div>
-              <div className="flex justify-center items-center">
-                <span>4,7</span>
+
+              {/* book pages */}
+              <div className="w-full col-span-2 lg:col-span-1 flex flex-col justify-center items-center">
+                <span className="text-base font-medium">{book.pages}</span>
+                <span className="text-muted-foreground text-xs">Pages</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-10">
           {/* book description */}
           <div className="space-y-1">
             <h1 className="text-lg font-semibold">About this eBook</h1>
@@ -320,7 +382,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           <div className="flex flex-col space-y-2">
             <h1 className="text-lg font-semibold">Rating</h1>
 
-            <div className="grid grid-cols-[20fr_80fr] gap-2">
+            <div className="grid grid-cols-[20fr_80fr] gap-5">
               <div className="flex flex-col space-y-2 items-center justify-center">
                 {/* rating number */}
                 <h1 className="font-semibold text-xl">{book.rating}</h1>
@@ -368,6 +430,30 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* more details */}
+          <div className="space-y-4">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="more details" className="py-2 border-none">
+                <AccordionTrigger className="pb-5 text-lg font-semibold hover:no-underline">
+                  More details
+                </AccordionTrigger>
+                <AccordionContent className="pb-2 space-y-4">
+                  {items.map((item, i) => (
+                    <div
+                      className="grid grid-cols-[30fr_70fr] gap-5"
+                      key={`detail-item-${i}`}
+                    >
+                      <span className="text-sm font-medium">{item.column}</span>
+                      <span className="text-sm text-slate-700">
+                        {item.data}
+                      </span>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
       </DetailBookModal>
