@@ -51,7 +51,25 @@ class BookController {
   ): Promise<void> => {
     try {
       const books = await BookModel.find().sort({ createdAt: -1 }); // get all books from database
-      res.status(200).json({ books: books }); // send the books data to client
+      const formattedBooks = books.map((book) => {
+        const averageRating =
+          book.rating.length > 0
+            ? Number(
+                (
+                  book.rating.reduce((a, b) => a + b, 0) / book.rating.length
+                ).toFixed(1)
+              )
+            : 0; // calculate the average rating
+
+        return {
+          ...book.toObject({ virtuals: true }), // convert the book document to object
+          rating: averageRating, // convert the average rating from string to number
+          allRatings: book.rating, // get all ratings
+          totalRatings: book.rating.length, // get the total number of ratings
+        };
+      }); // map the books to calculate the rating of each book
+
+      res.status(200).json({ books: formattedBooks }); // send the books data to client
     } catch (err) {
       logger.error(err); // logging error
       next(err); // passing error to error middleware
@@ -89,7 +107,23 @@ class BookController {
       const book = await BookModel.findById(id); // find the book
       if (!book) throw new CustomError("Book not found!", 404); // check if the book exists
 
-      res.status(200).json({ book: book }); // send the book data to client
+      const averageRating =
+        book.rating.length > 0
+          ? Number(
+              (
+                book.rating.reduce((a, b) => a + b, 0) / book.rating.length
+              ).toFixed(1)
+            )
+          : 0; // calculate the average rating
+
+      res.status(200).json({
+        book: {
+          ...book.toObject({ virtuals: true }),
+          rating: averageRating,
+          allRatings: book.rating,
+          totalRatings: book.rating.length,
+        },
+      }); // send the book data to client
     } catch (err) {
       logger.error(err); // logging error
       next(err); // passing error to error middleware

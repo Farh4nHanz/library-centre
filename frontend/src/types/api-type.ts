@@ -19,7 +19,13 @@ export type UserPayload = {
 
 export type BookPayload = Omit<
   Book,
-  "id" | "coverURL" | "availableCopies" | "rating" | "totalRating" | "slug"
+  | "id"
+  | "coverURL"
+  | "availableCopies"
+  | "rating"
+  | "allRatings"
+  | "totalRatings"
+  | "slug"
 >;
 
 export type BookResponse = {

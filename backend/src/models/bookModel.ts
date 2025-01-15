@@ -57,20 +57,24 @@ const bookSchema = new Schema(
       type: Number,
       min: 0,
     },
-    rating: {
-      type: Number,
-      min: 0,
-      max: 5,
-      default: 0,
-    },
-    totalRating: [
+    rating: [
       {
         type: Number,
         min: 0,
         max: 5,
-        default: 0,
       },
     ],
+    // comments: [
+    //   {
+    //     userId: {
+    //       type: Schema.Types.ObjectId,
+    //       ref: "User",
+    //     },
+    //     comment: {
+    //       type: String,
+    //     },
+    //   },
+    // ],
     slug: {
       type: String,
     },
@@ -91,9 +95,6 @@ bookSchema.pre("save", function (next) {
 
     next();
   }
-
-  this.rating =
-    this.totalRating.reduce((a, b) => a + b, 0) / this.totalRating.length || 0;
 
   next();
 });

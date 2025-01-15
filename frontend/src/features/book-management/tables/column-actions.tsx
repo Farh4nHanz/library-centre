@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AxiosError } from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -189,57 +189,75 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     [deleteBookMutate, toast, queryClient, handleDialogStateChange]
   );
 
-  const releasedBookDate = new Intl.DateTimeFormat("us-EN", {
-    dateStyle: "medium",
-  }).format(new Date(book.publicationDate));
+  const releasedBookDate = useMemo(() => {
+    return new Intl.DateTimeFormat("us-EN", {
+      dateStyle: "medium",
+    }).format(new Date(book.publicationDate));
+  }, [book.publicationDate]);
 
-  const totalReviews = new Intl.NumberFormat("us-EN", {
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(10200);
+  const totalReviews = useMemo(() => {
+    return new Intl.NumberFormat("us-EN", {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(10200);
+  }, []);
 
-  const items = [
-    {
-      column: "Title",
-      data: book.title,
-    },
-    {
-      column: "Author",
-      data: book.author,
-    },
-    {
-      column: "ISBN",
-      data: book.isbn,
-    },
-    {
-      column: "Total page",
-      data: book.pages,
-    },
-    {
-      column: "Genre",
-      data: Array.from(book.genre).join(", "),
-    },
-    {
-      column: "Publisher",
-      data: book.publisher,
-    },
-    {
-      column: "Published on",
-      data: releasedBookDate,
-    },
-    {
-      column: "Total copies",
-      data: book.totalCopies,
-    },
-    {
-      column: "Available copies",
-      data: book.availableCopies,
-    },
-    {
-      column: "Rating",
-      data: book.rating,
-    },
-  ];
+  const detailBookData = useMemo(
+    () => [
+      {
+        column: "Title",
+        data: book.title,
+      },
+      {
+        column: "Author",
+        data: book.author,
+      },
+      {
+        column: "ISBN",
+        data: book.isbn,
+      },
+      {
+        column: "Total page",
+        data: book.pages,
+      },
+      {
+        column: "Genre",
+        data: Array.from(book.genre).join(", "),
+      },
+      {
+        column: "Publisher",
+        data: book.publisher,
+      },
+      {
+        column: "Published on",
+        data: releasedBookDate,
+      },
+      {
+        column: "Total copies",
+        data: book.totalCopies,
+      },
+      {
+        column: "Available copies",
+        data: book.availableCopies,
+      },
+      {
+        column: "Rating",
+        data: book.rating,
+      },
+    ],
+    [
+      book.title,
+      book.author,
+      book.isbn,
+      book.pages,
+      book.genre,
+      book.publisher,
+      releasedBookDate,
+      book.totalCopies,
+      book.availableCopies,
+      book.rating,
+    ]
+  );
 
   return (
     <>
@@ -371,6 +389,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
           </div>
         </div>
 
+        {/* book description, rating, and more details */}
         <div className="space-y-10">
           {/* book description */}
           <div className="space-y-1">
@@ -408,7 +427,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
 
                 {/* total book rating */}
                 <p className="text-xs text-muted-foreground">
-                  Total {book.totalRating.length}
+                  Total {book.totalRatings}
                 </p>
               </div>
 
@@ -422,7 +441,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                     <span className="text-sm">{i + 1}</span>
                     <Progress
                       value={
-                        book.totalRating.filter((r) => r === i + 1).length || 0
+                        book.allRatings.filter((r) => r === i + 1).length || 0
                       }
                       className="bg-amber-500"
                     />
@@ -440,7 +459,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                   More details
                 </AccordionTrigger>
                 <AccordionContent className="pb-2 space-y-4">
-                  {items.map((item, i) => (
+                  {detailBookData.map((item, i) => (
                     <div
                       className="grid grid-cols-[30fr_70fr] gap-5"
                       key={`detail-item-${i}`}
