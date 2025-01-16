@@ -11,7 +11,7 @@ import { ALLOWED_FILE_TYPE, MAX_FILE_SIZE } from "@/constants";
 const upload: Multer = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_FILE_SIZE },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_req, file, cb) => {
     if (file.size > MAX_FILE_SIZE) {
       cb(new CustomError("Please upload file under 2MB.", 413));
     } else if (!ALLOWED_FILE_TYPE.includes(file.mimetype)) {

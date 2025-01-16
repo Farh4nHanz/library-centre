@@ -4,7 +4,12 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { DecodedToken, RequestWithCookies, User } from "@/interfaces";
+import {
+  DecodedToken,
+  RequestWithCookies,
+  RequestWithUser,
+  User,
+} from "@/interfaces";
 
 /** @types */
 import { type UserRequestBody } from "@/types";
@@ -162,14 +167,14 @@ class AuthController {
    * @example
    * router.post("/logout", authController.logoutUser);
    */
-  logoutUser: RequestHandler = (req: RequestWithCookies, res): void => {
-    const token = req.cookies.accessToken; // grab the access token from cookie
+  logoutUser: RequestHandler = (req, res, _next): void => {
+    const { accessToken } = (req as RequestWithCookies).cookies; // destructure the access token from cookie
 
-    if (!token) throw new CustomError("Unauthorized!", 401); // check if there's a token, if not, throw an error
+    if (!accessToken) throw new CustomError("Unauthorized!", 401); // check if there's a token, if not, throw an error
 
     try {
       const decoded = jwt.verify(
-        token,
+        accessToken,
         process.env.ACCESS_TOKEN_SECRET!
       ) as DecodedToken; // verify the token
 
@@ -201,16 +206,12 @@ class AuthController {
    * @example
    * router.get("/me", authController.checkAuth);
    */
-  checkAuth: RequestHandler = async (
-    req: RequestWithCookies,
-    res,
-    next
-  ): Promise<void> => {
+  checkAuth: RequestHandler = async (req, res, next): Promise<void> => {
     try {
-      const { accessToken } = req.cookies; // grab the access token from cookie
+      const { accessToken } = (req as RequestWithCookies).cookies; // grab the access token from cookie
       if (!accessToken) throw new CustomError("Please login first!", 403); // check if there's a token, if not, throw an error
 
-      const { id } = req.user as User; // destructure the user id from request
+      const { id } = (req as RequestWithUser).user as User; // grab the user id from request
 
       if (!mongoose.isValidObjectId(id))
         throw new CustomError("Invalid user id!", 400); // check if the user id is valid
@@ -243,13 +244,9 @@ class AuthController {
    * @example
    * router.post("/refresh-token", authController.refreshToken);
    */
-  refreshToken: RequestHandler = async (
-    req: RequestWithCookies,
-    res,
-    next
-  ): Promise<void> => {
+  refreshToken: RequestHandler = async (req, res, next): Promise<void> => {
     try {
-      const { refreshToken } = req.cookies; // grab the refresh token from cookie
+      const { refreshToken } = (req as RequestWithCookies).cookies; // grab the refresh token from cookie
       if (!refreshToken)
         throw new CustomError("Session expired. Please log in again!", 401); // check if there's a refresh token, if not, throw an error
 

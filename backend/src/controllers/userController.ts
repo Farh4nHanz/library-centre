@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import mongoose from "mongoose";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithCookies, User } from "@/interfaces";
+import { RequestWithUser, User } from "@/interfaces";
 
 /** @types */
 import { type RequestParams } from "@/types";
@@ -28,10 +28,6 @@ class UserController {
    * @method getAllUsers
    * @memberof UserController
    *
-   * @param {Request} req - The request object.
-   * @param {Response} res - The response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {Error} - Passes the error to the next middleware if an error occurs.
    *
    * @returns {Promise<void>} Response with 200 status code and users array.
@@ -39,17 +35,11 @@ class UserController {
    * @example
    * router.get("/", userController.getAllUsers);
    */
-  getAllUsers = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  getAllUsers: RequestHandler = async (_req, res, next): Promise<void> => {
     try {
-      const users = await UserModel.find().select([
-        "username",
-        "email",
-        "role",
-      ]); // get all users from database
+      const users = await UserModel.find()
+        .select("-password")
+        .sort({ createdAt: -1 }); // get all users from database
       res.status(200).json({ users: users }); // send the users data to client
     } catch (err) {
       logger.error(err); // logging error
@@ -63,10 +53,6 @@ class UserController {
    * @method getUserById
    * @memberof UserController
    *
-   * @param {Request<RequestParams>} req - The request object containing user id in params.
-   * @param {Response} res - The response object to send back the desired HTTP response.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {CustomError} - If the user id is not valid or the user doesn't exist.
    *
    * @returns {Promise<void>} Response with status code 200 and user data.
@@ -74,10 +60,10 @@ class UserController {
    * @example
    * router.get("/:id", userController.getUserById);
    */
-  getUserById = async (
-    req: Request<RequestParams>,
-    res: Response,
-    next: NextFunction
+  getUserById: RequestHandler<RequestParams> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { id } = req.params; // grab the user id from request params
@@ -101,10 +87,6 @@ class UserController {
    * @method getUserProfile
    * @memberof UserController
    *
-   * @param {RequestWithCookies} req - The request object containing user data in cookies.
-   * @param {Response} res - The response object to send back the desired HTTP response.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {CustomError} An error with status code 400 or 404 and error message.
    *
    * @returns {Promise<void>} Response with status code 200 and user profile data.
@@ -112,13 +94,9 @@ class UserController {
    * @example
    * router.get("/profile", userController.getUserProfile);
    */
-  getUserProfile = async (
-    req: RequestWithCookies,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  getUserProfile: RequestHandler = async (req, res, next): Promise<void> => {
     try {
-      const { id } = req.user as User; // destructure the user id from request
+      const { id } = (req as RequestWithUser).user as User; // destructure the user id from request
 
       if (!mongoose.isValidObjectId(id))
         throw new CustomError("Invalid user id!", 400); // check if the user id is valid
@@ -139,10 +117,6 @@ class UserController {
    * @method deleteUserById
    * @memberof UserController
    *
-   * @param {Request<RequestParams>} req - The request object.
-   * @param {Response} res - The response object.
-   * @param {NextFunction} next - The next middleware function.
-   *
    * @throws {CustomError} An error with status code 400 or 404 and error message.
    *
    * @returns {Promise<void>} Response with status code 200 and deleted message.
@@ -150,10 +124,10 @@ class UserController {
    * @example
    * router.delete("/:id", userController.deleteUserById);
    */
-  deleteUserById = async (
-    req: Request<RequestParams>,
-    res: Response,
-    next: NextFunction
+  deleteUserById: RequestHandler<RequestParams> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { id } = req.params; // destructure the request params

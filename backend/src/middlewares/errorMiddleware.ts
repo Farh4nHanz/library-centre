@@ -14,9 +14,9 @@ import CustomError from "@/utils/customError";
  */
 export const errorHandler: ErrorRequestHandler = (
   err,
-  req,
+  _req,
   res,
-  next
+  _next
 ): void => {
   if (err instanceof CustomError) {
     res.status(err.statusCode).json({
@@ -75,7 +75,7 @@ export const errorHandler: ErrorRequestHandler = (
  */
 export const notFound = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   const error = new CustomError(`Not Found - ${req.originalUrl}`, 404);

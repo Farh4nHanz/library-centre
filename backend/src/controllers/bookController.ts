@@ -2,6 +2,9 @@ import { RequestHandler } from "express";
 import mongoose from "mongoose";
 import logger from "@/config/logger";
 
+/** @interfaces */
+import { RequestWithUser } from "@/interfaces";
+
 /** @types */
 import { type BookRequestBody, type RequestParams } from "@/types";
 
@@ -317,7 +320,7 @@ class BookController {
   rateBookById: RequestHandler<
     RequestParams,
     {},
-    { rating: string; comment: string }
+    { rating: number; comment: string }
   > = async (req, res, next): Promise<void> => {
     try {
       const { id } = req.params; // destructure the book id from parameter
@@ -337,7 +340,7 @@ class BookController {
           $push: {
             rating: validatedBookData.rating,
             reviews: {
-              userId: req.user!.id,
+              userId: (req as RequestWithUser).user?.id,
               comment: validatedBookData.comment,
             },
           },

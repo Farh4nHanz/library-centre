@@ -3,7 +3,11 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { DecodedToken, RequestWithCookies } from "@/interfaces";
+import {
+  DecodedToken,
+  RequestWithCookies,
+  RequestWithUser,
+} from "@/interfaces";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -27,12 +31,8 @@ import CustomError from "@/utils/customError";
  * @example
  * router.get("/dashboard", isAuth, userController.getAllUsers);
  */
-export const isAuth: RequestHandler = async (
-  req: RequestWithCookies,
-  res,
-  next
-): Promise<void> => {
-  const { refreshToken } = req.cookies; // grab the refresh token from cookie
+export const isAuth: RequestHandler = async (req, res, next): Promise<void> => {
+  const { refreshToken } = (req as RequestWithCookies).cookies; // grab the refresh token from cookie
   if (!refreshToken) throw new CustomError("Unauthorized!", 401); // if the token is missing, throw an error
 
   try {
@@ -49,7 +49,7 @@ export const isAuth: RequestHandler = async (
       throw new CustomError("User not found!", 404);
     } // if the user doesn't exist, return an error as a response
 
-    req.user = user; // store the user in the request object
+    (req as RequestWithUser).user = user; // store the user in the request object
     next(); // allow user to access private route
   } catch (err: unknown) {
     logger.error(err); // logging the error
@@ -75,17 +75,17 @@ export const isAuth: RequestHandler = async (
  * router.post("/login", stillAuth, authController.loginUser);
  */
 export const stillAuth: RequestHandler = async (
-  req: RequestWithCookies,
+  req,
   res,
   next
 ): Promise<void> => {
-  const token = req.cookies.accessToken; // grab the access token from cookie
+  const { accessToken } = (req as RequestWithCookies).cookies; // grab the access token from cookie
 
-  if (!token) return next(); // if there's no token, allow user to access the route
+  if (!accessToken) return next(); // if there's no token, allow user to access the route
 
   try {
     const decoded = jwt.verify(
-      token,
+      accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as DecodedToken; // if there's a token, verify the token
 
@@ -97,7 +97,7 @@ export const stillAuth: RequestHandler = async (
       throw new CustomError("User not found!", 404);
     } // if the user doesn't exist, return an error as a response
 
-    req.user = user; // set the user to the request object
+    (req as RequestWithUser).user = user; // set the user to the request object
     res.status(409).json({ message: "Already authenticated.", user: user }); // send a response
   } catch (err: unknown) {
     logger.error(err); // logging the error
@@ -114,14 +114,14 @@ export const stillAuth: RequestHandler = async (
  *
  * @param {UserRole[]} roles - An array of allowed user roles.
  *
- * @returns {(req: RequestWithCookies, _res, next) => void} - The middleware function.
+ * @returns {(req, _res, next) => void} - The middleware function.
  *
  * @example
  * router.get("/users", access([UserRole.admin]), userController.getAllUsers);
  */
 export const access = (roles: UserRole[]): RequestHandler => {
   return (req, _res, next): void => {
-    const user = req.user;
+    const user = (req as RequestWithUser).user;
 
     if (!roles.includes(user!.role)) {
       throw new CustomError("Access denied!", 403);

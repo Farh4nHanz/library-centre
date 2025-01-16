@@ -44,3 +44,7 @@ export interface RequestWithCookies extends Request {
     refreshToken?: string;
   };
 }
+
+export interface RequestWithUser extends Request {
+  user?: User;
+}
