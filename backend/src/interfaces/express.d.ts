@@ -1,16 +1,9 @@
-import express from "express";
+import { User } from ".";
 
-declare module "express" {
-  interface Response {
-    cookie: (
-      name: "accessToken" | "refreshToken",
-      value: string,
-      options?: CookieOptions
-    ) => this;
-
-    clearCookie: (
-      name: "accessToken" | "refreshToken",
-      options?: CookieOptions
-    ) => this;
+declare global {
+  namespace Express {
+    interface Request {
+      user: User | null;
+    }
   }
 }

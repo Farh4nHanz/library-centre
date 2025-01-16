@@ -64,17 +64,17 @@ const bookSchema = new Schema(
         max: 5,
       },
     ],
-    // comments: [
-    //   {
-    //     userId: {
-    //       type: Schema.Types.ObjectId,
-    //       ref: "User",
-    //     },
-    //     comment: {
-    //       type: String,
-    //     },
-    //   },
-    // ],
+    reviews: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        comment: {
+          type: String,
+        },
+      },
+    ],
     slug: {
       type: String,
     },
@@ -88,9 +88,9 @@ bookSchema.pre("save", function (next) {
     this.slug = slugify(this.title, { lower: true });
     this.author = capitalizeLetter(this.author);
     this.description = _.upperFirst(this.description);
-    this.genre = _.split(this.genre.toString().trim(), ", ").map((genre) =>
-      capitalizeLetter(genre)
-    );
+    this.genre = _.split(this.genre.toString(), ",")
+      .map((genre) => genre.trim())
+      .map((genre) => capitalizeLetter(genre));
     this.publisher = capitalizeLetter(this.publisher);
 
     next();
@@ -135,9 +135,9 @@ bookSchema.pre("findOneAndUpdate", async function (next) {
           break;
 
         case "genre":
-          update.$set.genre = _.split(update.$set.genre.toString(), ",").map(
-            (genre) => capitalizeLetter(genre)
-          );
+          update.$set.genre = _.split(update.$set.genre.toString(), ",")
+            .map((genre) => genre.trim())
+            .map((genre) => capitalizeLetter(genre));
           break;
 
         case "publisher":

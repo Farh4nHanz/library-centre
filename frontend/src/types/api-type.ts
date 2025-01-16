@@ -25,6 +25,7 @@ export type BookPayload = Omit<
   | "rating"
   | "allRatings"
   | "totalRatings"
+  | "reviews"
   | "slug"
 >;
 

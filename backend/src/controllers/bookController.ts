@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import mongoose from "mongoose";
 import logger from "@/config/logger";
 
@@ -12,7 +12,7 @@ import BookModel from "@/models/bookModel";
 import { s3Service } from "@/services/s3Service";
 
 /** @libs */
-import { bookSchema } from "@/lib/validator";
+import { bookSchema, rateBookSchema } from "@/lib/validator";
 
 /** @utils */
 import CustomError from "@/utils/customError";
@@ -31,10 +31,6 @@ class BookController {
    * @method getAllBooks
    * @memberof BookController
    *
-   * @param {Request} req - The Express request object.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * This method retrieves all book records from the database
    * and sends them in the response. If an error occurs, it logs
    * the error and passes it to the error-handling middleware.
@@ -44,13 +40,11 @@ class BookController {
    * @example
    * router.get("/", bookController.getAllBooks);
    */
-  getAllBooks = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  getAllBooks: RequestHandler = async (_req, res, next): Promise<void> => {
     try {
-      const books = await BookModel.find().sort({ createdAt: -1 }); // get all books from database
+      const books = await BookModel.find()
+        .sort({ createdAt: -1 })
+        .populate("reviews.userId", "username email"); // get all books from database
       const formattedBooks = books.map((book) => {
         const averageRating =
           book.rating.length > 0
@@ -82,10 +76,6 @@ class BookController {
    * @method getBookById
    * @memberof BookController
    *
-   * @param {Request<RequestParams>} req - The Express request object with request parameters.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The Express next function.
-   *
    * @throws {CustomError} If the book ID is invalid or not found.
    *
    * @returns {Promise<void>} Response with status code 200 and the book document.
@@ -93,10 +83,10 @@ class BookController {
    * @example
    * router.get("/:id", bookController.getBookById);
    */
-  getBookById = async (
-    req: Request<RequestParams>,
-    res: Response,
-    next: NextFunction
+  getBookById: RequestHandler<RequestParams> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { id } = req.params; // grab the book id from request params
@@ -104,7 +94,10 @@ class BookController {
       if (!mongoose.isValidObjectId(id))
         throw new CustomError("Invalid book id!", 400); // check if the book id is valid
 
-      const book = await BookModel.findById(id); // find the book
+      const book = await BookModel.findById(id).populate(
+        "reviews.userId",
+        "username email"
+      ); // find the book
       if (!book) throw new CustomError("Book not found!", 404); // check if the book exists
 
       const averageRating =
@@ -136,10 +129,6 @@ class BookController {
    * @method addNewBook
    * @memberof bookController
    *
-   * @param {Request<{}, {}, BookRequestBody>} req - The Express request object with request body.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The Express next function.
-   *
    * @throws {CustomError} If the book title already exists in the database.
    * @throws {ZodError} If the request body does not match the {@link BookRequestBody} schema.
    *
@@ -148,14 +137,14 @@ class BookController {
    * @example
    * router.post("/", bookController.addNewBook);
    */
-  addNewBook = async (
-    req: Request<{}, {}, BookRequestBody>,
-    res: Response,
-    next: NextFunction
+  addNewBook: RequestHandler<{}, {}, BookRequestBody> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const bookData = req.body; // grab the book data from request body
-      const parsedBookData = bookSchema.parse({
+      const validatedBookData = bookSchema.parse({
         ...bookData,
         isbn: bookData.isbn ? String(bookData.isbn) : null,
         pages: String(bookData.pages),
@@ -166,7 +155,7 @@ class BookController {
       if (!coverFile) throw new CustomError("Please upload book's cover!", 400); // if the cover file is not uploaded, throw an error
 
       const bookExists = await BookModel.findOne({
-        title: { $regex: new RegExp(parsedBookData.title, "i") },
+        title: { $regex: new RegExp(validatedBookData.title, "i") },
       });
       if (bookExists) throw new CustomError("Book already exists!", 409); // if the book is already exist, throw an error
 
@@ -178,9 +167,9 @@ class BookController {
       ); // upload the cover file to s3
 
       const newBook = new BookModel({
-        ...parsedBookData,
+        ...validatedBookData,
         coverURL,
-        availableCopies: parsedBookData.totalCopies,
+        availableCopies: validatedBookData.totalCopies,
       }); // store the book data in database
       await newBook.save();
 
@@ -200,10 +189,6 @@ class BookController {
    * @method updateBookById
    * @memberof BookController
    *
-   * @param {Request<RequestParams, {}, BookRequestBody>} req - The Express request object with request parameters and request body.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The Express next function.
-   *
    * @throws {CustomError} If the book ID is invalid or not found.
    * @throws {MulterError} If there is an error in uploading the cover file.
    *
@@ -212,10 +197,10 @@ class BookController {
    * @example
    * router.put("/:id", bookController.updateBookById);
    */
-  updateBookById = async (
-    req: Request<RequestParams, {}, BookRequestBody>,
-    res: Response,
-    next: NextFunction
+  updateBookById: RequestHandler<RequestParams, {}, BookRequestBody> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { id } = req.params; // destructure the book id from request params
@@ -252,10 +237,6 @@ class BookController {
    * @method deleteBookById
    * @memberof BookController
    *
-   * @param {Request<RequestParams>} req - The Express request object with request parameters.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The Express next function.
-   *
    * @throws {CustomError} If the book ID is invalid or not found.
    *
    * @returns {Promise<void>} Response with status code 200 and a message "One book has been deleted!".
@@ -263,10 +244,10 @@ class BookController {
    * @example
    * router.delete("/:id", bookController.deleteBookById);
    */
-  deleteBookById = async (
-    req: Request<RequestParams>,
-    res: Response,
-    next: NextFunction
+  deleteBookById: RequestHandler<RequestParams> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { id } = req.params; // destructure the book id from parameter
@@ -293,10 +274,6 @@ class BookController {
    * @method deleteAllBooks
    * @memberof BookController
    *
-   * @param {Request} req - The Express request object.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The Express next function.
-   *
    * @throws {CustomError} If there are no books in the database.
    *
    * @returns {Promise<void>} Response with status code 200 and a message "All books successfully deleted!".
@@ -304,11 +281,7 @@ class BookController {
    * @example
    * router.delete("/", bookController.deleteAllBooks);
    */
-  deleteAllBooks = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  deleteAllBooks: RequestHandler = async (_req, res, next): Promise<void> => {
     try {
       const books = await BookModel.find(); // find to count the number of books in database
       if (books.length < 1)
@@ -320,6 +293,76 @@ class BookController {
       await Promise.all(keys.map((key) => s3Service.deleteFile(key))); // delete all cover files from s3 bucket
 
       res.status(200).json({ message: "All books successfully deleted!" });
+    } catch (err) {
+      logger.error(err); // logging the error
+      next(err); // passing the error to next middleware
+    }
+  };
+
+  /**
+   * Rates a book with the given id.
+   *
+   * @method rateBookById
+   * @memberof BookController
+   *
+   * @throws {CustomError} If the book id is invalid.
+   * @throws {CustomError} If the rating is not a number between 1-5.
+   * @throws {CustomError} If the book is not found.
+   *
+   * @returns {Promise<void>} Response with status code 200 and a message "Thank you for rating this book!".
+   *
+   * @example
+   * router.put("/:id/rate", bookController.rateBookById);
+   */
+  rateBookById: RequestHandler<
+    RequestParams,
+    {},
+    { rating: string; comment: string }
+  > = async (req, res, next): Promise<void> => {
+    try {
+      const { id } = req.params; // destructure the book id from parameter
+
+      if (!mongoose.isValidObjectId(id))
+        throw new CustomError("Invalid book id!", 400); // if the book id is not valid, throw an error
+
+      const { rating, comment } = req.body; // destructure the rating and comment from request body
+      const validatedBookData = rateBookSchema.parse({
+        rating: String(rating),
+        comment,
+      }); // validate the rating and comment
+
+      const updatedBook = await BookModel.findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            rating: validatedBookData.rating,
+            reviews: {
+              userId: req.user!.id,
+              comment: validatedBookData.comment,
+            },
+          },
+        },
+        { new: true }
+      ).populate("reviews.userId", "username email"); // update the book
+
+      if (!updatedBook) throw new CustomError("Book not found!", 404); // if the book is not exist, throw an error
+
+      const averageRating = Number(
+        (
+          updatedBook.rating.reduce((a, b) => a + b, 0) /
+          updatedBook.rating.length
+        ).toFixed(1)
+      ); // calculate the new average rating
+
+      res.status(200).json({
+        message: "Thank you for rating this book!",
+        book: {
+          ...updatedBook.toObject({ virtuals: true }),
+          rating: averageRating,
+          allRatings: updatedBook.rating,
+          totalRatings: updatedBook.rating.length,
+        },
+      }); // return the response
     } catch (err) {
       logger.error(err); // logging the error
       next(err); // passing the error to next middleware

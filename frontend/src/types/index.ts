@@ -51,5 +51,11 @@ export type Book = {
   rating: number;
   allRatings: number[];
   totalRatings: number;
+  reviews: {
+    userId: string;
+    username: string;
+    email: string;
+    comment: string;
+  };
   slug: string;
 };

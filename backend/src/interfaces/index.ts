@@ -27,6 +27,10 @@ export interface Book extends Document {
   totalCopies: number;
   availableCopies: number;
   rating: number[];
+  reviews: {
+    userId: mongoose.Types.ObjectId;
+    comment: string;
+  }[];
   slug: string;
 }
 
@@ -39,5 +43,4 @@ export interface RequestWithCookies extends Request {
     accessToken?: string;
     refreshToken?: string;
   };
-  user?: User | DecodedToken;
 }

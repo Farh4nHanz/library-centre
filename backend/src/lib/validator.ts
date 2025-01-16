@@ -97,3 +97,18 @@ export const bookSchema = z.object({
     .transform((val) => new Date(val))
     .pipe(z.date({ invalid_type_error: "Invalid date format!" })),
 });
+
+export const rateBookSchema = z.object({
+  rating: z
+    .string({ required_error: "Please rate the book!" })
+    .transform((val) => parseInt(val, 10))
+    .pipe(
+      z
+        .number({ invalid_type_error: "Rating must be a number!" })
+        .min(1, "Rating must be greater than 0!")
+        .max(5, "Rating must be less than 6!")
+    ),
+  comment: z
+    .string({ invalid_type_error: "Comment must be a string!" })
+    .nullable(),
+});

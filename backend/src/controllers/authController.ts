@@ -1,4 +1,4 @@
-import { CookieOptions, NextFunction, Request, Response } from "express";
+import { CookieOptions, RequestHandler } from "express";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
@@ -38,10 +38,6 @@ class AuthController {
    * @method registerUser
    * @memberof AuthController
    *
-   * @param {Request<{}, {}, UserRequestBody>} req - The Express request object.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {CustomError} An error with status code 400, 409 and error message.
    *
    * @returns {Promise<void>} Response with status code 201, success message and user object.
@@ -49,10 +45,10 @@ class AuthController {
    * @example
    * router.post("/register", authController.registerUser);
    */
-  registerUser = async (
-    req: Request<{}, {}, UserRequestBody>,
-    res: Response,
-    next: NextFunction
+  registerUser: RequestHandler<{}, {}, UserRequestBody> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { username, email, password } = req.body; // destructure the request body
@@ -87,10 +83,6 @@ class AuthController {
    * @method loginUser
    * @memberof AuthController
    *
-   * @param {Request<{}, {}, UserRequestBody>} req - The Express request object.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {CustomError} An error with status code 400, 401, 404 and error message.
    *
    * @returns {Promise<void>}
@@ -100,10 +92,10 @@ class AuthController {
    * @example
    * router.post("/login", authController.loginUser);
    */
-  loginUser = async (
-    req: Request<{}, {}, UserRequestBody>,
-    res: Response,
-    next: NextFunction
+  loginUser: RequestHandler<{}, {}, UserRequestBody> = async (
+    req,
+    res,
+    next
   ): Promise<void> => {
     try {
       const { email, password } = req.body; // destructure the request body
@@ -131,7 +123,7 @@ class AuthController {
 
       res.cookie("accessToken", accessToken, {
         ...tokenOptions,
-        maxAge: 1 * 60 * 60 * 1000, // 1 hour
+        maxAge: 15 * 60 * 1000, // 15 minutes
       }); // set access token cookie
 
       res.cookie("refreshToken", refreshToken, {
@@ -161,9 +153,6 @@ class AuthController {
    * @method logoutUser
    * @memberof AuthController
    *
-   * @param {RequestWithCookies} req - The Express request object with cookies.
-   * @param {Response} res - The Express response object.
-   *
    * @throws {CustomError} An error with status code 401 and error message.
    *
    * @returns {void}
@@ -173,7 +162,7 @@ class AuthController {
    * @example
    * router.post("/logout", authController.logoutUser);
    */
-  logoutUser = (req: RequestWithCookies, res: Response): void => {
+  logoutUser: RequestHandler = (req: RequestWithCookies, res): void => {
     const token = req.cookies.accessToken; // grab the access token from cookie
 
     if (!token) throw new CustomError("Unauthorized!", 401); // check if there's a token, if not, throw an error
@@ -205,10 +194,6 @@ class AuthController {
    * @method checkAuth
    * @memberof AuthController
    *
-   * @param {RequestWithCookies} req - The Express request object with cookies.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {CustomError} An error with status code 404 and error message.
    *
    * @returns {Promise<void>} Response with status code 200 and user data.
@@ -216,10 +201,10 @@ class AuthController {
    * @example
    * router.get("/me", authController.checkAuth);
    */
-  checkAuth = async (
+  checkAuth: RequestHandler = async (
     req: RequestWithCookies,
-    res: Response,
-    next: NextFunction
+    res,
+    next
   ): Promise<void> => {
     try {
       const { accessToken } = req.cookies; // grab the access token from cookie
@@ -249,10 +234,6 @@ class AuthController {
    * @method refreshToken
    * @memberof AuthController
    *
-   * @param {RequestWithCookies} req - The Express request object with cookies.
-   * @param {Response} res - The Express response object.
-   * @param {NextFunction} next - The next middleware function in the stack.
-   *
    * @throws {CustomError} An error with status code 401 and error message.
    *
    * @returns {Promise<void>}
@@ -262,10 +243,10 @@ class AuthController {
    * @example
    * router.post("/refresh-token", authController.refreshToken);
    */
-  refreshToken = async (
+  refreshToken: RequestHandler = async (
     req: RequestWithCookies,
-    res: Response,
-    next: NextFunction
+    res,
+    next
   ): Promise<void> => {
     try {
       const { refreshToken } = req.cookies; // grab the refresh token from cookie

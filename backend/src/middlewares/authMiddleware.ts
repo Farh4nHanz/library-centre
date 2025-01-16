@@ -1,9 +1,9 @@
-import { NextFunction, Response } from "express";
+import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { DecodedToken, RequestWithCookies, User } from "@/interfaces";
+import { DecodedToken, RequestWithCookies } from "@/interfaces";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -20,10 +20,6 @@ import CustomError from "@/utils/customError";
  *
  * @throws {CustomError} - When the token is invalid or missing.
  *
- * @param req - The Express request object.
- * @param res - The Express response object.
- * @param next - The next middleware function in the stack.
- *
  * @returns {void} - Returns the next middleware function to allow user to access the route.
  *
  * This middleware will be used in authRouter to check if the user is authenticated.
@@ -31,10 +27,10 @@ import CustomError from "@/utils/customError";
  * @example
  * router.get("/dashboard", isAuth, userController.getAllUsers);
  */
-export const isAuth = async (
+export const isAuth: RequestHandler = async (
   req: RequestWithCookies,
-  res: Response,
-  next: NextFunction
+  res,
+  next
 ): Promise<void> => {
   const { refreshToken } = req.cookies; // grab the refresh token from cookie
   if (!refreshToken) throw new CustomError("Unauthorized!", 401); // if the token is missing, throw an error
@@ -71,10 +67,6 @@ export const isAuth = async (
  *
  * @throws {CustomError} - When the token is invalid.
  *
- * @param req - The Express request object.
- * @param res - The Express response object.
- * @param next - The next middleware function in the stack.
- *
  * @returns {void} - Returns the next middleware to allow user to access the route.
  *
  * This middleware will be used in authRouter to check if the user is already authenticated.
@@ -82,10 +74,10 @@ export const isAuth = async (
  * @example
  * router.post("/login", stillAuth, authController.loginUser);
  */
-export const stillAuth = async (
+export const stillAuth: RequestHandler = async (
   req: RequestWithCookies,
-  res: Response,
-  next: NextFunction
+  res,
+  next
 ): Promise<void> => {
   const token = req.cookies.accessToken; // grab the access token from cookie
 
@@ -122,16 +114,16 @@ export const stillAuth = async (
  *
  * @param {UserRole[]} roles - An array of allowed user roles.
  *
- * @returns {(req: RequestWithCookies, res: Response, next: NextFunction) => void} - The middleware function.
+ * @returns {(req: RequestWithCookies, _res, next) => void} - The middleware function.
  *
  * @example
  * router.get("/users", access([UserRole.admin]), userController.getAllUsers);
  */
-export const access = (roles: UserRole[]) => {
-  return (req: RequestWithCookies, res: Response, next: NextFunction): void => {
-    const user = req.user as User;
+export const access = (roles: UserRole[]): RequestHandler => {
+  return (req, _res, next): void => {
+    const user = req.user;
 
-    if (!roles.includes(user?.role)) {
+    if (!roles.includes(user!.role)) {
       throw new CustomError("Access denied!", 403);
     }
 
