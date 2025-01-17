@@ -66,12 +66,13 @@ const bookSchema = new Schema(
     ],
     reviews: [
       {
-        userId: {
+        user: {
           type: Schema.Types.ObjectId,
           ref: "User",
         },
         comment: {
           type: String,
+          default: null,
         },
       },
     ],
@@ -118,7 +119,7 @@ bookSchema.pre("findOneAndUpdate", async function (next) {
       );
     }
 
-    Object.keys(update.$set).forEach(async (key) => {
+    Object.keys(update.$set).forEach((key) => {
       const typedKey = key as keyof Book;
       switch (typedKey) {
         case "title":
@@ -145,9 +146,10 @@ bookSchema.pre("findOneAndUpdate", async function (next) {
           break;
       }
     });
+  }
 
-    update.$set.updatedAt = Date.now();
-    next();
+  if (update.$push?.reviews && update.$push.reviews.comment !== "") {
+    update.$push.reviews.comment = _.upperFirst(update.$push.reviews.comment);
   }
 
   next();

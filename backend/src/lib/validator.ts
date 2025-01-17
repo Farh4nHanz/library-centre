@@ -110,5 +110,6 @@ export const rateBookSchema = z.object({
     ),
   comment: z
     .string({ invalid_type_error: "Comment must be a string!" })
-    .nullable(),
+    .nullable()
+    .optional(),
 });

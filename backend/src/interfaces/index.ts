@@ -28,7 +28,7 @@ export interface Book extends Document {
   availableCopies: number;
   rating: number[];
   reviews: {
-    userId: mongoose.Types.ObjectId;
+    user: mongoose.Types.ObjectId;
     comment: string;
   }[];
   slug: string;

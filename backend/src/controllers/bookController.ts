@@ -47,7 +47,7 @@ class BookController {
     try {
       const books = await BookModel.find()
         .sort({ createdAt: -1 })
-        .populate("reviews.userId", "username email"); // get all books from database
+        .populate("reviews.user", "username email"); // get all books from database
       const formattedBooks = books.map((book) => {
         const averageRating =
           book.rating.length > 0
@@ -98,7 +98,7 @@ class BookController {
         throw new CustomError("Invalid book id!", 400); // check if the book id is valid
 
       const book = await BookModel.findById(id).populate(
-        "reviews.userId",
+        "reviews.user",
         "username email"
       ); // find the book
       if (!book) throw new CustomError("Book not found!", 404); // check if the book exists
@@ -334,19 +334,19 @@ class BookController {
         comment,
       }); // validate the rating and comment
 
-      const updatedBook = await BookModel.findByIdAndUpdate(
-        id,
+      const updatedBook = await BookModel.findOneAndUpdate(
+        { _id: id },
         {
           $push: {
             rating: validatedBookData.rating,
             reviews: {
-              userId: (req as RequestWithUser).user?.id,
+              user: (req as RequestWithUser).user?.id,
               comment: validatedBookData.comment,
             },
           },
         },
         { new: true }
-      ).populate("reviews.userId", "username email"); // update the book
+      ).populate("reviews.user", "username email"); // update the book
 
       if (!updatedBook) throw new CustomError("Book not found!", 404); // if the book is not exist, throw an error
 
