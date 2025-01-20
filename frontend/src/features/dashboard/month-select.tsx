@@ -25,13 +25,16 @@ import { useMonth } from "@/context/month-context";
 
 export const MonthSelect = () => {
   const { monthState, setMonthState } = useMonth();
+  const currentMonth = useMemo(() => new Date(), []);
+  const currentYear = currentMonth.getFullYear();
+  const currentMonthIndex = currentMonth.getMonth();
 
   const months = useMemo(() => {
     return eachMonthOfInterval({
-      start: startOfYear(new Date()),
-      end: endOfYear(new Date()),
+      start: startOfYear(currentMonth),
+      end: endOfYear(currentMonth),
     });
-  }, []);
+  }, [currentMonth]);
 
   const handleStartMonthChange = useCallback(
     (value: string) => {
@@ -91,6 +94,10 @@ export const MonthSelect = () => {
                 <SelectItem
                   key={`start-${formatSelectDate(month)}`}
                   value={formatSelectDate(month)}
+                  disabled={
+                    month.getFullYear() === currentYear &&
+                    month.getMonth() > currentMonthIndex
+                  }
                 >
                   {format(month, "MMMM")}
                 </SelectItem>
@@ -118,7 +125,11 @@ export const MonthSelect = () => {
                 <SelectItem
                   key={`end-${formatSelectDate(month)}`}
                   value={formatSelectDate(month)}
-                  disabled={isBefore(month, monthState.startMonth)}
+                  disabled={
+                    isBefore(month, monthState.startMonth) ||
+                    (month.getFullYear() === currentYear &&
+                      month.getMonth() > currentMonthIndex)
+                  }
                 >
                   {format(month, "MMMM")}
                 </SelectItem>

@@ -99,3 +99,8 @@ export type TableDataProps<TData, TValue> = {
   table: Table<TData>;
   columns: ColumnDef<TData, TValue>[];
 };
+
+export type StarRatingProps = {
+  rating: number;
+  total?: number;
+};

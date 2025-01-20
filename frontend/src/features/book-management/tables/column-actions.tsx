@@ -58,6 +58,7 @@ import {
   Edit,
   Eye,
   MoreHorizontal,
+  Star,
   Trash2,
 } from "lucide-react";
 
@@ -199,8 +200,8 @@ export const ColumnActions = ({ book }: { book: Book }) => {
     return new Intl.NumberFormat("us-EN", {
       notation: "compact",
       maximumFractionDigits: 1,
-    }).format(10200);
-  }, []);
+    }).format(book.reviews.length);
+  }, [book.reviews.length]);
 
   const detailBookData = useMemo(
     () => [
@@ -320,12 +321,12 @@ export const ColumnActions = ({ book }: { book: Book }) => {
       >
         <DetailBookModal.Header
           title="Detail eBook"
-          description="View book details here."
+          description={`You're now seeing ${book.title} details.`}
           className="text-start"
         />
 
         {/* book details */}
-        <div className="grid grid-cols-[40fr_60fr] gap-8 mb-5">
+        <section className="grid grid-cols-[40fr_60fr] gap-8 mb-5">
           {/* left column, book cover */}
           <img
             src={book.coverURL}
@@ -353,20 +354,20 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               <span className="text-sm text-slate-800 font-medium">Genre:</span>
               <div className="flex flex-wrap items-center gap-2">
                 {Object.keys(book.genre).map((_, i) => (
-                  <Badge variant="secondary" key={`genre-${i}`}>
+                  <Badge variant="warning" key={`genre-${i}`}>
                     {book.genre[i]}
                   </Badge>
                 ))}
               </div>
             </div>
 
-            {/* rating, review(s), book type, and pages */}
+            {/* rating & review(s), book type, and pages */}
             <div className="grid grid-cols-2 lg:grid-cols-3 py-4 gap-4 justify-items-center">
               {/* rating and total reviews */}
               <div className="w-full flex flex-col justify-center items-center border-r border-gray-300 pr-4 text-center">
                 <div className="flex items-center gap-1">
                   <span className="font-medium">{book.rating}</span>
-                  <StarRating className="fill-amber-500" />
+                  <Star size={16} className="fill-amber-400 text-amber-400" />
                 </div>
 
                 <span className="text-muted-foreground text-xs text-nowrap">
@@ -387,10 +388,10 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* book description, rating, and more details */}
-        <div className="space-y-10">
+        <section className="space-y-10">
           {/* book description */}
           <div className="space-y-1">
             <h1 className="text-lg font-semibold">About this eBook</h1>
@@ -407,23 +408,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
                 <h1 className="font-semibold text-xl">{book.rating}</h1>
 
                 {/* star rating indicator */}
-                <div className="inline-flex gap-0">
-                  {Array.from({ length: Math.floor(book.rating) }, (_, i) => (
-                    <StarRating
-                      key={`filled-star-${i}`}
-                      className="fill-amber-500"
-                    />
-                  ))}
-                  {Array.from(
-                    { length: 5 - Math.floor(book.rating) },
-                    (_, i) => (
-                      <StarRating
-                        key={`empty-star-${i}`}
-                        className="fill-gray-500"
-                      />
-                    )
-                  )}
-                </div>
+                <StarRating rating={book.rating} />
 
                 {/* total book rating */}
                 <p className="text-xs text-muted-foreground">
@@ -474,7 +459,7 @@ export const ColumnActions = ({ book }: { book: Book }) => {
               </AccordionItem>
             </Accordion>
           </div>
-        </div>
+        </section>
       </DetailBookModal>
 
       {/* update book modal */}
