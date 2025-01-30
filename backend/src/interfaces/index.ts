@@ -1,9 +1,7 @@
-import { Request } from "express";
-import { JwtPayload } from "jsonwebtoken";
 import mongoose, { Document } from "mongoose";
 import { UserRole } from "@/constants";
 
-export interface User extends Document {
+export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   username: string;
   email: string;
@@ -13,7 +11,7 @@ export interface User extends Document {
   comparePassword: (password: string) => Promise<boolean>;
 }
 
-export interface Book extends Document {
+export interface IBook extends Document {
   _id: mongoose.Types.ObjectId;
   title: string;
   author: string;
@@ -31,20 +29,9 @@ export interface Book extends Document {
     user: mongoose.Types.ObjectId;
     comment: string;
   }[];
-  slug: string;
 }
 
-export interface DecodedToken extends JwtPayload {
-  userId: string;
-}
-
-export interface RequestWithCookies extends Request {
-  cookies: {
-    accessToken?: string;
-    refreshToken?: string;
-  };
-}
-
-export interface RequestWithUser extends Request {
-  user?: User;
+export interface IBookGenre extends Document {
+  _id: mongoose.Types.ObjectId;
+  name: string;
 }

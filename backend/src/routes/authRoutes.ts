@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authController } from "@/controllers/authController";
-import { isAuth, stillAuth } from "@/middlewares/authMiddleware";
+import { stillAuth } from "@/middlewares/authMiddleware";
 
 const router = Router();
 
@@ -8,7 +8,7 @@ router
   /**
    * Route for checking user authentication.
    *
-   * @private
+   * @public
    * @access all
    * @method GET
    * @route "/api/v1/auth/me"
@@ -16,7 +16,7 @@ router
    * This endpoint is used to check the user authentication.
    * It will send a user data.
    */
-  .get("/me", isAuth, authController.checkAuth);
+  .get("/me", authController.checkAuth);
 
 router
   /**

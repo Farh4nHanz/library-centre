@@ -9,7 +9,7 @@ import logger from "@/config/logger";
  */
 const connectDB = async (): Promise<void> => {
   try {
-    await mongoose.connect(process.env.MONGO_URI!);
+    await mongoose.connect(process.env.MONGO_URI);
     logger.info(`Database connected: ${mongoose.connection.host}`);
   } catch (err: unknown) {
     logger.error(err);

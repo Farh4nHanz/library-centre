@@ -2,12 +2,12 @@ import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
-/** @interfaces */
-import {
+/** @types */
+import type {
   DecodedToken,
   RequestWithCookies,
   RequestWithUser,
-} from "@/interfaces";
+} from "@/types";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -32,13 +32,13 @@ import CustomError from "@/utils/customError";
  * router.get("/dashboard", isAuth, userController.getAllUsers);
  */
 export const isAuth: RequestHandler = async (req, res, next): Promise<void> => {
-  const { refreshToken } = (req as RequestWithCookies).cookies; // grab the refresh token from cookie
-  if (!refreshToken) throw new CustomError("Unauthorized!", 401); // if the token is missing, throw an error
+  const { accessToken } = (req as RequestWithCookies).cookies; // grab the refresh token from cookie
+  if (!accessToken) throw new CustomError("Unauthorized!", 401); // if the token is missing, throw an error
 
   try {
     const decoded = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET!
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET!
     ) as DecodedToken; // if there's a token, verify the token
 
     const user = await UserModel.findById(decoded.userId).select("-password"); // find the user by id

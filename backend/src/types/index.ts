@@ -1,6 +1,25 @@
+import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
+import { IUser } from "@/interfaces";
+
 export type RequestParams = {
   id: string;
 };
+
+export type RequestWithCookies = {
+  cookies: {
+    accessToken?: string;
+    refreshToken?: string;
+  };
+} & Request;
+
+export type RequestWithUser = {
+  user?: IUser;
+} & Request;
+
+export type DecodedToken = {
+  userId: string;
+} & JwtPayload;
 
 export type UserRequestBody = {
   id: string;
@@ -22,3 +41,7 @@ export type BookRequestBody = {
   publicationDate: Date;
   totalCopies: number;
 };
+
+export type BookGenreRequestBody = {
+  name: string;
+}

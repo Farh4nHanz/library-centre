@@ -8,9 +8,9 @@ import CustomError from "@/utils/customError";
  * next function from previous middleware.
  *
  * @param {Error} err - The error object
- * @param {Request} req - The request object
+ * @param {Request} _req - The request object
  * @param {Response} res - The response object
- * @param {NextFunction} next - The next middleware function
+ * @param {NextFunction} _next - The next middleware function
  */
 export const errorHandler: ErrorRequestHandler = (
   err,
@@ -65,7 +65,7 @@ export const errorHandler: ErrorRequestHandler = (
  * Middleware to handle requests to unknown endpoints.
  *
  * @param req - The Express request object.
- * @param res - The Express response object.
+ * @param _res - The Express response object.
  * @param next - The next middleware function in the stack.
  *
  * This middleware function creates a `CustomError` with a 404 status code,

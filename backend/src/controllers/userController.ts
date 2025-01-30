@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import { RequestWithUser, User } from "@/interfaces";
+import { IUser } from "@/interfaces";
 
 /** @types */
-import { type RequestParams } from "@/types";
+import type { RequestParams, RequestWithUser } from "@/types";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -96,7 +96,7 @@ class UserController {
    */
   getUserProfile: RequestHandler = async (req, res, next): Promise<void> => {
     try {
-      const { id } = (req as RequestWithUser).user as User; // destructure the user id from request
+      const { id } = (req as RequestWithUser).user as IUser; // destructure the user id from request
 
       if (!mongoose.isValidObjectId(id))
         throw new CustomError("Invalid user id!", 400); // check if the user id is valid
@@ -140,7 +140,7 @@ class UserController {
       if (!user) throw new CustomError("User not found!", 404); // check if the user exist or not
 
       res.status(200).json({
-        message: `Successfully deleted user named ${user.username}.`,
+        message: `User with name ${user.username} have been deleted!`,
       }); // send success message
     } catch (err) {
       logger.error(err); // logging error

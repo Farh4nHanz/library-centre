@@ -1,12 +1,11 @@
 import { RequestHandler } from "express";
 import mongoose from "mongoose";
+import { MulterError } from "multer";
+import { ZodError } from "zod";
 import logger from "@/config/logger";
 
-/** @interfaces */
-import { RequestWithUser } from "@/interfaces";
-
 /** @types */
-import { type BookRequestBody, type RequestParams } from "@/types";
+import type { BookRequestBody, RequestParams, RequestWithUser } from "@/types";
 
 /** @models */
 import BookModel from "@/models/bookModel";
@@ -29,14 +28,10 @@ import CustomError from "@/utils/customError";
  */
 class BookController {
   /**
-   * Fetches all books from the database.
+   * Retrieves all books from the database.
    *
-   * @method getAllBooks
-   * @memberof BookController
-   *
-   * This method retrieves all book records from the database
-   * and sends them in the response. If an error occurs, it logs
-   * the error and passes it to the error-handling middleware.
+   * @memberof {@link BookController}
+   * @name {@link getAllBooks}
    *
    * @returns {Promise<void>} Response with status code 200 and array of books.
    *
@@ -74,12 +69,12 @@ class BookController {
   };
 
   /**
-   * Fetches a book by its ID from the database.
+   * Retrieve a book by its ID from the database.
    *
-   * @method getBookById
-   * @memberof BookController
+   * @memberof {@link BookController}
+   * @name {@link getBookById}
    *
-   * @throws {CustomError} If the book ID is invalid or not found.
+   * @throws Throws {@link CustomError} If the book ID is invalid or not found.
    *
    * @returns {Promise<void>} Response with status code 200 and the book document.
    *
@@ -127,15 +122,15 @@ class BookController {
   };
 
   /**
-   * Adds a new book to the database.
+   * Add a new book to the database.
    *
-   * @method addNewBook
-   * @memberof bookController
+   * @memberof {@link bookController}
+   * @name {@link addNewBook}
    *
-   * @throws {CustomError} If the book title already exists in the database.
-   * @throws {ZodError} If the request body does not match the {@link BookRequestBody} schema.
+   * @throws Throws {@link CustomError} If the book title already exists in the database.
+   * @throws Throws {@link ZodError} If the request body does not match the {@link BookRequestBody} schema.
    *
-   * @returns {Promise<void>} Response with status code 201 and the new book document.
+   * @returns {Promise<void>} Response with status code 201, message and the new book document.
    *
    * @example
    * router.post("/", bookController.addNewBook);
@@ -177,7 +172,7 @@ class BookController {
       await newBook.save();
 
       res.status(201).json({
-        message: "New book added successfully!",
+        message: `Successfully added new book with title ${newBook.title}.`,
         book: newBook,
       }); // send the book data to client
     } catch (err) {
@@ -189,13 +184,13 @@ class BookController {
   /**
    * Updates a book by its ID in the database.
    *
-   * @method updateBookById
-   * @memberof BookController
+   * @memberof {@link BookController}
+   * @name {@link updateBookById}
    *
-   * @throws {CustomError} If the book ID is invalid or not found.
-   * @throws {MulterError} If there is an error in uploading the cover file.
+   * @throws Throws {@link CustomError} If the book ID is invalid or not found.
+   * @throws Throws {@link MulterError} If there is an error in uploading the cover file.
    *
-   * @returns {Promise<void>} Response with status code 200 and a message "Book has been updated!" and the updated book document.
+   * @returns {Promise<void>} Response with status code 200, message and the updated book document.
    *
    * @example
    * router.put("/:id", bookController.updateBookById);
@@ -225,7 +220,7 @@ class BookController {
       if (!updatedBook) throw new CustomError("Book not found!", 404); // if the book is not found, throw an error
 
       res.status(200).json({
-        message: "Book has been updated!",
+        message: `Book with title ${updatedBook.title} has been updated!`,
         updatedBook: updatedBook,
       }); // send the updated book data to client
     } catch (err) {
@@ -235,14 +230,14 @@ class BookController {
   };
 
   /**
-   * Deletes a book by its ID from the database.
+   * Delete a book by its ID from the database.
    *
-   * @method deleteBookById
-   * @memberof BookController
+   * @memberof {@link BookController}
+   * @name {@link deleteBookById}
    *
-   * @throws {CustomError} If the book ID is invalid or not found.
+   * @throws Throws {@link CustomError} If the book ID is invalid or not found.
    *
-   * @returns {Promise<void>} Response with status code 200 and a message "One book has been deleted!".
+   * @returns {Promise<void>} Response with status code 200 and a message.
    *
    * @example
    * router.delete("/:id", bookController.deleteBookById);
@@ -264,7 +259,9 @@ class BookController {
       const key = deletedBook.coverURL.split(".com/")[1]; // extract the key from the cover url
       await s3Service.deleteFile(key); // delete the cover file from s3 bucket
 
-      res.status(200).json({ message: "One book has been deleted!" }); // return a response message
+      res.status(200).json({
+        message: `Book with title ${deletedBook.title} has been deleted!`,
+      }); // return a response message
     } catch (err) {
       logger.error(err); // logging the error
       next(err); // passing the error to next middleware
@@ -274,12 +271,12 @@ class BookController {
   /**
    * Deletes all books from the database.
    *
-   * @method deleteAllBooks
-   * @memberof BookController
+   * @memberof {@link BookController}
+   * @name {@link deleteAllBooks}
    *
-   * @throws {CustomError} If there are no books in the database.
+   * @throws Throws {@link CustomError} If there are no books in the database.
    *
-   * @returns {Promise<void>} Response with status code 200 and a message "All books successfully deleted!".
+   * @returns {Promise<void>} Response with status code 200 and a message.
    *
    * @example
    * router.delete("/", bookController.deleteAllBooks);
@@ -295,7 +292,7 @@ class BookController {
       const keys = books.map((book) => book.coverURL.split(".com/")[1]); // extract the keys from each cover url books
       await Promise.all(keys.map((key) => s3Service.deleteFile(key))); // delete all cover files from s3 bucket
 
-      res.status(200).json({ message: "All books successfully deleted!" });
+      res.status(200).json({ message: "All books have been deleted!" });
     } catch (err) {
       logger.error(err); // logging the error
       next(err); // passing the error to next middleware
@@ -305,14 +302,14 @@ class BookController {
   /**
    * Rates a book with the given id.
    *
-   * @method rateBookById
-   * @memberof BookController
+   * @memberof {@link BookController}
+   * @name {@link rateBookById}
    *
-   * @throws {CustomError} If the book id is invalid.
-   * @throws {CustomError} If the rating is not a number between 1-5.
-   * @throws {CustomError} If the book is not found.
+   * @throws Throws {@link CustomError} If the book id is invalid.
+   * @throws Throws {@link CustomError} If the rating is not a number between 1-5.
+   * @throws Throws {@link CustomError} If the book is not found.
    *
-   * @returns {Promise<void>} Response with status code 200 and a message "Thank you for rating this book!".
+   * @returns {Promise<void>} Response with status code 200 and a message.
    *
    * @example
    * router.put("/:id/rate", bookController.rateBookById);

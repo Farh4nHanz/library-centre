@@ -4,15 +4,15 @@ import jwt from "jsonwebtoken";
 import logger from "@/config/logger";
 
 /** @interfaces */
-import {
+import { IUser } from "@/interfaces";
+
+/** @types */
+import type {
+  UserRequestBody,
   DecodedToken,
   RequestWithCookies,
   RequestWithUser,
-  User,
-} from "@/interfaces";
-
-/** @types */
-import { type UserRequestBody } from "@/types";
+} from "@/types";
 
 /** @models */
 import UserModel from "@/models/userModel";
@@ -211,7 +211,7 @@ class AuthController {
       const { accessToken } = (req as RequestWithCookies).cookies; // grab the access token from cookie
       if (!accessToken) throw new CustomError("Please login first!", 403); // check if there's a token, if not, throw an error
 
-      const { id } = (req as RequestWithUser).user as User; // grab the user id from request
+      const { id } = (req as RequestWithUser).user as IUser; // grab the user id from request
 
       if (!mongoose.isValidObjectId(id))
         throw new CustomError("Invalid user id!", 400); // check if the user id is valid

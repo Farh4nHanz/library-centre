@@ -1,11 +1,10 @@
 import mongoose, { Model, UpdateQuery } from "mongoose";
-import slugify from "slugify";
 import _ from "lodash";
-import { Book } from "@/interfaces";
+import { IBook } from "@/interfaces";
 import { capitalizeLetter } from "@/utils/capitalizeLetter";
 import { s3Service } from "@/services/s3Service";
 
-const Schema = mongoose.Schema<Book>;
+const Schema = mongoose.Schema<IBook>;
 
 const bookSchema = new Schema(
   {
@@ -23,9 +22,8 @@ const bookSchema = new Schema(
     },
     genre: [
       {
-        type: String,
-        min: 1,
-        required: true,
+        type: Schema.Types.ObjectId,
+        ref: "BookGenre",
       },
     ],
     coverURL: {
@@ -76,9 +74,6 @@ const bookSchema = new Schema(
         },
       },
     ],
-    slug: {
-      type: String,
-    },
   },
   { timestamps: true }
 );
@@ -86,22 +81,19 @@ const bookSchema = new Schema(
 bookSchema.pre("save", function (next) {
   if (this.isNew) {
     this.title = capitalizeLetter(this.title);
-    this.slug = slugify(this.title, { lower: true });
     this.author = capitalizeLetter(this.author);
     this.description = _.upperFirst(this.description);
-    this.genre = _.split(this.genre.toString(), ",")
-      .map((genre) => genre.trim())
-      .map((genre) => capitalizeLetter(genre));
+    this.genre = _.split(this.genre.toString(), ",").map((genre) =>
+      genre.trim()
+    );
     this.publisher = capitalizeLetter(this.publisher);
-
-    next();
   }
 
   next();
 });
 
 bookSchema.pre("findOneAndUpdate", async function (next) {
-  const update = this.getUpdate() as UpdateQuery<Book>;
+  const update = this.getUpdate() as UpdateQuery<IBook>;
 
   if (update?.$set) {
     const cover: Express.Multer.File = update.$set.cover;
@@ -120,11 +112,10 @@ bookSchema.pre("findOneAndUpdate", async function (next) {
     }
 
     Object.keys(update.$set).forEach((key) => {
-      const typedKey = key as keyof Book;
+      const typedKey = key as keyof IBook;
       switch (typedKey) {
         case "title":
           update.$set.title = capitalizeLetter(update.$set.title);
-          update.$set.slug = slugify(update.$set.title, { lower: true });
           break;
 
         case "author":
@@ -163,6 +154,6 @@ bookSchema.set("toJSON", {
   virtuals: true,
 });
 
-const BookModel: Model<Book> = mongoose.model<Book>("Book", bookSchema);
+const BookModel: Model<IBook> = mongoose.model<IBook>("Book", bookSchema);
 
 export default BookModel;

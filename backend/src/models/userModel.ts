@@ -1,11 +1,10 @@
 import mongoose, { Model, UpdateQuery } from "mongoose";
 import _ from "lodash";
 import bcrypt from "bcryptjs";
-
-import { User } from "@/interfaces";
+import { IUser } from "@/interfaces";
 import { UserRole } from "@/constants";
 
-const Schema = mongoose.Schema<User>;
+const Schema = mongoose.Schema<IUser>;
 
 const userSchema = new Schema(
   {
@@ -45,7 +44,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.pre("findOneAndUpdate", async function (next) {
-  const update = this.getUpdate() as UpdateQuery<User>;
+  const update = this.getUpdate() as UpdateQuery<IUser>;
 
   if (update?.$set?.username) {
     update.$set.username = _.startCase(update.$set.username);
@@ -74,6 +73,6 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(password, this.password);
 };
 
-const UserModel: Model<User> = mongoose.model<User>("User", userSchema);
+const UserModel: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 
 export default UserModel;
